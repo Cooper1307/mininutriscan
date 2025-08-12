@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "营养贴士",
+  "enablePullDownRefresh": true,
+  "backgroundTextStyle": "light",
+  "backgroundColor": "#667eea",
+  "usingComponents": {
+    "navigation-bar": "/components/navigation-bar/navigation-bar"
+  }
+}

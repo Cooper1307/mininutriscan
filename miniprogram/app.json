@@ -3,8 +3,13 @@
     "pages/index/index",
     "pages/detection/detection",
     "pages/report/report",
-    "pages/education/education",
-    "pages/profile/profile"
+    "pages/profile/profile",
+    "pages/settings/settings",
+    "pages/help/help",
+    "pages/about/about",
+    "pages/feedback/feedback",
+    "pages/encyclopedia/encyclopedia",
+    "pages/tips/tips"
   ],
   "tabBar": {
     "color": "#7F8C8D",
@@ -31,7 +36,7 @@
         "selectedIconPath": "assets/icons/report-active.png"
       },
       {
-        "pagePath": "pages/education/education",
+        "pagePath": "pages/encyclopedia/encyclopedia",
         "text": "科普",
         "iconPath": "assets/icons/education.png",
         "selectedIconPath": "assets/icons/education-active.png"
