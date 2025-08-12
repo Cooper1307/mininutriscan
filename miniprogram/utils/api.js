@@ -4,19 +4,23 @@
  */
 
 import { showLoading, hideLoading, showError, checkNetworkStatus } from './util.js';
+const { API_CONFIG, API_URLS, getModuleApiUrl, getApiUrlWithParam } = require('../config/api');
 
-// API配置
-const API_CONFIG = {
+// 请求配置 (从配置文件获取)
+const REQUEST_CONFIG = API_CONFIG.REQUEST_CONFIG;
+
+// 兼容原有配置
+const LEGACY_CONFIG = {
   // 基础URL（开发环境）
-  BASE_URL_DEV: 'https://dev-api.nutriscan.com',
+  BASE_URL_DEV: API_CONFIG.BASE_URL_DEV || 'https://dev-api.nutriscan.com',
   // 基础URL（生产环境）
-  BASE_URL_PROD: 'https://api.nutriscan.com',
+  BASE_URL_PROD: API_CONFIG.BASE_URL_PROD || 'https://api.nutriscan.com',
   // 请求超时时间
-  TIMEOUT: 10000,
+  TIMEOUT: REQUEST_CONFIG?.timeout || 10000,
   // 重试次数
-  RETRY_COUNT: 3,
+  RETRY_COUNT: REQUEST_CONFIG?.retryCount || 3,
   // 重试间隔（毫秒）
-  RETRY_DELAY: 1000
+  RETRY_DELAY: REQUEST_CONFIG?.retryDelay || 1000
 };
 
 // 获取当前环境的基础URL
@@ -25,7 +29,15 @@ function getBaseUrl() {
   const accountInfo = wx.getAccountInfoSync();
   const envVersion = accountInfo.miniProgram.envVersion;
   
-  return envVersion === 'release' ? API_CONFIG.BASE_URL_PROD : API_CONFIG.BASE_URL_DEV;
+  return envVersion === 'release' ? LEGACY_CONFIG.BASE_URL_PROD : LEGACY_CONFIG.BASE_URL_DEV;
+}
+
+// 获取模块API URL的便捷方法
+export function getApiUrl(module, endpoint, params = {}) {
+  if (params && Object.keys(params).length > 0) {
+    return getApiUrlWithParam(module, endpoint, params);
+  }
+  return getModuleApiUrl(module, endpoint);
 }
 
 // 请求拦截器
@@ -167,7 +179,7 @@ function request(config) {
       method: config.method || 'GET',
       data: config.data,
       header: config.header,
-      timeout: config.timeout || API_CONFIG.TIMEOUT,
+      timeout: config.timeout || LEGACY_CONFIG.TIMEOUT,
       success: (response) => {
         // 隐藏加载提示
         if (config.showLoading !== false) {
@@ -196,15 +208,15 @@ function request(config) {
 function requestWithRetry(config, retryCount = 0) {
   return request(config).catch(error => {
     // 如果是网络错误且还有重试次数
-    if (retryCount < API_CONFIG.RETRY_COUNT && 
+    if (retryCount < LEGACY_CONFIG.RETRY_COUNT && 
         (error.errMsg?.includes('timeout') || error.errMsg?.includes('fail'))) {
       
-      console.log(`请求失败，${API_CONFIG.RETRY_DELAY}ms后进行第${retryCount + 1}次重试`);
+      console.log(`请求失败，${LEGACY_CONFIG.RETRY_DELAY}ms后进行第${retryCount + 1}次重试`);
       
       return new Promise(resolve => {
         setTimeout(() => {
           resolve(requestWithRetry(config, retryCount + 1));
-        }, API_CONFIG.RETRY_DELAY);
+        }, LEGACY_CONFIG.RETRY_DELAY);
       });
     }
     
@@ -371,12 +383,17 @@ export function race(requests) {
 
 // 设置全局配置
 export function setConfig(config) {
-  Object.assign(API_CONFIG, config);
+  Object.assign(LEGACY_CONFIG, config);
 }
 
 // 获取配置
 export function getConfig() {
-  return { ...API_CONFIG };
+  return { ...LEGACY_CONFIG };
+}
+
+// 获取API URLs配置
+export function getApiUrls() {
+  return { ...API_URLS };
 }
 
 // 默认导出
@@ -391,5 +408,7 @@ export default {
   race,
   setConfig,
   getConfig,
+  getApiUrls,
+  getApiUrl,
   request: requestWithRetry
 };

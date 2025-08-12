@@ -104,9 +104,12 @@ def check_database_connection() -> bool:
         bool: 连接成功返回True，失败返回False
     """
     try:
+        # 导入text函数用于SQL语句包装
+        from sqlalchemy import text
+        
         # 尝试执行简单查询
         with engine.connect() as connection:
-            connection.execute("SELECT 1")
+            connection.execute(text("SELECT 1"))
         print("数据库连接正常")
         return True
     except Exception as e:

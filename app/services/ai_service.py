@@ -15,14 +15,16 @@ class AIService:
     def __init__(self):
         """
         初始化AI服务
+        注意：不再在初始化时强制检查API密钥，而是在实际使用时检查
         """
         self.api_key = settings.QWEN_API_KEY
         self.api_url = settings.QWEN_API_URL
         self.model = settings.QWEN_MODEL
         
-        # 检查API密钥是否配置
+        # 记录配置状态但不抛出异常
         if not self.api_key or self.api_key == "your-qwen-api-key-here":
-            raise ValueError("Qwen API密钥未正确配置，请在.env文件中设置QWEN_API_KEY")
+            print("⚠️  警告: Qwen API密钥未正确配置，AI功能将不可用")
+            print("💡 请在.env文件中设置QWEN_API_KEY以启用AI功能")
     
     async def _make_request(self, messages: list, temperature: float = 0.7) -> Dict[str, Any]:
         """
@@ -457,8 +459,5 @@ class AIService:
         }
 
 # 创建全局AI服务实例
-try:
-    ai_service = AIService()
-except ValueError as e:
-    print(f"⚠️  AI服务初始化失败: {e}")
-    ai_service = None
+# 现在初始化不会抛出异常，而是在使用时检查配置
+ai_service = AIService()
