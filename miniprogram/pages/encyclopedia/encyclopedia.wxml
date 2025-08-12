@@ -1,0 +1,214 @@
+<view class="page">
+  <!-- 自定义导航栏 -->
+  <navigation-bar title="食品百科" show-back="{{true}}"></navigation-bar>
+
+  <!-- 搜索区域 -->
+  <view class="search-section">
+    <view class="search-box">
+      <text class="search-icon">🔍</text>
+      <input class="search-input" 
+             placeholder="搜索食品名称" 
+             value="{{searchKeyword}}" 
+             bindinput="onSearchInput" 
+             bindconfirm="onSearchConfirm" />
+      <text class="search-clear" wx:if="{{searchKeyword}}" bindtap="onSearchClear">✕</text>
+    </view>
+    
+    <view class="search-suggestions" wx:if="{{searchSuggestions.length > 0 && searchKeyword}}">
+      <view class="suggestion-item" 
+            wx:for="{{searchSuggestions}}" 
+            wx:key="id" 
+            bindtap="onSuggestionTap" 
+            data-item="{{item}}">
+        <text class="suggestion-icon">{{item.icon}}</text>
+        <text class="suggestion-name">{{item.name}}</text>
+        <text class="suggestion-category">{{item.category}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 分类导航 -->
+  <view class="category-section" wx:if="{{!searchKeyword}}">
+    <scroll-view class="category-scroll" scroll-x>
+      <view class="category-list">
+        <view class="category-item {{currentCategory === item.id ? 'active' : ''}}" 
+              wx:for="{{categories}}" 
+              wx:key="id" 
+              bindtap="onCategoryTap" 
+              data-category="{{item}}">
+          <text class="category-icon">{{item.icon}}</text>
+          <text class="category-name">{{item.name}}</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 推荐食品 -->
+  <view class="recommend-section" wx:if="{{!searchKeyword && currentCategory === 'all'}}">
+    <view class="section-header">
+      <text class="section-title">推荐食品</text>
+      <text class="section-more" bindtap="onViewMore">查看更多</text>
+    </view>
+    
+    <scroll-view class="recommend-scroll" scroll-x>
+      <view class="recommend-list">
+        <view class="recommend-item" 
+              wx:for="{{recommendFoods}}" 
+              wx:key="id" 
+              bindtap="onFoodTap" 
+              data-food="{{item}}">
+          <image class="recommend-image" src="{{item.image}}" mode="aspectFill"></image>
+          <view class="recommend-info">
+            <text class="recommend-name">{{item.name}}</text>
+            <text class="recommend-benefit">{{item.benefit}}</text>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 食品列表 -->
+  <view class="foods-section">
+    <view class="section-header" wx:if="{{!searchKeyword}}">
+      <text class="section-title">{{currentCategoryName}}</text>
+      <text class="section-count">({{filteredFoods.length}}种)</text>
+    </view>
+    
+    <view class="section-header" wx:else>
+      <text class="section-title">搜索结果</text>
+      <text class="section-count">({{filteredFoods.length}}个)</text>
+    </view>
+    
+    <view class="foods-grid" wx:if="{{filteredFoods.length > 0}}">
+      <view class="food-item" 
+            wx:for="{{filteredFoods}}" 
+            wx:key="id" 
+            bindtap="onFoodTap" 
+            data-food="{{item}}">
+        <image class="food-image" src="{{item.image}}" mode="aspectFill"></image>
+        <view class="food-info">
+          <text class="food-name">{{item.name}}</text>
+          <text class="food-category">{{item.category}}</text>
+          <view class="food-tags">
+            <text class="food-tag" wx:for="{{item.tags}}" wx:key="*this" wx:for-item="tag">{{tag}}</text>
+          </view>
+        </view>
+        <view class="food-nutrition">
+          <text class="nutrition-label">营养价值</text>
+          <view class="nutrition-bar">
+            <view class="nutrition-fill" style="width: {{item.nutritionScore}}%"></view>
+          </view>
+          <text class="nutrition-score">{{item.nutritionScore}}</text>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 空状态 -->
+    <view class="empty-state" wx:else>
+      <text class="empty-icon">🔍</text>
+      <text class="empty-text">{{searchKeyword ? '未找到相关食品' : '暂无食品信息'}}</text>
+      <text class="empty-tip">{{searchKeyword ? '试试其他关键词' : '敬请期待更多内容'}}</text>
+    </view>
+  </view>
+
+  <!-- 热门搜索 -->
+  <view class="hot-search-section" wx:if="{{!searchKeyword}}">
+    <view class="section-header">
+      <text class="section-title">热门搜索</text>
+    </view>
+    
+    <view class="hot-tags">
+      <text class="hot-tag" 
+            wx:for="{{hotSearches}}" 
+            wx:key="*this" 
+            bindtap="onHotSearchTap" 
+            data-keyword="{{item}}">{{item}}</text>
+    </view>
+  </view>
+
+  <!-- 营养小贴士 -->
+  <view class="tips-section" wx:if="{{!searchKeyword}}">
+    <view class="section-header">
+      <text class="section-title">营养小贴士</text>
+      <text class="section-more" bindtap="onViewAllTips">查看更多</text>
+    </view>
+    
+    <view class="tips-list">
+      <view class="tip-item" 
+            wx:for="{{nutritionTips}}" 
+            wx:key="id" 
+            bindtap="onTipTap" 
+            data-tip="{{item}}">
+        <text class="tip-icon">{{item.icon}}</text>
+        <view class="tip-content">
+          <text class="tip-title">{{item.title}}</text>
+          <text class="tip-desc">{{item.description}}</text>
+        </view>
+        <text class="tip-arrow">></text>
+      </view>
+    </view>
+  </view>
+</view>
+
+<!-- 食品详情弹窗 -->
+<view class="food-modal" wx:if="{{showFoodDetail}}" bindtap="onCloseFoodDetail">
+  <view class="food-detail" catchtap="stopPropagation">
+    <view class="detail-header">
+      <image class="detail-image" src="{{currentFood.image}}" mode="aspectFill"></image>
+      <text class="detail-close" bindtap="onCloseFoodDetail">✕</text>
+    </view>
+    
+    <scroll-view class="detail-content" scroll-y>
+      <view class="detail-basic">
+        <text class="detail-name">{{currentFood.name}}</text>
+        <text class="detail-latin">{{currentFood.latinName}}</text>
+        <view class="detail-tags">
+          <text class="detail-tag" wx:for="{{currentFood.tags}}" wx:key="*this" wx:for-item="tag">{{tag}}</text>
+        </view>
+      </view>
+      
+      <view class="detail-section">
+        <text class="detail-section-title">营养成分</text>
+        <view class="nutrition-grid">
+          <view class="nutrition-item" wx:for="{{currentFood.nutrition}}" wx:key="name">
+            <text class="nutrition-name">{{item.name}}</text>
+            <text class="nutrition-value">{{item.value}}</text>
+            <text class="nutrition-unit">{{item.unit}}</text>
+          </view>
+        </view>
+      </view>
+      
+      <view class="detail-section">
+        <text class="detail-section-title">功效作用</text>
+        <text class="detail-text">{{currentFood.benefits}}</text>
+      </view>
+      
+      <view class="detail-section">
+        <text class="detail-section-title">食用建议</text>
+        <text class="detail-text">{{currentFood.suggestions}}</text>
+      </view>
+      
+      <view class="detail-section" wx:if="{{currentFood.precautions}}">
+        <text class="detail-section-title">注意事项</text>
+        <text class="detail-text warning">{{currentFood.precautions}}</text>
+      </view>
+      
+      <view class="detail-section">
+        <text class="detail-section-title">保存方法</text>
+        <text class="detail-text">{{currentFood.storage}}</text>
+      </view>
+    </scroll-view>
+    
+    <view class="detail-actions">
+      <button class="action-btn secondary" bindtap="onCollectFood">
+        <text class="btn-icon">{{currentFood.collected ? '❤️' : '🤍'}}</text>
+        <text class="btn-text">{{currentFood.collected ? '已收藏' : '收藏'}}</text>
+      </button>
+      
+      <button class="action-btn primary" bindtap="onDetectFood">
+        <text class="btn-icon">📸</text>
+        <text class="btn-text">检测此食品</text>
+      </button>
+    </view>
+  </view>
+</view>

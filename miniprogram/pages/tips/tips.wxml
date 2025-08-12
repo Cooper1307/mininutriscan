@@ -1,0 +1,186 @@
+<view class="page">
+  <!-- 自定义导航栏 -->
+  <navigation-bar title="营养贴士" show-back="{{true}}"></navigation-bar>
+
+  <!-- 搜索区域 -->
+  <view class="search-section">
+    <view class="search-box">
+      <text class="search-icon">🔍</text>
+      <input class="search-input" 
+             placeholder="搜索营养知识" 
+             value="{{searchKeyword}}" 
+             bindinput="onSearchInput" 
+             bindconfirm="onSearchConfirm" />
+      <text class="search-clear" wx:if="{{searchKeyword}}" bindtap="onSearchClear">✕</text>
+    </view>
+  </view>
+
+  <!-- 分类标签 -->
+  <view class="category-section">
+    <scroll-view class="category-scroll" scroll-x>
+      <view class="category-list">
+        <view class="category-item {{currentCategory === item.id ? 'active' : ''}}" 
+              wx:for="{{categories}}" 
+              wx:key="id" 
+              bindtap="onCategoryTap" 
+              data-category="{{item}}">
+          <text class="category-name">{{item.name}}</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 贴士列表 -->
+  <view class="tips-section">
+    <view class="tips-list" wx:if="{{filteredTips.length > 0}}">
+      <view class="tip-card" 
+            wx:for="{{filteredTips}}" 
+            wx:key="id" 
+            bindtap="onTipTap" 
+            data-tip="{{item}}">
+        <view class="tip-header">
+          <text class="tip-icon">{{item.icon}}</text>
+          <view class="tip-meta">
+            <text class="tip-title">{{item.title}}</text>
+            <text class="tip-category">{{item.categoryName}}</text>
+          </view>
+          <view class="tip-actions">
+            <text class="tip-like {{item.liked ? 'active' : ''}}" 
+                  bindtap="onLikeTip" 
+                  data-tip="{{item}}" 
+                  catchtap="stopPropagation">
+              {{item.liked ? '❤️' : '🤍'}}
+            </text>
+            <text class="tip-like-count">{{item.likeCount}}</text>
+          </view>
+        </view>
+        
+        <view class="tip-content">
+          <text class="tip-summary">{{item.summary}}</text>
+        </view>
+        
+        <view class="tip-footer">
+          <view class="tip-tags">
+            <text class="tip-tag" wx:for="{{item.tags}}" wx:key="*this" wx:for-item="tag">{{tag}}</text>
+          </view>
+          <text class="tip-read-time">{{item.readTime}}分钟阅读</text>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 空状态 -->
+    <view class="empty-state" wx:else>
+      <text class="empty-icon">📚</text>
+      <text class="empty-text">{{searchKeyword ? '未找到相关贴士' : '暂无营养贴士'}}</text>
+      <text class="empty-tip">{{searchKeyword ? '试试其他关键词' : '敬请期待更多内容'}}</text>
+    </view>
+  </view>
+
+  <!-- 推荐阅读 -->
+  <view class="recommend-section" wx:if="{{!searchKeyword && recommendTips.length > 0}}">
+    <view class="section-header">
+      <text class="section-title">推荐阅读</text>
+    </view>
+    
+    <scroll-view class="recommend-scroll" scroll-x>
+      <view class="recommend-list">
+        <view class="recommend-item" 
+              wx:for="{{recommendTips}}" 
+              wx:key="id" 
+              bindtap="onTipTap" 
+              data-tip="{{item}}">
+          <view class="recommend-header">
+            <text class="recommend-icon">{{item.icon}}</text>
+            <text class="recommend-category">{{item.categoryName}}</text>
+          </view>
+          <text class="recommend-title">{{item.title}}</text>
+          <text class="recommend-summary">{{item.summary}}</text>
+          <view class="recommend-footer">
+            <text class="recommend-read-time">{{item.readTime}}分钟</text>
+            <text class="recommend-likes">{{item.likeCount}}赞</text>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 每日一贴 -->
+  <view class="daily-section" wx:if="{{!searchKeyword && dailyTip}}">
+    <view class="section-header">
+      <text class="section-title">每日一贴</text>
+      <text class="section-date">{{todayDate}}</text>
+    </view>
+    
+    <view class="daily-card" bindtap="onTipTap" data-tip="{{dailyTip}}">
+      <view class="daily-header">
+        <text class="daily-icon">{{dailyTip.icon}}</text>
+        <view class="daily-meta">
+          <text class="daily-title">{{dailyTip.title}}</text>
+          <text class="daily-category">{{dailyTip.categoryName}}</text>
+        </view>
+      </view>
+      
+      <text class="daily-content">{{dailyTip.summary}}</text>
+      
+      <view class="daily-footer">
+        <text class="daily-tip">点击查看详情</text>
+        <text class="daily-arrow">></text>
+      </view>
+    </view>
+  </view>
+</view>
+
+<!-- 贴士详情弹窗 -->
+<view class="tip-modal" wx:if="{{showTipDetail}}" bindtap="onCloseTipDetail">
+  <view class="tip-detail" catchtap="stopPropagation">
+    <view class="detail-header">
+      <view class="detail-meta">
+        <text class="detail-icon">{{currentTip.icon}}</text>
+        <view class="detail-info">
+          <text class="detail-title">{{currentTip.title}}</text>
+          <text class="detail-category">{{currentTip.categoryName}}</text>
+        </view>
+      </view>
+      <text class="detail-close" bindtap="onCloseTipDetail">✕</text>
+    </view>
+    
+    <scroll-view class="detail-content" scroll-y>
+      <view class="detail-summary">
+        <text class="summary-text">{{currentTip.summary}}</text>
+      </view>
+      
+      <view class="detail-body">
+        <rich-text nodes="{{currentTip.content}}"></rich-text>
+      </view>
+      
+      <view class="detail-tags">
+        <text class="detail-tag" wx:for="{{currentTip.tags}}" wx:key="*this" wx:for-item="tag">{{tag}}</text>
+      </view>
+      
+      <view class="detail-references" wx:if="{{currentTip.references && currentTip.references.length > 0}}">
+        <text class="references-title">参考资料</text>
+        <view class="references-list">
+          <text class="reference-item" wx:for="{{currentTip.references}}" wx:key="*this" wx:for-item="ref">{{ref}}</text>
+        </view>
+      </view>
+    </scroll-view>
+    
+    <view class="detail-actions">
+      <button class="action-btn secondary" bindtap="onLikeTipDetail">
+        <text class="btn-icon">{{currentTip.liked ? '❤️' : '🤍'}}</text>
+        <text class="btn-text">{{currentTip.liked ? '已点赞' : '点赞'}}</text>
+        <text class="btn-count">({{currentTip.likeCount}})</text>
+      </button>
+      
+      <button class="action-btn secondary" bindtap="onCollectTip">
+        <text class="btn-icon">{{currentTip.collected ? '⭐' : '☆'}}</text>
+        <text class="btn-text">{{currentTip.collected ? '已收藏' : '收藏'}}</text>
+      </button>
+      
+      <button class="action-btn primary" bindtap="onShareTip">
+        <text class="btn-icon">📤</text>
+        <text class="btn-text">分享</text>
+      </button>
+    </view>
+  </view>
+</view>

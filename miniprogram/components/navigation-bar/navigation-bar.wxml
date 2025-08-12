@@ -1,0 +1,17 @@
+<view class="nav-bar">
+  <view class="nav-content">
+    <view class="nav-left" wx:if="{{showBack}}">
+      <view class="nav-back" bindtap="onBack">
+        <text class="icon-back">‹</text>
+      </view>
+    </view>
+    
+    <view class="nav-center">
+      <text class="nav-title">{{title}}</text>
+    </view>
+    
+    <view class="nav-right">
+      <slot name="right"></slot>
+    </view>
+  </view>
+</view>

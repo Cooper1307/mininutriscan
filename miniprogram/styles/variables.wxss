@@ -1,0 +1,168 @@
+/* 色彩变量 */
+:root {
+  --primary-color: #2E8B57;      /* 主色调-海绿色 */
+  --secondary-color: #4169E1;    /* 辅助色-皇家蓝 */
+  --accent-color: #FF6B35;       /* 强调色-橙红色 */
+  --background-color: #F8F9FA;   /* 背景色 */
+  --text-primary: #2C3E50;       /* 主要文字色 */
+  --text-secondary: #7F8C8D;     /* 次要文字色 */
+  --border-color: #E9ECEF;       /* 边框色 */
+  --shadow-color: rgba(0,0,0,0.1); /* 阴影色 */
+  --success-color: #27AE60;      /* 成功色 */
+  --warning-color: #F39C12;      /* 警告色 */
+  --danger-color: #E74C3C;       /* 危险色 */
+  --info-color: #3498DB;         /* 信息色 */
+}
+
+/* 字体大小 */
+.text-title { 
+  font-size: 36rpx; 
+  font-weight: bold; 
+  color: var(--text-primary);
+}
+
+.text-subtitle { 
+  font-size: 32rpx; 
+  font-weight: 600; 
+  color: var(--text-primary);
+}
+
+.text-body { 
+  font-size: 28rpx; 
+  color: var(--text-primary);
+}
+
+.text-caption { 
+  font-size: 24rpx; 
+  color: var(--text-secondary); 
+}
+
+.text-small { 
+  font-size: 22rpx; 
+  color: var(--text-secondary); 
+}
+
+.text-large {
+  font-size: 40rpx;
+  font-weight: bold;
+  color: var(--text-primary);
+}
+
+/* 字体权重 */
+.font-light { font-weight: 300; }
+.font-normal { font-weight: 400; }
+.font-medium { font-weight: 500; }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+
+/* 文字颜色 */
+.text-primary-color { color: var(--primary-color); }
+.text-secondary-color { color: var(--secondary-color); }
+.text-accent-color { color: var(--accent-color); }
+.text-success { color: var(--success-color); }
+.text-warning { color: var(--warning-color); }
+.text-danger { color: var(--danger-color); }
+.text-info { color: var(--info-color); }
+
+/* 间距系统 */
+.spacing-xs { margin: 8rpx; }
+.spacing-sm { margin: 16rpx; }
+.spacing-md { margin: 24rpx; }
+.spacing-lg { margin: 32rpx; }
+.spacing-xl { margin: 48rpx; }
+.spacing-xxl { margin: 64rpx; }
+
+/* 内边距 */
+.padding-xs { padding: 8rpx; }
+.padding-sm { padding: 16rpx; }
+.padding-md { padding: 24rpx; }
+.padding-lg { padding: 32rpx; }
+.padding-xl { padding: 48rpx; }
+.padding-xxl { padding: 64rpx; }
+
+/* 外边距 */
+.margin-xs { margin: 8rpx; }
+.margin-sm { margin: 16rpx; }
+.margin-md { margin: 24rpx; }
+.margin-lg { margin: 32rpx; }
+.margin-xl { margin: 48rpx; }
+.margin-xxl { margin: 64rpx; }
+
+/* 垂直间距 */
+.margin-top-xs { margin-top: 8rpx; }
+.margin-top-sm { margin-top: 16rpx; }
+.margin-top-md { margin-top: 24rpx; }
+.margin-top-lg { margin-top: 32rpx; }
+.margin-top-xl { margin-top: 48rpx; }
+
+.margin-bottom-xs { margin-bottom: 8rpx; }
+.margin-bottom-sm { margin-bottom: 16rpx; }
+.margin-bottom-md { margin-bottom: 24rpx; }
+.margin-bottom-lg { margin-bottom: 32rpx; }
+.margin-bottom-xl { margin-bottom: 48rpx; }
+
+/* 水平间距 */
+.margin-left-xs { margin-left: 8rpx; }
+.margin-left-sm { margin-left: 16rpx; }
+.margin-left-md { margin-left: 24rpx; }
+.margin-left-lg { margin-left: 32rpx; }
+.margin-left-xl { margin-left: 48rpx; }
+
+.margin-right-xs { margin-right: 8rpx; }
+.margin-right-sm { margin-right: 16rpx; }
+.margin-right-md { margin-right: 24rpx; }
+.margin-right-lg { margin-right: 32rpx; }
+.margin-right-xl { margin-right: 48rpx; }
+
+/* 圆角系统 */
+.radius-xs { border-radius: 4rpx; }
+.radius-sm { border-radius: 8rpx; }
+.radius-md { border-radius: 12rpx; }
+.radius-lg { border-radius: 16rpx; }
+.radius-xl { border-radius: 24rpx; }
+.radius-xxl { border-radius: 32rpx; }
+.radius-full { border-radius: 50%; }
+
+/* 阴影系统 */
+.shadow-none { box-shadow: none; }
+.shadow-sm { box-shadow: 0 2rpx 4rpx var(--shadow-color); }
+.shadow-md { box-shadow: 0 4rpx 8rpx var(--shadow-color); }
+.shadow-lg { box-shadow: 0 8rpx 16rpx var(--shadow-color); }
+.shadow-xl { box-shadow: 0 16rpx 32rpx var(--shadow-color); }
+
+/* 边框系统 */
+.border { border: 1rpx solid var(--border-color); }
+.border-top { border-top: 1rpx solid var(--border-color); }
+.border-bottom { border-bottom: 1rpx solid var(--border-color); }
+.border-left { border-left: 1rpx solid var(--border-color); }
+.border-right { border-right: 1rpx solid var(--border-color); }
+
+.border-primary { border-color: var(--primary-color); }
+.border-secondary { border-color: var(--secondary-color); }
+.border-accent { border-color: var(--accent-color); }
+.border-success { border-color: var(--success-color); }
+.border-warning { border-color: var(--warning-color); }
+.border-danger { border-color: var(--danger-color); }
+
+/* 背景色 */
+.bg-primary { background-color: var(--primary-color); }
+.bg-secondary { background-color: var(--secondary-color); }
+.bg-accent { background-color: var(--accent-color); }
+.bg-success { background-color: var(--success-color); }
+.bg-warning { background-color: var(--warning-color); }
+.bg-danger { background-color: var(--danger-color); }
+.bg-info { background-color: var(--info-color); }
+.bg-white { background-color: #FFFFFF; }
+.bg-gray { background-color: var(--background-color); }
+
+/* 透明度 */
+.opacity-10 { opacity: 0.1; }
+.opacity-20 { opacity: 0.2; }
+.opacity-30 { opacity: 0.3; }
+.opacity-40 { opacity: 0.4; }
+.opacity-50 { opacity: 0.5; }
+.opacity-60 { opacity: 0.6; }
+.opacity-70 { opacity: 0.7; }
+.opacity-80 { opacity: 0.8; }
+.opacity-90 { opacity: 0.9; }
+.opacity-100 { opacity: 1; }

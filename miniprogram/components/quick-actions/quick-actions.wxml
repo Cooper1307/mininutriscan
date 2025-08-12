@@ -1,0 +1,16 @@
+<view class="quick-actions">
+  <view class="actions-grid">
+    <view 
+      class="action-item" 
+      wx:for="{{actions}}" 
+      wx:key="id"
+      bindtap="onActionTap"
+      data-action="{{item}}"
+    >
+      <view class="action-icon">
+        <text class="icon">{{item.icon}}</text>
+      </view>
+      <text class="action-label">{{item.label}}</text>
+    </view>
+  </view>
+</view>

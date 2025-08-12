@@ -1,0 +1,238 @@
+/* 设置页面样式 */
+@import '../../styles/variables.wxss';
+@import '../../styles/common.wxss';
+
+.page {
+  background-color: var(--bg-color-light);
+  min-height: 100vh;
+  padding-bottom: 40rpx;
+}
+
+/* 区块样式 */
+.section {
+  margin-bottom: 20rpx;
+}
+
+.section-header {
+  padding: 30rpx 30rpx 20rpx;
+}
+
+.section-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--text-color-secondary);
+}
+
+/* 设置组样式 */
+.setting-group {
+  background-color: var(--bg-color-white);
+  border-radius: 16rpx;
+  margin: 0 30rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+}
+
+.setting-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 32rpx 30rpx;
+  border-bottom: 1rpx solid var(--border-color-light);
+  transition: background-color 0.2s;
+}
+
+.setting-item:last-child {
+  border-bottom: none;
+}
+
+.setting-item:active {
+  background-color: var(--bg-color-light);
+}
+
+.setting-left {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.setting-icon {
+  font-size: 36rpx;
+  margin-right: 24rpx;
+  width: 40rpx;
+  text-align: center;
+}
+
+.setting-text {
+  font-size: 32rpx;
+  color: var(--text-color-primary);
+  font-weight: 500;
+}
+
+.setting-right {
+  display: flex;
+  align-items: center;
+}
+
+.setting-value {
+  font-size: 28rpx;
+  color: var(--text-color-secondary);
+  margin-right: 16rpx;
+}
+
+.setting-arrow {
+  font-size: 24rpx;
+  color: var(--text-color-placeholder);
+  font-weight: bold;
+}
+
+/* 开关样式 */
+switch {
+  transform: scale(0.8);
+}
+
+/* 退出登录按钮 */
+.logout-section {
+  margin: 60rpx 30rpx 0;
+}
+
+.logout-btn {
+  width: 100%;
+  height: 88rpx;
+  background-color: var(--color-danger);
+  color: white;
+  border: none;
+  border-radius: 16rpx;
+  font-size: 32rpx;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.logout-btn:active {
+  background-color: #e53e3e;
+  transform: scale(0.98);
+}
+
+/* 选择器弹窗 */
+.picker-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: flex-end;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.picker-content {
+  width: 100%;
+  background-color: white;
+  border-radius: 24rpx 24rpx 0 0;
+  animation: slideUp 0.3s ease-out;
+}
+
+.picker-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 30rpx;
+  border-bottom: 1rpx solid var(--border-color-light);
+}
+
+.picker-cancel,
+.picker-confirm {
+  font-size: 32rpx;
+  color: var(--color-primary);
+  padding: 10rpx 20rpx;
+}
+
+.picker-cancel {
+  color: var(--text-color-secondary);
+}
+
+.picker-title {
+  font-size: 34rpx;
+  font-weight: 600;
+  color: var(--text-color-primary);
+}
+
+.picker-view {
+  height: 400rpx;
+}
+
+.picker-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 80rpx;
+  font-size: 32rpx;
+  color: var(--text-color-primary);
+}
+
+/* 动画效果 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* 响应式调整 */
+@media (max-width: 375px) {
+  .setting-item {
+    padding: 28rpx 24rpx;
+  }
+  
+  .setting-icon {
+    font-size: 32rpx;
+    margin-right: 20rpx;
+  }
+  
+  .setting-text {
+    font-size: 30rpx;
+  }
+}
+
+/* 深色模式适配 */
+@media (prefers-color-scheme: dark) {
+  .page {
+    background-color: #1a1a1a;
+  }
+  
+  .setting-group {
+    background-color: #2d2d2d;
+    box-shadow: 0 2rpx 12rpx rgba(255, 255, 255, 0.04);
+  }
+  
+  .setting-item {
+    border-bottom-color: #404040;
+  }
+  
+  .setting-item:active {
+    background-color: #404040;
+  }
+  
+  .picker-content {
+    background-color: #2d2d2d;
+  }
+  
+  .picker-header {
+    border-bottom-color: #404040;
+  }
+}

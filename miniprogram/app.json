@@ -1,0 +1,71 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/detection/detection",
+    "pages/report/report",
+    "pages/education/education",
+    "pages/profile/profile"
+  ],
+  "tabBar": {
+    "color": "#7F8C8D",
+    "selectedColor": "#2E8B57",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "assets/icons/home.png",
+        "selectedIconPath": "assets/icons/home-active.png"
+      },
+      {
+        "pagePath": "pages/detection/detection",
+        "text": "检测",
+        "iconPath": "assets/icons/detection.png",
+        "selectedIconPath": "assets/icons/detection-active.png"
+      },
+      {
+        "pagePath": "pages/report/report",
+        "text": "举报",
+        "iconPath": "assets/icons/report.png",
+        "selectedIconPath": "assets/icons/report-active.png"
+      },
+      {
+        "pagePath": "pages/education/education",
+        "text": "科普",
+        "iconPath": "assets/icons/education.png",
+        "selectedIconPath": "assets/icons/education-active.png"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的",
+        "iconPath": "assets/icons/profile.png",
+        "selectedIconPath": "assets/icons/profile-active.png"
+      }
+    ]
+  },
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#FFFFFF",
+    "navigationBarTitleText": "社区食安AI小卫士",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#F8F9FA"
+  },
+  "permission": {
+    "scope.userLocation": {
+      "desc": "您的位置信息将用于获取附近的食品安全信息"
+    },
+    "scope.camera": {
+      "desc": "需要使用您的相机进行食品检测"
+    },
+    "scope.album": {
+      "desc": "需要访问您的相册选择图片进行检测"
+    }
+  },
+  "requiredBackgroundModes": ["audio"],
+  "networkTimeout": {
+    "request": 10000,
+    "downloadFile": 10000
+  },
+  "debug": true
+}

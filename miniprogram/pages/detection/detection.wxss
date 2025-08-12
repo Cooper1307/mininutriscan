@@ -1,0 +1,479 @@
+@import '/styles/variables.wxss';
+@import '/styles/common.wxss';
+
+.page {
+  background-color: var(--background-color);
+  min-height: 100vh;
+  padding-bottom: 120rpx;
+}
+
+/* 检测区域 */
+.detection-area {
+  margin: 32rpx;
+}
+
+.camera-container {
+  background: white;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: 0 4rpx 16rpx var(--shadow-color);
+}
+
+/* 相机占位符 */
+.camera-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 400rpx;
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  border: 2rpx dashed var(--border-color);
+  transition: all 0.3s ease;
+}
+
+.camera-placeholder:active {
+  background: linear-gradient(135deg, #e9ecef, #dee2e6);
+  transform: scale(0.98);
+}
+
+.placeholder-icon {
+  font-size: 80rpx;
+  margin-bottom: 24rpx;
+  opacity: 0.6;
+}
+
+.placeholder-text {
+  font-size: 32rpx;
+  color: var(--text-primary);
+  font-weight: 500;
+  margin-bottom: 12rpx;
+}
+
+.placeholder-hint {
+  font-size: 24rpx;
+  color: var(--text-secondary);
+  text-align: center;
+  line-height: 1.4;
+}
+
+/* 图片预览 */
+.image-preview {
+  position: relative;
+}
+
+.preview-image {
+  width: 100%;
+  height: 400rpx;
+  background-color: #f5f5f5;
+}
+
+.image-actions {
+  display: flex;
+  gap: 24rpx;
+  padding: 32rpx;
+  background: white;
+}
+
+.action-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  height: 88rpx;
+  border-radius: var(--radius-md);
+  font-size: 28rpx;
+  font-weight: 500;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.action-btn.primary {
+  background: var(--primary-color);
+  color: white;
+}
+
+.action-btn.primary:active {
+  background: var(--secondary-color);
+  transform: scale(0.95);
+}
+
+.action-btn.primary:disabled {
+  background: var(--text-disabled);
+  transform: none;
+}
+
+.action-btn.secondary {
+  background: var(--background-color);
+  color: var(--text-primary);
+  border: 2rpx solid var(--border-color);
+}
+
+.action-btn.secondary:active {
+  background: var(--border-color);
+  transform: scale(0.95);
+}
+
+.action-btn .icon {
+  font-size: 32rpx;
+}
+
+/* 快速选项 */
+.quick-options {
+  display: flex;
+  gap: 24rpx;
+  margin-top: 32rpx;
+}
+
+.option-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32rpx 16rpx;
+  background: white;
+  border-radius: var(--radius-md);
+  box-shadow: 0 2rpx 8rpx var(--shadow-color);
+  transition: all 0.3s ease;
+}
+
+.option-item:active {
+  transform: scale(0.95);
+  box-shadow: 0 4rpx 16rpx var(--shadow-color);
+}
+
+.option-icon {
+  font-size: 48rpx;
+  margin-bottom: 16rpx;
+}
+
+.option-text {
+  font-size: 24rpx;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+/* 检测进度 */
+.detection-progress {
+  margin: 32rpx;
+  background: white;
+  border-radius: var(--radius-lg);
+  padding: 32rpx;
+  box-shadow: 0 4rpx 16rpx var(--shadow-color);
+}
+
+.progress-container {
+  margin-bottom: 32rpx;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8rpx;
+  background: var(--background-color);
+  border-radius: 4rpx;
+  overflow: hidden;
+  margin-bottom: 16rpx;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+  border-radius: 4rpx;
+  transition: width 0.5s ease;
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.progress-text {
+  font-size: 28rpx;
+  color: var(--text-primary);
+  text-align: center;
+  font-weight: 500;
+}
+
+.detection-steps {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  position: relative;
+}
+
+.step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 24rpx;
+  right: -50%;
+  width: 100%;
+  height: 2rpx;
+  background: var(--border-color);
+  z-index: 0;
+}
+
+.step.active:not(:last-child)::after {
+  background: var(--primary-color);
+}
+
+.step-icon {
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 50%;
+  background: var(--background-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24rpx;
+  margin-bottom: 12rpx;
+  border: 2rpx solid var(--border-color);
+  position: relative;
+  z-index: 1;
+  transition: all 0.3s ease;
+}
+
+.step.active .step-icon {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+  color: white;
+  animation: pulse 1s ease-in-out;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+.step-text {
+  font-size: 20rpx;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.step.active .step-text {
+  color: var(--primary-color);
+  font-weight: 500;
+}
+
+/* 历史记录 */
+.history-section {
+  margin: 32rpx;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: var(--text-primary);
+}
+
+.view-all {
+  font-size: 24rpx;
+  color: var(--primary-color);
+  font-weight: 500;
+}
+
+.history-list {
+  background: white;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: 0 2rpx 8rpx var(--shadow-color);
+}
+
+.history-item {
+  display: flex;
+  align-items: center;
+  padding: 24rpx;
+  border-bottom: 1rpx solid var(--border-color);
+  transition: background-color 0.3s ease;
+}
+
+.history-item:last-child {
+  border-bottom: none;
+}
+
+.history-item:active {
+  background-color: var(--background-color);
+}
+
+.history-image {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: var(--radius-sm);
+  margin-right: 24rpx;
+  background-color: #f5f5f5;
+}
+
+.history-content {
+  flex: 1;
+}
+
+.history-title {
+  font-size: 28rpx;
+  color: var(--text-primary);
+  font-weight: 500;
+  margin-bottom: 8rpx;
+}
+
+.history-result {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  margin-bottom: 8rpx;
+}
+
+.result-icon {
+  font-size: 20rpx;
+}
+
+.result-text {
+  font-size: 24rpx;
+  font-weight: 500;
+}
+
+.history-result.safe .result-text {
+  color: var(--success-color);
+}
+
+.history-result.warning .result-text {
+  color: var(--warning-color);
+}
+
+.history-result.danger .result-text {
+  color: var(--error-color);
+}
+
+.history-time {
+  font-size: 20rpx;
+  color: var(--text-secondary);
+}
+
+.history-arrow {
+  font-size: 32rpx;
+  color: var(--text-disabled);
+}
+
+/* 空状态 */
+.empty-history {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 80rpx 32rpx;
+  background: white;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 2rpx 8rpx var(--shadow-color);
+}
+
+.empty-icon {
+  font-size: 80rpx;
+  margin-bottom: 24rpx;
+  opacity: 0.6;
+}
+
+.empty-text {
+  font-size: 28rpx;
+  color: var(--text-primary);
+  font-weight: 500;
+  margin-bottom: 12rpx;
+}
+
+.empty-hint {
+  font-size: 24rpx;
+  color: var(--text-secondary);
+  text-align: center;
+  line-height: 1.4;
+}
+
+/* 提示区域 */
+.tips-section {
+  margin: 32rpx;
+}
+
+.tips-list {
+  background: white;
+  border-radius: var(--radius-lg);
+  padding: 32rpx;
+  box-shadow: 0 2rpx 8rpx var(--shadow-color);
+}
+
+.tip-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 16rpx;
+  margin-bottom: 24rpx;
+}
+
+.tip-item:last-child {
+  margin-bottom: 0;
+}
+
+.tip-icon {
+  font-size: 28rpx;
+  margin-top: 4rpx;
+}
+
+.tip-text {
+  flex: 1;
+  font-size: 26rpx;
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+/* 加载遮罩 */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.loading-content {
+  background: white;
+  border-radius: var(--radius-lg);
+  padding: 48rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 200rpx;
+}
+
+.loading-spinner {
+  width: 60rpx;
+  height: 60rpx;
+  border: 4rpx solid var(--border-color);
+  border-top: 4rpx solid var(--primary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 24rpx;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-text {
+  font-size: 28rpx;
+  color: var(--text-primary);
+  text-align: center;
+}

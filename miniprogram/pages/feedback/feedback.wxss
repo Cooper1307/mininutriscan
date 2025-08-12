@@ -1,0 +1,516 @@
+/* 意见反馈页面样式 */
+@import '../../styles/variables.wxss';
+@import '../../styles/common.wxss';
+
+.page {
+  background-color: var(--bg-color-light);
+  min-height: 100vh;
+  padding-bottom: 40rpx;
+}
+
+/* 区块样式 */
+.section {
+  margin-bottom: 20rpx;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  padding: 30rpx 30rpx 20rpx;
+}
+
+.section-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--text-color-primary);
+}
+
+.section-required {
+  color: var(--color-danger);
+  margin-left: 8rpx;
+  font-size: 28rpx;
+}
+
+.section-optional {
+  color: var(--text-color-placeholder);
+  margin-left: 8rpx;
+  font-size: 24rpx;
+}
+
+.section-more {
+  margin-left: auto;
+  color: var(--color-primary);
+  font-size: 24rpx;
+}
+
+/* 反馈类型选择 */
+.type-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20rpx;
+  padding: 0 30rpx;
+}
+
+.type-item {
+  background-color: var(--bg-color-white);
+  border: 2rpx solid var(--border-color-light);
+  border-radius: 16rpx;
+  padding: 32rpx 20rpx;
+  text-align: center;
+  transition: all 0.2s;
+}
+
+.type-item:active {
+  transform: scale(0.98);
+}
+
+.type-item.selected {
+  border-color: var(--color-primary);
+  background-color: var(--color-primary-light);
+}
+
+.type-icon {
+  font-size: 40rpx;
+  display: block;
+  margin-bottom: 16rpx;
+}
+
+.type-text {
+  font-size: 26rpx;
+  color: var(--text-color-primary);
+  font-weight: 500;
+  display: block;
+}
+
+.type-item.selected .type-text {
+  color: var(--color-primary);
+}
+
+/* 表单样式 */
+.form-group {
+  background-color: var(--bg-color-white);
+  margin: 0 30rpx 20rpx;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  position: relative;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+}
+
+.form-input {
+  width: 100%;
+  font-size: 28rpx;
+  color: var(--text-color-primary);
+  line-height: 1.5;
+}
+
+.form-textarea {
+  width: 100%;
+  font-size: 28rpx;
+  color: var(--text-color-primary);
+  line-height: 1.6;
+  min-height: 200rpx;
+}
+
+.input-counter {
+  position: absolute;
+  bottom: 20rpx;
+  right: 30rpx;
+  font-size: 24rpx;
+  color: var(--text-color-placeholder);
+}
+
+/* 联系方式 */
+.contact-options {
+  background-color: var(--bg-color-white);
+  margin: 0 30rpx;
+  border-radius: 16rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  padding: 32rpx 30rpx;
+  border-bottom: 1rpx solid var(--border-color-light);
+}
+
+.contact-item:last-child {
+  border-bottom: none;
+}
+
+.contact-label {
+  width: 120rpx;
+  font-size: 28rpx;
+  color: var(--text-color-secondary);
+  flex-shrink: 0;
+}
+
+.contact-input {
+  flex: 1;
+  font-size: 28rpx;
+  color: var(--text-color-primary);
+  margin-left: 20rpx;
+}
+
+/* 图片上传 */
+.upload-area {
+  background-color: var(--bg-color-white);
+  margin: 0 30rpx;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+}
+
+.image-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20rpx;
+  margin-bottom: 30rpx;
+}
+
+.image-item {
+  position: relative;
+  width: 160rpx;
+  height: 160rpx;
+}
+
+.uploaded-image {
+  width: 100%;
+  height: 100%;
+  border-radius: 12rpx;
+  border: 1rpx solid var(--border-color-light);
+}
+
+.image-delete {
+  position: absolute;
+  top: -10rpx;
+  right: -10rpx;
+  width: 40rpx;
+  height: 40rpx;
+  background-color: var(--color-danger);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24rpx;
+  font-weight: bold;
+}
+
+.upload-btn {
+  width: 160rpx;
+  height: 160rpx;
+  border: 2rpx dashed var(--border-color-light);
+  border-radius: 12rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.upload-btn:active {
+  border-color: var(--color-primary);
+  background-color: var(--color-primary-light);
+}
+
+.upload-icon {
+  font-size: 32rpx;
+  margin-bottom: 8rpx;
+}
+
+.upload-text {
+  font-size: 24rpx;
+  color: var(--text-color-secondary);
+}
+
+.upload-tip {
+  padding-top: 20rpx;
+  border-top: 1rpx solid var(--border-color-light);
+}
+
+.tip-text {
+  display: block;
+  font-size: 24rpx;
+  color: var(--text-color-placeholder);
+  line-height: 1.5;
+  margin-bottom: 8rpx;
+}
+
+.tip-text:last-child {
+  margin-bottom: 0;
+}
+
+/* 设备信息 */
+.device-info {
+  background-color: var(--bg-color-white);
+  margin: 0 30rpx;
+  border-radius: 16rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+}
+
+.device-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24rpx 30rpx;
+  border-bottom: 1rpx solid var(--border-color-light);
+}
+
+.device-item:last-child {
+  border-bottom: none;
+}
+
+.device-label {
+  font-size: 26rpx;
+  color: var(--text-color-secondary);
+}
+
+.device-value {
+  font-size: 26rpx;
+  color: var(--text-color-primary);
+}
+
+/* 提交区域 */
+.submit-section {
+  padding: 40rpx 30rpx;
+  text-align: center;
+}
+
+.submit-btn {
+  width: 100%;
+  height: 88rpx;
+  border-radius: 16rpx;
+  font-size: 32rpx;
+  font-weight: 600;
+  border: none;
+  transition: all 0.2s;
+}
+
+.submit-btn.active {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  color: white;
+}
+
+.submit-btn.disabled {
+  background-color: var(--bg-color-disabled);
+  color: var(--text-color-placeholder);
+}
+
+.submit-btn.active:active {
+  transform: scale(0.98);
+}
+
+.submit-tip {
+  margin-top: 20rpx;
+}
+
+/* 历史反馈 */
+.history-section {
+  margin-bottom: 20rpx;
+}
+
+.history-list {
+  background-color: var(--bg-color-white);
+  margin: 0 30rpx;
+  border-radius: 16rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+}
+
+.history-item {
+  display: flex;
+  align-items: center;
+  padding: 30rpx;
+  border-bottom: 1rpx solid var(--border-color-light);
+  transition: background-color 0.2s;
+}
+
+.history-item:last-child {
+  border-bottom: none;
+}
+
+.history-item:active {
+  background-color: var(--bg-color-light);
+}
+
+.history-content {
+  flex: 1;
+}
+
+.history-title {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: var(--text-color-primary);
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.history-desc {
+  font-size: 24rpx;
+  color: var(--text-color-secondary);
+  display: block;
+  margin-bottom: 12rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.history-meta {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.history-type {
+  font-size: 22rpx;
+  color: var(--color-primary);
+  background-color: var(--color-primary-light);
+  padding: 4rpx 12rpx;
+  border-radius: 8rpx;
+}
+
+.history-time {
+  font-size: 22rpx;
+  color: var(--text-color-placeholder);
+}
+
+.history-status {
+  margin-left: 20rpx;
+}
+
+.status-text {
+  font-size: 24rpx;
+  padding: 8rpx 16rpx;
+  border-radius: 12rpx;
+}
+
+.history-status.pending .status-text {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.history-status.processing .status-text {
+  background-color: #cce5ff;
+  color: #0066cc;
+}
+
+.history-status.completed .status-text {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.history-status.closed .status-text {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+/* 常见问题 */
+.faq-section {
+  margin-bottom: 20rpx;
+}
+
+.faq-list {
+  background-color: var(--bg-color-white);
+  margin: 0 30rpx;
+  border-radius: 16rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+}
+
+.faq-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 32rpx 30rpx;
+  border-bottom: 1rpx solid var(--border-color-light);
+  transition: background-color 0.2s;
+}
+
+.faq-item:last-child {
+  border-bottom: none;
+}
+
+.faq-item:active {
+  background-color: var(--bg-color-light);
+}
+
+.faq-question {
+  font-size: 28rpx;
+  color: var(--text-color-primary);
+  flex: 1;
+}
+
+.faq-arrow {
+  font-size: 24rpx;
+  color: var(--text-color-placeholder);
+  font-weight: bold;
+  margin-left: 20rpx;
+}
+
+/* 加载遮罩 */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.loading-content {
+  background-color: white;
+  padding: 60rpx 80rpx;
+  border-radius: 20rpx;
+  text-align: center;
+}
+
+.loading-icon {
+  font-size: 48rpx;
+  display: block;
+  margin-bottom: 20rpx;
+  animation: rotate 1s linear infinite;
+}
+
+.loading-text {
+  font-size: 28rpx;
+  color: var(--text-color-primary);
+  display: block;
+}
+
+/* 动画效果 */
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 响应式适配 */
+@media (max-width: 375px) {
+  .type-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .image-list {
+    justify-content: center;
+  }
+  
+  .image-item,
+  .upload-btn {
+    width: 140rpx;
+    height: 140rpx;
+  }
+  
+  .contact-label {
+    width: 100rpx;
+  }
+}

@@ -1,0 +1,186 @@
+<!--pages/detection/result.wxml-->
+<view class="page">
+  <!-- 自定义导航栏 -->
+  <navigation-bar title="检测结果" show-back="{{true}}"></navigation-bar>
+
+  <!-- 检测结果卡片 -->
+  <view class="result-card">
+    <!-- 食品图片 -->
+    <view class="food-image-container">
+      <image src="{{resultData.image}}" mode="aspectFit" class="food-image"></image>
+      <view class="confidence-badge">
+        <text class="confidence-text">置信度 {{Math.round(resultData.confidence * 100)}}%</text>
+      </view>
+    </view>
+
+    <!-- 基本信息 -->
+    <view class="basic-info">
+      <view class="food-name">{{resultData.foodName}}</view>
+      <view class="detection-time">检测时间: {{resultData.detectionTime}}</view>
+    </view>
+
+    <!-- 安全评级 -->
+    <view class="safety-rating">
+      <view class="rating-header">
+        <view class="rating-icon {{resultData.safetyLevel}}">{{getSafetyIcon(resultData.safetyLevel)}}</view>
+        <view class="rating-info">
+          <view class="rating-title">{{getSafetyTitle(resultData.safetyLevel)}}</view>
+          <view class="rating-subtitle">安全评分: {{resultData.safetyScore}}/100</view>
+        </view>
+      </view>
+      
+      <view class="score-bar">
+        <view class="score-fill {{resultData.safetyLevel}}" style="width: {{resultData.safetyScore}}%"></view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 详细检测结果 -->
+  <view class="details-section">
+    <view class="section-header">
+      <view class="section-title">详细检测结果</view>
+    </view>
+    
+    <view class="details-grid">
+      <view class="detail-item">
+        <view class="detail-icon">🌱</view>
+        <view class="detail-content">
+          <view class="detail-label">新鲜度</view>
+          <view class="detail-value">{{resultData.details.freshness}}</view>
+        </view>
+      </view>
+      
+      <view class="detail-item">
+        <view class="detail-icon">🧪</view>
+        <view class="detail-content">
+          <view class="detail-label">农药残留</view>
+          <view class="detail-value">{{resultData.details.pesticide}}</view>
+        </view>
+      </view>
+      
+      <view class="detail-item">
+        <view class="detail-icon">🦠</view>
+        <view class="detail-content">
+          <view class="detail-label">细菌检测</view>
+          <view class="detail-value">{{resultData.details.bacteria}}</view>
+        </view>
+      </view>
+      
+      <view class="detail-item">
+        <view class="detail-icon">💊</view>
+        <view class="detail-content">
+          <view class="detail-label">营养成分</view>
+          <view class="detail-value">{{resultData.details.nutrition}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 建议与提醒 -->
+  <view class="suggestions-section">
+    <view class="section-header">
+      <view class="section-title">食用建议</view>
+    </view>
+    
+    <view class="suggestions-list">
+      <view wx:for="{{resultData.suggestions}}" wx:key="index" class="suggestion-item">
+        <view class="suggestion-icon">💡</view>
+        <view class="suggestion-text">{{item}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 操作按钮 -->
+  <view class="action-buttons">
+    <button class="action-btn secondary" bindtap="shareResult">
+      <text class="btn-icon">📤</text>
+      分享结果
+    </button>
+    
+    <button class="action-btn secondary" bindtap="saveToAlbum">
+      <text class="btn-icon">💾</text>
+      保存图片
+    </button>
+    
+    <button class="action-btn primary" bindtap="detectAgain">
+      <text class="btn-icon">🔍</text>
+      再次检测
+    </button>
+  </view>
+
+  <!-- 相关推荐 -->
+  <view class="recommendations-section">
+    <view class="section-header">
+      <view class="section-title">相关推荐</view>
+    </view>
+    
+    <scroll-view scroll-x class="recommendations-scroll">
+      <view class="recommendations-list">
+        <view wx:for="{{recommendations}}" wx:key="id" class="recommendation-card" bindtap="viewRecommendation" data-item="{{item}}">
+          <image src="{{item.image}}" class="recommendation-image"></image>
+          <view class="recommendation-content">
+            <view class="recommendation-title">{{item.title}}</view>
+            <view class="recommendation-desc">{{item.description}}</view>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 专家点评 -->
+  <view wx:if="{{expertComment}}" class="expert-section">
+    <view class="section-header">
+      <view class="section-title">专家点评</view>
+    </view>
+    
+    <view class="expert-card">
+      <view class="expert-header">
+        <image src="{{expertComment.avatar}}" class="expert-avatar"></image>
+        <view class="expert-info">
+          <view class="expert-name">{{expertComment.name}}</view>
+          <view class="expert-title">{{expertComment.title}}</view>
+        </view>
+      </view>
+      
+      <view class="expert-content">
+        <text class="expert-text">{{expertComment.content}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 举报问题 -->
+  <view class="report-section">
+    <view class="report-hint">检测结果有误？</view>
+    <button class="report-btn" bindtap="reportIssue">
+      <text class="report-icon">📢</text>
+      举报问题
+    </button>
+  </view>
+</view>
+
+<!-- 分享弹窗 -->
+<view wx:if="{{showShareModal}}" class="modal-overlay" bindtap="hideShareModal">
+  <view class="share-modal" catchtap="">
+    <view class="modal-header">
+      <view class="modal-title">分享检测结果</view>
+      <view class="modal-close" bindtap="hideShareModal">×</view>
+    </view>
+    
+    <view class="share-options">
+      <view class="share-option" bindtap="shareToFriend">
+        <view class="share-icon">👥</view>
+        <view class="share-text">分享给朋友</view>
+      </view>
+      
+      <view class="share-option" bindtap="shareToMoments">
+        <view class="share-icon">🌟</view>
+        <view class="share-text">分享到朋友圈</view>
+      </view>
+      
+      <view class="share-option" bindtap="copyLink">
+        <view class="share-icon">🔗</view>
+        <view class="share-text">复制链接</view>
+      </view>
+    </view>
+  </view>
+</view>

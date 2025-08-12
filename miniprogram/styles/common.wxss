@@ -1,0 +1,508 @@
+/* 通用布局 */
+.container {
+  padding: 32rpx;
+  background-color: var(--background-color);
+  min-height: 100vh;
+}
+
+.container-sm {
+  padding: 16rpx;
+  background-color: var(--background-color);
+  min-height: 100vh;
+}
+
+.container-lg {
+  padding: 48rpx;
+  background-color: var(--background-color);
+  min-height: 100vh;
+}
+
+/* 卡片样式 */
+.card {
+  background: white;
+  border-radius: var(--radius-md);
+  box-shadow: 0 4rpx 16rpx var(--shadow-color);
+  padding: 32rpx;
+  margin-bottom: 24rpx;
+}
+
+.card-sm {
+  background: white;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 2rpx 8rpx var(--shadow-color);
+  padding: 24rpx;
+  margin-bottom: 16rpx;
+}
+
+.card-lg {
+  background: white;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 8rpx 24rpx var(--shadow-color);
+  padding: 48rpx;
+  margin-bottom: 32rpx;
+}
+
+/* Flex布局 */
+.flex {
+  display: flex;
+}
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.flex-around {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.flex-start {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.flex-end {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+.flex-2 {
+  flex: 2;
+}
+
+.flex-3 {
+  flex: 3;
+}
+
+/* 对齐方式 */
+.items-start { align-items: flex-start; }
+.items-center { align-items: center; }
+.items-end { align-items: flex-end; }
+.items-stretch { align-items: stretch; }
+
+.justify-start { justify-content: flex-start; }
+.justify-center { justify-content: center; }
+.justify-end { justify-content: flex-end; }
+.justify-between { justify-content: space-between; }
+.justify-around { justify-content: space-around; }
+
+/* 文本对齐 */
+.text-left { text-align: left; }
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+
+/* 按钮样式 */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24rpx 48rpx;
+  border-radius: 16rpx;
+  font-size: 32rpx;
+  font-weight: bold;
+  border: none;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.btn:active {
+  transform: scale(0.95);
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.btn-primary:active {
+  background-color: #236B47;
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: var(--primary-color);
+  border: 2rpx solid var(--primary-color);
+  padding: 22rpx 46rpx;
+  font-size: 28rpx;
+}
+
+.btn-secondary:active {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.btn-danger {
+  background-color: var(--accent-color);
+  color: white;
+}
+
+.btn-danger:active {
+  background-color: #E55A2B;
+}
+
+.btn-success {
+  background-color: var(--success-color);
+  color: white;
+}
+
+.btn-success:active {
+  background-color: #1E8449;
+}
+
+.btn-warning {
+  background-color: var(--warning-color);
+  color: white;
+}
+
+.btn-warning:active {
+  background-color: #D68910;
+}
+
+.btn-info {
+  background-color: var(--info-color);
+  color: white;
+}
+
+.btn-info:active {
+  background-color: #2980B9;
+}
+
+.btn-outline {
+  background-color: transparent;
+  border: 2rpx solid var(--border-color);
+  color: var(--text-primary);
+  padding: 22rpx 46rpx;
+}
+
+.btn-outline:active {
+  background-color: var(--background-color);
+}
+
+.btn-ghost {
+  background-color: transparent;
+  color: var(--text-primary);
+  border: none;
+}
+
+.btn-ghost:active {
+  background-color: var(--background-color);
+}
+
+/* 按钮尺寸 */
+.btn-sm {
+  padding: 16rpx 32rpx;
+  font-size: 24rpx;
+  border-radius: 12rpx;
+}
+
+.btn-lg {
+  padding: 32rpx 64rpx;
+  font-size: 36rpx;
+  border-radius: 20rpx;
+}
+
+.btn-block {
+  width: 100%;
+  display: block;
+}
+
+.btn-disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* 输入框样式 */
+.input {
+  width: 100%;
+  padding: 24rpx 32rpx;
+  border: 2rpx solid var(--border-color);
+  border-radius: var(--radius-md);
+  font-size: 28rpx;
+  color: var(--text-primary);
+  background-color: white;
+  transition: border-color 0.3s ease;
+}
+
+.input:focus {
+  border-color: var(--primary-color);
+  outline: none;
+}
+
+.input-error {
+  border-color: var(--danger-color);
+}
+
+.input-success {
+  border-color: var(--success-color);
+}
+
+/* 标签样式 */
+.label {
+  display: block;
+  font-size: 28rpx;
+  color: var(--text-primary);
+  margin-bottom: 12rpx;
+  font-weight: 500;
+}
+
+.label-required::after {
+  content: '*';
+  color: var(--danger-color);
+  margin-left: 4rpx;
+}
+
+/* 表单组 */
+.form-group {
+  margin-bottom: 32rpx;
+}
+
+.form-group:last-child {
+  margin-bottom: 0;
+}
+
+/* 分割线 */
+.divider {
+  height: 1rpx;
+  background-color: var(--border-color);
+  margin: 32rpx 0;
+}
+
+.divider-vertical {
+  width: 1rpx;
+  background-color: var(--border-color);
+  margin: 0 16rpx;
+}
+
+/* 徽章 */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8rpx 16rpx;
+  border-radius: 20rpx;
+  font-size: 20rpx;
+  font-weight: bold;
+  min-width: 32rpx;
+  text-align: center;
+}
+
+.badge-primary {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.badge-secondary {
+  background-color: var(--secondary-color);
+  color: white;
+}
+
+.badge-success {
+  background-color: var(--success-color);
+  color: white;
+}
+
+.badge-warning {
+  background-color: var(--warning-color);
+  color: white;
+}
+
+.badge-danger {
+  background-color: var(--danger-color);
+  color: white;
+}
+
+.badge-info {
+  background-color: var(--info-color);
+  color: white;
+}
+
+.badge-light {
+  background-color: var(--background-color);
+  color: var(--text-primary);
+}
+
+/* 头像 */
+.avatar {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--background-color);
+}
+
+.avatar-sm {
+  width: 60rpx;
+  height: 60rpx;
+}
+
+.avatar-lg {
+  width: 120rpx;
+  height: 120rpx;
+}
+
+.avatar-xl {
+  width: 160rpx;
+  height: 160rpx;
+}
+
+/* 列表样式 */
+.list {
+  background: white;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.list-item {
+  padding: 32rpx;
+  border-bottom: 1rpx solid var(--border-color);
+  display: flex;
+  align-items: center;
+  transition: background-color 0.3s ease;
+}
+
+.list-item:last-child {
+  border-bottom: none;
+}
+
+.list-item:active {
+  background-color: var(--background-color);
+}
+
+.list-item-content {
+  flex: 1;
+}
+
+.list-item-title {
+  font-size: 28rpx;
+  color: var(--text-primary);
+  margin-bottom: 8rpx;
+}
+
+.list-item-desc {
+  font-size: 24rpx;
+  color: var(--text-secondary);
+}
+
+.list-item-arrow {
+  font-size: 24rpx;
+  color: var(--text-secondary);
+  margin-left: 16rpx;
+}
+
+/* 网格布局 */
+.grid {
+  display: grid;
+  gap: 24rpx;
+}
+
+.grid-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.grid-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.grid-4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+/* 隐藏/显示 */
+.hidden {
+  display: none !important;
+}
+
+.visible {
+  display: block !important;
+}
+
+/* 位置 */
+.relative {
+  position: relative;
+}
+
+.absolute {
+  position: absolute;
+}
+
+.fixed {
+  position: fixed;
+}
+
+.sticky {
+  position: sticky;
+}
+
+/* 层级 */
+.z-10 { z-index: 10; }
+.z-20 { z-index: 20; }
+.z-30 { z-index: 30; }
+.z-40 { z-index: 40; }
+.z-50 { z-index: 50; }
+
+/* 宽高 */
+.w-full { width: 100%; }
+.h-full { height: 100%; }
+.w-auto { width: auto; }
+.h-auto { height: auto; }
+
+/* 溢出处理 */
+.overflow-hidden { overflow: hidden; }
+.overflow-scroll { overflow: scroll; }
+.overflow-auto { overflow: auto; }
+
+/* 文本省略 */
+.text-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.text-ellipsis-2 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.text-ellipsis-3 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}

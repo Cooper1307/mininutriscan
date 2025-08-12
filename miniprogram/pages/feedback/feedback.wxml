@@ -1,0 +1,209 @@
+<view class="page">
+  <!-- 自定义导航栏 -->
+  <navigation-bar title="意见反馈" show-back="{{true}}"></navigation-bar>
+
+  <!-- 反馈类型选择 -->
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title">反馈类型</text>
+      <text class="section-required">*</text>
+    </view>
+    
+    <view class="type-grid">
+      <view class="type-item {{item.selected ? 'selected' : ''}}" 
+            wx:for="{{feedbackTypes}}" 
+            wx:key="id" 
+            bindtap="onTypeSelect" 
+            data-id="{{item.id}}">
+        <text class="type-icon">{{item.icon}}</text>
+        <text class="type-text">{{item.name}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 问题描述 -->
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title">问题描述</text>
+      <text class="section-required">*</text>
+    </view>
+    
+    <view class="form-group">
+      <input class="form-input" 
+             placeholder="请简要描述您遇到的问题" 
+             value="{{formData.title}}" 
+             bindinput="onTitleInput" 
+             maxlength="50" />
+      <view class="input-counter">{{formData.title.length}}/50</view>
+    </view>
+    
+    <view class="form-group">
+      <textarea class="form-textarea" 
+                placeholder="请详细描述问题的具体情况、出现步骤等，以便我们更好地为您解决问题" 
+                value="{{formData.description}}" 
+                bindinput="onDescriptionInput" 
+                maxlength="500" 
+                auto-height></textarea>
+      <view class="input-counter">{{formData.description.length}}/500</view>
+    </view>
+  </view>
+
+  <!-- 联系方式 -->
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title">联系方式</text>
+      <text class="section-optional">（选填）</text>
+    </view>
+    
+    <view class="contact-options">
+      <view class="contact-item">
+        <text class="contact-label">微信号</text>
+        <input class="contact-input" 
+               placeholder="请输入您的微信号" 
+               value="{{formData.wechat}}" 
+               bindinput="onWechatInput" />
+      </view>
+      
+      <view class="contact-item">
+        <text class="contact-label">手机号</text>
+        <input class="contact-input" 
+               placeholder="请输入您的手机号" 
+               value="{{formData.phone}}" 
+               bindinput="onPhoneInput" 
+               type="number" />
+      </view>
+      
+      <view class="contact-item">
+        <text class="contact-label">邮箱</text>
+        <input class="contact-input" 
+               placeholder="请输入您的邮箱地址" 
+               value="{{formData.email}}" 
+               bindinput="onEmailInput" />
+      </view>
+    </view>
+  </view>
+
+  <!-- 截图上传 -->
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title">相关截图</text>
+      <text class="section-optional">（选填，最多3张）</text>
+    </view>
+    
+    <view class="upload-area">
+      <view class="image-list">
+        <view class="image-item" wx:for="{{uploadedImages}}" wx:key="index">
+          <image class="uploaded-image" src="{{item}}" mode="aspectFill" bindtap="onImagePreview" data-url="{{item}}"></image>
+          <view class="image-delete" bindtap="onImageDelete" data-index="{{index}}">×</view>
+        </view>
+        
+        <view class="upload-btn" wx:if="{{uploadedImages.length < 3}}" bindtap="onImageUpload">
+          <text class="upload-icon">📷</text>
+          <text class="upload-text">添加图片</text>
+        </view>
+      </view>
+      
+      <view class="upload-tip">
+        <text class="tip-text">• 支持JPG、PNG格式</text>
+        <text class="tip-text">• 单张图片不超过5MB</text>
+        <text class="tip-text">• 建议上传问题相关截图</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 设备信息 -->
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title">设备信息</text>
+      <text class="section-optional">（自动获取）</text>
+    </view>
+    
+    <view class="device-info">
+      <view class="device-item">
+        <text class="device-label">设备型号</text>
+        <text class="device-value">{{deviceInfo.model}}</text>
+      </view>
+      <view class="device-item">
+        <text class="device-label">系统版本</text>
+        <text class="device-value">{{deviceInfo.system}}</text>
+      </view>
+      <view class="device-item">
+        <text class="device-label">微信版本</text>
+        <text class="device-value">{{deviceInfo.wechatVersion}}</text>
+      </view>
+      <view class="device-item">
+        <text class="device-label">应用版本</text>
+        <text class="device-value">{{deviceInfo.appVersion}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 提交按钮 -->
+  <view class="submit-section">
+    <button class="submit-btn {{canSubmit ? 'active' : 'disabled'}}" 
+            bindtap="onSubmit" 
+            disabled="{{!canSubmit || submitting}}">
+      <text wx:if="{{submitting}}">提交中...</text>
+      <text wx:else>提交反馈</text>
+    </button>
+    
+    <view class="submit-tip">
+      <text class="tip-text">我们会在24小时内回复您的反馈</text>
+    </view>
+  </view>
+
+  <!-- 历史反馈 -->
+  <view class="history-section" wx:if="{{historyList.length > 0}}">
+    <view class="section-header">
+      <text class="section-title">历史反馈</text>
+      <text class="section-more" bindtap="onViewAllHistory">查看全部</text>
+    </view>
+    
+    <view class="history-list">
+      <view class="history-item" 
+            wx:for="{{historyList}}" 
+            wx:key="id" 
+            bindtap="onHistoryDetail" 
+            data-id="{{item.id}}">
+        <view class="history-content">
+          <text class="history-title">{{item.title}}</text>
+          <text class="history-desc">{{item.description}}</text>
+          <view class="history-meta">
+            <text class="history-type">{{item.typeName}}</text>
+            <text class="history-time">{{item.createTime}}</text>
+          </view>
+        </view>
+        <view class="history-status {{item.status}}">
+          <text class="status-text">{{item.statusText}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 常见问题 -->
+  <view class="faq-section">
+    <view class="section-header">
+      <text class="section-title">常见问题</text>
+      <text class="section-more" bindtap="onViewFAQ">查看更多</text>
+    </view>
+    
+    <view class="faq-list">
+      <view class="faq-item" 
+            wx:for="{{faqList}}" 
+            wx:key="id" 
+            bindtap="onFAQDetail" 
+            data-id="{{item.id}}">
+        <text class="faq-question">{{item.question}}</text>
+        <text class="faq-arrow">></text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载遮罩 -->
+  <view class="loading-overlay" wx:if="{{submitting}}">
+    <view class="loading-content">
+      <text class="loading-icon">⏳</text>
+      <text class="loading-text">正在提交反馈...</text>
+    </view>
+  </view>
+</view>

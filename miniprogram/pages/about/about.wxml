@@ -1,0 +1,164 @@
+<view class="page">
+  <!-- 自定义导航栏 -->
+  <navigation-bar title="关于我们" show-back="{{true}}"></navigation-bar>
+
+  <!-- 应用信息 -->
+  <view class="app-section">
+    <view class="app-logo">
+      <image class="logo-image" src="/images/logo.png" mode="aspectFit"></image>
+    </view>
+    
+    <view class="app-info">
+      <text class="app-name">NutriScan</text>
+      <text class="app-slogan">智能食品安全检测专家</text>
+      <text class="app-version">版本 {{appVersion}}</text>
+    </view>
+  </view>
+
+  <!-- 产品介绍 -->
+  <view class="intro-section">
+    <view class="section-header">
+      <text class="section-title">产品介绍</text>
+    </view>
+    
+    <view class="intro-content">
+      <text class="intro-text">
+        NutriScan 是一款基于人工智能技术的食品安全检测应用，通过先进的图像识别和机器学习算法，为用户提供快速、准确的食品安全评估服务。
+      </text>
+      
+      <text class="intro-text">
+        我们致力于让每个人都能轻松获得食品安全信息，保护您和家人的健康。
+      </text>
+    </view>
+  </view>
+
+  <!-- 核心功能 -->
+  <view class="features-section">
+    <view class="section-header">
+      <text class="section-title">核心功能</text>
+    </view>
+    
+    <view class="features-grid">
+      <view class="feature-item" wx:for="{{features}}" wx:key="id">
+        <text class="feature-icon">{{item.icon}}</text>
+        <text class="feature-title">{{item.title}}</text>
+        <text class="feature-desc">{{item.description}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 技术优势 -->
+  <view class="tech-section">
+    <view class="section-header">
+      <text class="section-title">技术优势</text>
+    </view>
+    
+    <view class="tech-list">
+      <view class="tech-item" wx:for="{{techAdvantages}}" wx:key="id">
+        <view class="tech-icon">{{item.icon}}</view>
+        <view class="tech-content">
+          <text class="tech-title">{{item.title}}</text>
+          <text class="tech-desc">{{item.description}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 团队介绍 -->
+  <view class="team-section">
+    <view class="section-header">
+      <text class="section-title">团队介绍</text>
+    </view>
+    
+    <view class="team-content">
+      <text class="team-text">
+        我们是一支由食品科学、人工智能、软件工程等领域专家组成的专业团队，拥有丰富的行业经验和技术积累。
+      </text>
+      
+      <view class="team-stats">
+        <view class="stat-item">
+          <text class="stat-number">50+</text>
+          <text class="stat-label">团队成员</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-number">5年+</text>
+          <text class="stat-label">行业经验</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-number">100万+</text>
+          <text class="stat-label">用户信赖</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 荣誉资质 -->
+  <view class="honor-section">
+    <view class="section-header">
+      <text class="section-title">荣誉资质</text>
+    </view>
+    
+    <view class="honor-grid">
+      <view class="honor-item" wx:for="{{honors}}" wx:key="id">
+        <image class="honor-image" src="{{item.image}}" mode="aspectFit"></image>
+        <text class="honor-title">{{item.title}}</text>
+        <text class="honor-org">{{item.organization}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 联系方式 -->
+  <view class="contact-section">
+    <view class="section-header">
+      <text class="section-title">联系我们</text>
+    </view>
+    
+    <view class="contact-list">
+      <view class="contact-item" wx:for="{{contacts}}" wx:key="type">
+        <text class="contact-icon">{{item.icon}}</text>
+        <view class="contact-info">
+          <text class="contact-label">{{item.label}}</text>
+          <text class="contact-value" 
+                selectable="{{item.selectable}}" 
+                bindtap="onContactAction" 
+                data-type="{{item.type}}" 
+                data-value="{{item.value}}">{{item.value}}</text>
+        </view>
+        <text class="contact-action" wx:if="{{item.action}}">{{item.action}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 法律信息 -->
+  <view class="legal-section">
+    <view class="section-header">
+      <text class="section-title">法律信息</text>
+    </view>
+    
+    <view class="legal-list">
+      <view class="legal-item" 
+            wx:for="{{legalItems}}" 
+            wx:key="id" 
+            bindtap="onLegalView" 
+            data-id="{{item.id}}">
+        <text class="legal-title">{{item.title}}</text>
+        <text class="legal-arrow">></text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 版权信息 -->
+  <view class="copyright-section">
+    <text class="copyright-text">© 2024 NutriScan. All rights reserved.</text>
+    <text class="copyright-text">智能食品安全检测专家</text>
+    <text class="copyright-icp">ICP备案号：京ICP备2024000001号</text>
+  </view>
+
+  <!-- 分享按钮 -->
+  <view class="share-section">
+    <button class="share-btn" open-type="share">
+      <text class="share-icon">📤</text>
+      <text class="share-text">分享给朋友</text>
+    </button>
+  </view>
+</view>

@@ -1,0 +1,119 @@
+/* 全局样式 */
+@import '/styles/variables.wxss';
+@import '/styles/common.wxss';
+
+/* 全局页面样式 */
+page {
+  background-color: var(--background-color);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  line-height: 1.6;
+  color: var(--text-primary);
+}
+
+/* 全局滚动条样式 */
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  color: transparent;
+}
+
+/* 全局按钮样式重置 */
+button {
+  border: none;
+  outline: none;
+  background: none;
+  padding: 0;
+  margin: 0;
+  font-size: inherit;
+  color: inherit;
+  line-height: inherit;
+}
+
+button::after {
+  border: none;
+}
+
+/* 全局输入框样式 */
+input, textarea {
+  font-size: 28rpx;
+  color: var(--text-primary);
+}
+
+/* 全局图片样式 */
+image {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* 全局文本选择样式 */
+::selection {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+/* 全局加载动画 */
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40rpx;
+}
+
+.loading-spinner {
+  width: 40rpx;
+  height: 40rpx;
+  border: 4rpx solid var(--border-color);
+  border-top: 4rpx solid var(--primary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* 全局错误提示 */
+.error-message {
+  color: var(--accent-color);
+  font-size: 24rpx;
+  text-align: center;
+  padding: 20rpx;
+}
+
+/* 全局成功提示 */
+.success-message {
+  color: var(--primary-color);
+  font-size: 24rpx;
+  text-align: center;
+  padding: 20rpx;
+}
+
+/* 全局空状态 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80rpx 40rpx;
+  color: var(--text-secondary);
+}
+
+.empty-icon {
+  font-size: 120rpx;
+  margin-bottom: 24rpx;
+  opacity: 0.5;
+}
+
+.empty-text {
+  font-size: 28rpx;
+  margin-bottom: 16rpx;
+}
+
+.empty-desc {
+  font-size: 24rpx;
+  opacity: 0.7;
+  text-align: center;
+  line-height: 1.5;
+}

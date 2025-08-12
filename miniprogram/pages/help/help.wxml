@@ -1,0 +1,175 @@
+<view class="page">
+  <!-- 自定义导航栏 -->
+  <navigation-bar title="帮助中心" show-back="{{true}}"></navigation-bar>
+
+  <!-- 搜索框 -->
+  <view class="search-section">
+    <view class="search-box">
+      <text class="search-icon">🔍</text>
+      <input class="search-input" placeholder="搜索帮助内容" value="{{searchKeyword}}" bindinput="onSearchInput" />
+      <text class="search-clear" wx:if="{{searchKeyword}}" bindtap="onSearchClear">✕</text>
+    </view>
+  </view>
+
+  <!-- 快速入口 -->
+  <view class="quick-section" wx:if="{{!searchKeyword}}">
+    <view class="section-header">
+      <text class="section-title">快速入口</text>
+    </view>
+    
+    <view class="quick-grid">
+      <view class="quick-item" bindtap="onQuickAction" data-type="detection">
+        <text class="quick-icon">📸</text>
+        <text class="quick-text">如何检测</text>
+      </view>
+      
+      <view class="quick-item" bindtap="onQuickAction" data-type="result">
+        <text class="quick-icon">📊</text>
+        <text class="quick-text">结果说明</text>
+      </view>
+      
+      <view class="quick-item" bindtap="onQuickAction" data-type="safety">
+        <text class="quick-icon">🛡️</text>
+        <text class="quick-text">安全等级</text>
+      </view>
+      
+      <view class="quick-item" bindtap="onQuickAction" data-type="contact">
+        <text class="quick-icon">📞</text>
+        <text class="quick-text">联系客服</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 帮助分类 -->
+  <view class="category-section" wx:if="{{!searchKeyword}}">
+    <view class="section-header">
+      <text class="section-title">帮助分类</text>
+    </view>
+    
+    <view class="category-list">
+      <view class="category-item" wx:for="{{categories}}" wx:key="id" bindtap="onCategoryTap" data-category="{{item}}">
+        <view class="category-left">
+          <text class="category-icon">{{item.icon}}</text>
+          <view class="category-info">
+            <text class="category-title">{{item.title}}</text>
+            <text class="category-desc">{{item.desc}}</text>
+          </view>
+        </view>
+        <view class="category-right">
+          <text class="category-count">{{item.count}}篇</text>
+          <text class="category-arrow">></text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 常见问题 -->
+  <view class="faq-section" wx:if="{{!searchKeyword}}">
+    <view class="section-header">
+      <text class="section-title">常见问题</text>
+      <text class="section-more" bindtap="onViewAllFAQ">查看全部</text>
+    </view>
+    
+    <view class="faq-list">
+      <view class="faq-item" wx:for="{{hotFAQs}}" wx:key="id" bindtap="onFAQTap" data-faq="{{item}}">
+        <view class="faq-question">
+          <text class="faq-icon">❓</text>
+          <text class="faq-text">{{item.question}}</text>
+        </view>
+        <text class="faq-arrow">></text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 搜索结果 -->
+  <view class="search-results" wx:if="{{searchKeyword}}">
+    <view class="section-header">
+      <text class="section-title">搜索结果 ({{searchResults.length}})</text>
+    </view>
+    
+    <view class="result-list" wx:if="{{searchResults.length > 0}}">
+      <view class="result-item" wx:for="{{searchResults}}" wx:key="id" bindtap="onResultTap" data-result="{{item}}">
+        <view class="result-title">{{item.title}}</view>
+        <view class="result-content">{{item.content}}</view>
+        <view class="result-meta">
+          <text class="result-category">{{item.category}}</text>
+          <text class="result-time">{{item.updateTime}}</text>
+        </view>
+      </view>
+    </view>
+    
+    <view class="empty-result" wx:else>
+      <text class="empty-icon">🔍</text>
+      <text class="empty-text">未找到相关内容</text>
+      <text class="empty-tip">试试其他关键词或浏览分类内容</text>
+    </view>
+  </view>
+
+  <!-- 联系客服 -->
+  <view class="contact-section" wx:if="{{!searchKeyword}}">
+    <view class="contact-card">
+      <view class="contact-header">
+        <text class="contact-title">还有问题？</text>
+        <text class="contact-subtitle">联系我们的客服团队</text>
+      </view>
+      
+      <view class="contact-actions">
+        <button class="contact-btn primary" bindtap="onContactService">
+          <text class="btn-icon">💬</text>
+          <text class="btn-text">在线客服</text>
+        </button>
+        
+        <button class="contact-btn secondary" bindtap="onContactPhone">
+          <text class="btn-icon">📞</text>
+          <text class="btn-text">电话咨询</text>
+        </button>
+      </view>
+      
+      <view class="contact-info">
+        <text class="contact-time">服务时间：周一至周日 9:00-21:00</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 反馈建议 -->
+  <view class="feedback-section" wx:if="{{!searchKeyword}}">
+    <view class="feedback-card" bindtap="onFeedback">
+      <view class="feedback-left">
+        <text class="feedback-icon">💡</text>
+        <view class="feedback-info">
+          <text class="feedback-title">意见反馈</text>
+          <text class="feedback-desc">帮助我们改进产品</text>
+        </view>
+      </view>
+      <text class="feedback-arrow">></text>
+    </view>
+  </view>
+</view>
+
+<!-- 文章详情弹窗 -->
+<view class="article-modal" wx:if="{{showArticle}}" bindtap="onCloseArticle">
+  <view class="article-content" catchtap="stopPropagation">
+    <view class="article-header">
+      <text class="article-title">{{currentArticle.title}}</text>
+      <text class="article-close" bindtap="onCloseArticle">✕</text>
+    </view>
+    
+    <scroll-view class="article-body" scroll-y>
+      <rich-text nodes="{{currentArticle.content}}"></rich-text>
+    </scroll-view>
+    
+    <view class="article-footer">
+      <view class="article-actions">
+        <button class="action-btn" bindtap="onLikeArticle" data-liked="{{currentArticle.liked}}">
+          <text class="action-icon">{{currentArticle.liked ? '👍' : '👍🏻'}}</text>
+          <text class="action-text">{{currentArticle.liked ? '已赞' : '点赞'}}</text>
+        </button>
+        
+        <button class="action-btn" bindtap="onShareArticle">
+          <text class="action-icon">📤</text>
+          <text class="action-text">分享</text>
+        </button>
+      </view>
+    </view>
+  </view>
+</view>

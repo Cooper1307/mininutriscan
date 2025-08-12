@@ -1,0 +1,93 @@
+<view class="page">
+  <!-- 顶部状态栏 -->
+  <view class="status-bar">
+    <view class="location">
+      <text class="icon">📍</text>
+      <text class="location-text">{{userLocation}}</text>
+    </view>
+    <view class="status-right">
+      <view class="notification" bindtap="onNotificationTap">
+        <text class="icon">🔔</text>
+        <text class="badge" wx:if="{{notificationCount > 0}}">{{notificationCount}}</text>
+      </view>
+      <view class="settings" bindtap="onSettingsTap">
+        <text class="icon">⚙️</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 欢迎横幅 -->
+  <view class="welcome-banner">
+    <view class="banner-content">
+      <view class="banner-title">
+        <text class="icon">🏥</text>
+        <text class="title-text">社区食安AI小卫士</text>
+      </view>
+      <text class="banner-subtitle">守护您的餐桌安全 🛡️</text>
+      <view class="banner-stats">
+        <view class="stat-item">
+          <text class="stat-label">今日检测:</text>
+          <text class="stat-value">{{todayDetections}}次</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-label">社区举报:</text>
+          <text class="stat-value">{{todayReports}}件</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 快速功能 -->
+  <quick-actions 
+    actions="{{quickActions}}"
+    bind:actionTap="onQuickActionTap"
+  ></quick-actions>
+
+  <!-- 社区动态 -->
+  <view class="community-news">
+    <view class="section-header">
+      <text class="section-title">📰 社区动态</text>
+    </view>
+    <view class="news-list">
+      <view 
+        class="news-item {{item.urgent ? 'urgent' : ''}}" 
+        wx:for="{{communityNews}}" 
+        wx:key="id"
+        bindtap="onNewsItemTap"
+        data-news="{{item}}"
+      >
+        <view class="news-content">
+          <text class="news-title">{{item.title}}</text>
+          <view class="news-meta">
+            <text class="news-date">📅 {{item.date}}</text>
+            <text class="news-views">👁️ 已读 {{item.views}}人</text>
+          </view>
+        </view>
+        <view class="news-indicator" wx:if="{{item.urgent}}">
+          <text class="urgent-dot">🔴</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 今日推荐 -->
+  <view class="recommendations">
+    <view class="section-header">
+      <text class="section-title">💡 AI推荐</text>
+    </view>
+    <view class="recommendation-list">
+      <view 
+        class="recommendation-item" 
+        wx:for="{{recommendations}}" 
+        wx:key="id"
+        bindtap="onRecommendationTap"
+        data-item="{{item}}"
+      >
+        <text class="recommendation-text">"{{item.title}}"</text>
+      </view>
+    </view>
+    <view class="view-more" bindtap="onViewMoreRecommendations">
+      <text class="view-more-text">[查看更多 →]</text>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,237 @@
+<view class="page">
+  <!-- 自定义导航栏 -->
+  <navigation-bar title="设置" show-back="{{true}}"></navigation-bar>
+
+  <!-- 账户设置 -->
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title">账户设置</text>
+    </view>
+    
+    <view class="setting-group">
+      <view class="setting-item" bindtap="onProfileEdit">
+        <view class="setting-left">
+          <text class="setting-icon">👤</text>
+          <text class="setting-text">个人资料</text>
+        </view>
+        <view class="setting-right">
+          <text class="setting-value">{{userInfo.nickname || '未设置'}}</text>
+          <text class="setting-arrow">></text>
+        </view>
+      </view>
+      
+      <view class="setting-item" bindtap="onPasswordChange">
+        <view class="setting-left">
+          <text class="setting-icon">🔒</text>
+          <text class="setting-text">修改密码</text>
+        </view>
+        <view class="setting-right">
+          <text class="setting-arrow">></text>
+        </view>
+      </view>
+      
+      <view class="setting-item" bindtap="onPrivacySettings">
+        <view class="setting-left">
+          <text class="setting-icon">🛡️</text>
+          <text class="setting-text">隐私设置</text>
+        </view>
+        <view class="setting-right">
+          <text class="setting-arrow">></text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 通知设置 -->
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title">通知设置</text>
+    </view>
+    
+    <view class="setting-group">
+      <view class="setting-item">
+        <view class="setting-left">
+          <text class="setting-icon">🔔</text>
+          <text class="setting-text">检测结果通知</text>
+        </view>
+        <view class="setting-right">
+          <switch checked="{{notifications.detection}}" bindchange="onNotificationChange" data-type="detection" />
+        </view>
+      </view>
+      
+      <view class="setting-item">
+        <view class="setting-left">
+          <text class="setting-icon">📢</text>
+          <text class="setting-text">系统公告</text>
+        </view>
+        <view class="setting-right">
+          <switch checked="{{notifications.system}}" bindchange="onNotificationChange" data-type="system" />
+        </view>
+      </view>
+      
+      <view class="setting-item">
+        <view class="setting-left">
+          <text class="setting-icon">🎯</text>
+          <text class="setting-text">个性化推荐</text>
+        </view>
+        <view class="setting-right">
+          <switch checked="{{notifications.recommendation}}" bindchange="onNotificationChange" data-type="recommendation" />
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 应用设置 -->
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title">应用设置</text>
+    </view>
+    
+    <view class="setting-group">
+      <view class="setting-item" bindtap="onLanguageSelect">
+        <view class="setting-left">
+          <text class="setting-icon">🌐</text>
+          <text class="setting-text">语言</text>
+        </view>
+        <view class="setting-right">
+          <text class="setting-value">{{language}}</text>
+          <text class="setting-arrow">></text>
+        </view>
+      </view>
+      
+      <view class="setting-item">
+        <view class="setting-left">
+          <text class="setting-icon">🌙</text>
+          <text class="setting-text">深色模式</text>
+        </view>
+        <view class="setting-right">
+          <switch checked="{{darkMode}}" bindchange="onDarkModeChange" />
+        </view>
+      </view>
+      
+      <view class="setting-item">
+        <view class="setting-left">
+          <text class="setting-icon">📳</text>
+          <text class="setting-text">震动反馈</text>
+        </view>
+        <view class="setting-right">
+          <switch checked="{{vibration}}" bindchange="onVibrationChange" />
+        </view>
+      </view>
+      
+      <view class="setting-item" bindtap="onCacheManage">
+        <view class="setting-left">
+          <text class="setting-icon">🗂️</text>
+          <text class="setting-text">缓存管理</text>
+        </view>
+        <view class="setting-right">
+          <text class="setting-value">{{cacheSize}}</text>
+          <text class="setting-arrow">></text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 检测设置 -->
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title">检测设置</text>
+    </view>
+    
+    <view class="setting-group">
+      <view class="setting-item">
+        <view class="setting-left">
+          <text class="setting-icon">📸</text>
+          <text class="setting-text">自动保存检测图片</text>
+        </view>
+        <view class="setting-right">
+          <switch checked="{{detection.autoSave}}" bindchange="onDetectionSettingChange" data-type="autoSave" />
+        </view>
+      </view>
+      
+      <view class="setting-item" bindtap="onQualitySelect">
+        <view class="setting-left">
+          <text class="setting-icon">🎯</text>
+          <text class="setting-text">检测精度</text>
+        </view>
+        <view class="setting-right">
+          <text class="setting-value">{{detection.quality}}</text>
+          <text class="setting-arrow">></text>
+        </view>
+      </view>
+      
+      <view class="setting-item">
+        <view class="setting-left">
+          <text class="setting-icon">⚡</text>
+          <text class="setting-text">快速检测模式</text>
+        </view>
+        <view class="setting-right">
+          <switch checked="{{detection.fastMode}}" bindchange="onDetectionSettingChange" data-type="fastMode" />
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 其他设置 -->
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title">其他</text>
+    </view>
+    
+    <view class="setting-group">
+      <view class="setting-item" bindtap="onCheckUpdate">
+        <view class="setting-left">
+          <text class="setting-icon">🔄</text>
+          <text class="setting-text">检查更新</text>
+        </view>
+        <view class="setting-right">
+          <text class="setting-value">v{{version}}</text>
+          <text class="setting-arrow">></text>
+        </view>
+      </view>
+      
+      <view class="setting-item" bindtap="onFeedback">
+        <view class="setting-left">
+          <text class="setting-icon">💬</text>
+          <text class="setting-text">意见反馈</text>
+        </view>
+        <view class="setting-right">
+          <text class="setting-arrow">></text>
+        </view>
+      </view>
+      
+      <view class="setting-item" bindtap="onAbout">
+        <view class="setting-left">
+          <text class="setting-icon">ℹ️</text>
+          <text class="setting-text">关于我们</text>
+        </view>
+        <view class="setting-right">
+          <text class="setting-arrow">></text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 退出登录 -->
+  <view class="logout-section" wx:if="{{userInfo.isLogin}}">
+    <button class="logout-btn" bindtap="onLogout">退出登录</button>
+  </view>
+
+  <!-- 选择器弹窗 -->
+  <view class="picker-modal" wx:if="{{showPicker}}" bindtap="onPickerCancel">
+    <view class="picker-content" catchtap="stopPropagation">
+      <view class="picker-header">
+        <text class="picker-cancel" bindtap="onPickerCancel">取消</text>
+        <text class="picker-title">{{pickerTitle}}</text>
+        <text class="picker-confirm" bindtap="onPickerConfirm">确定</text>
+      </view>
+      <picker-view class="picker-view" value="{{pickerValue}}" bindchange="onPickerChange">
+        <picker-view-column>
+          <view wx:for="{{pickerOptions}}" wx:key="value" class="picker-item">
+            {{item.label}}
+          </view>
+        </picker-view-column>
+      </picker-view>
+    </view>
+  </view>
+</view>

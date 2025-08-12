@@ -1,0 +1,452 @@
+/* 关于我们页面样式 */
+@import '../../styles/variables.wxss';
+@import '../../styles/common.wxss';
+
+.page {
+  background-color: var(--bg-color-light);
+  min-height: 100vh;
+  padding-bottom: 40rpx;
+}
+
+/* 应用信息区域 */
+.app-section {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  padding: 60rpx 30rpx;
+  text-align: center;
+  color: white;
+}
+
+.app-logo {
+  margin-bottom: 30rpx;
+}
+
+.logo-image {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 24rpx;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 20rpx;
+}
+
+.app-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.app-name {
+  font-size: 48rpx;
+  font-weight: bold;
+  margin-bottom: 16rpx;
+}
+
+.app-slogan {
+  font-size: 28rpx;
+  opacity: 0.9;
+  margin-bottom: 20rpx;
+}
+
+.app-version {
+  font-size: 24rpx;
+  opacity: 0.7;
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 8rpx 20rpx;
+  border-radius: 20rpx;
+}
+
+/* 通用区块样式 */
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 40rpx 30rpx 20rpx;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: var(--text-color-primary);
+}
+
+/* 产品介绍 */
+.intro-section {
+  margin-bottom: 20rpx;
+}
+
+.intro-content {
+  background-color: var(--bg-color-white);
+  margin: 0 30rpx;
+  padding: 40rpx;
+  border-radius: 16rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+}
+
+.intro-text {
+  display: block;
+  font-size: 28rpx;
+  line-height: 1.6;
+  color: var(--text-color-secondary);
+  margin-bottom: 24rpx;
+}
+
+.intro-text:last-child {
+  margin-bottom: 0;
+}
+
+/* 核心功能 */
+.features-section {
+  margin-bottom: 20rpx;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20rpx;
+  padding: 0 30rpx;
+}
+
+.feature-item {
+  background-color: var(--bg-color-white);
+  padding: 40rpx 30rpx;
+  border-radius: 16rpx;
+  text-align: center;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+  transition: transform 0.2s;
+}
+
+.feature-item:active {
+  transform: scale(0.98);
+}
+
+.feature-icon {
+  font-size: 48rpx;
+  display: block;
+  margin-bottom: 20rpx;
+}
+
+.feature-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--text-color-primary);
+  display: block;
+  margin-bottom: 12rpx;
+}
+
+.feature-desc {
+  font-size: 24rpx;
+  color: var(--text-color-secondary);
+  line-height: 1.4;
+  display: block;
+}
+
+/* 技术优势 */
+.tech-section {
+  margin-bottom: 20rpx;
+}
+
+.tech-list {
+  background-color: var(--bg-color-white);
+  margin: 0 30rpx;
+  border-radius: 16rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+}
+
+.tech-item {
+  display: flex;
+  align-items: center;
+  padding: 32rpx 30rpx;
+  border-bottom: 1rpx solid var(--border-color-light);
+}
+
+.tech-item:last-child {
+  border-bottom: none;
+}
+
+.tech-icon {
+  width: 60rpx;
+  height: 60rpx;
+  background: linear-gradient(135deg, var(--color-primary-light), var(--color-primary));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+  margin-right: 24rpx;
+  flex-shrink: 0;
+}
+
+.tech-content {
+  flex: 1;
+}
+
+.tech-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--text-color-primary);
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.tech-desc {
+  font-size: 24rpx;
+  color: var(--text-color-secondary);
+  line-height: 1.4;
+  display: block;
+}
+
+/* 团队介绍 */
+.team-section {
+  margin-bottom: 20rpx;
+}
+
+.team-content {
+  background-color: var(--bg-color-white);
+  margin: 0 30rpx;
+  padding: 40rpx;
+  border-radius: 16rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+}
+
+.team-text {
+  font-size: 28rpx;
+  line-height: 1.6;
+  color: var(--text-color-secondary);
+  display: block;
+  margin-bottom: 40rpx;
+}
+
+.team-stats {
+  display: flex;
+  justify-content: space-around;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-number {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: var(--color-primary);
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.stat-label {
+  font-size: 24rpx;
+  color: var(--text-color-secondary);
+  display: block;
+}
+
+/* 荣誉资质 */
+.honor-section {
+  margin-bottom: 20rpx;
+}
+
+.honor-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20rpx;
+  padding: 0 30rpx;
+}
+
+.honor-item {
+  background-color: var(--bg-color-white);
+  padding: 30rpx;
+  border-radius: 16rpx;
+  text-align: center;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+}
+
+.honor-image {
+  width: 80rpx;
+  height: 80rpx;
+  margin-bottom: 16rpx;
+}
+
+.honor-title {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: var(--text-color-primary);
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.honor-org {
+  font-size: 20rpx;
+  color: var(--text-color-placeholder);
+  display: block;
+}
+
+/* 联系方式 */
+.contact-section {
+  margin-bottom: 20rpx;
+}
+
+.contact-list {
+  background-color: var(--bg-color-white);
+  margin: 0 30rpx;
+  border-radius: 16rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  padding: 32rpx 30rpx;
+  border-bottom: 1rpx solid var(--border-color-light);
+}
+
+.contact-item:last-child {
+  border-bottom: none;
+}
+
+.contact-icon {
+  font-size: 32rpx;
+  margin-right: 24rpx;
+  width: 40rpx;
+  text-align: center;
+}
+
+.contact-info {
+  flex: 1;
+}
+
+.contact-label {
+  font-size: 24rpx;
+  color: var(--text-color-secondary);
+  display: block;
+  margin-bottom: 4rpx;
+}
+
+.contact-value {
+  font-size: 28rpx;
+  color: var(--text-color-primary);
+  display: block;
+}
+
+.contact-action {
+  font-size: 24rpx;
+  color: var(--color-primary);
+}
+
+/* 法律信息 */
+.legal-section {
+  margin-bottom: 20rpx;
+}
+
+.legal-list {
+  background-color: var(--bg-color-white);
+  margin: 0 30rpx;
+  border-radius: 16rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+}
+
+.legal-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 32rpx 30rpx;
+  border-bottom: 1rpx solid var(--border-color-light);
+  transition: background-color 0.2s;
+}
+
+.legal-item:last-child {
+  border-bottom: none;
+}
+
+.legal-item:active {
+  background-color: var(--bg-color-light);
+}
+
+.legal-title {
+  font-size: 28rpx;
+  color: var(--text-color-primary);
+}
+
+.legal-arrow {
+  font-size: 24rpx;
+  color: var(--text-color-placeholder);
+  font-weight: bold;
+}
+
+/* 版权信息 */
+.copyright-section {
+  text-align: center;
+  padding: 40rpx 30rpx;
+}
+
+.copyright-text {
+  font-size: 24rpx;
+  color: var(--text-color-placeholder);
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.copyright-icp {
+  font-size: 20rpx;
+  color: var(--text-color-placeholder);
+  display: block;
+  margin-top: 16rpx;
+}
+
+/* 分享按钮 */
+.share-section {
+  padding: 0 30rpx;
+  margin-bottom: 40rpx;
+}
+
+.share-btn {
+  width: 100%;
+  height: 88rpx;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  color: white;
+  border: none;
+  border-radius: 16rpx;
+  font-size: 32rpx;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.share-btn:active {
+  transform: scale(0.98);
+}
+
+.share-icon {
+  margin-right: 12rpx;
+  font-size: 28rpx;
+}
+
+.share-text {
+  font-size: 28rpx;
+}
+
+/* 响应式适配 */
+@media (max-width: 375px) {
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .honor-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .team-stats {
+    flex-direction: column;
+    gap: 20rpx;
+  }
+  
+  .app-name {
+    font-size: 40rpx;
+  }
+  
+  .section-title {
+    font-size: 28rpx;
+  }
+}
