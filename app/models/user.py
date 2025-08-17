@@ -2,12 +2,14 @@
 # 用户数据模型
 
 from sqlalchemy import Column, Integer, String, DateTime, Boolean, Text, Enum
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.sql import func
 from datetime import datetime
 import enum
+from passlib.context import CryptContext
+from app.core.database import Base
 
-Base = declarative_base()
+# 密码加密上下文
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 class UserRole(enum.Enum):
     """
@@ -36,9 +38,14 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True, comment="用户ID")
     
     # 微信相关字段
-    openid = Column(String(64), unique=True, index=True, nullable=False, comment="微信OpenID")
+    openid = Column(String(64), unique=True, index=True, nullable=True, comment="微信OpenID")
     unionid = Column(String(64), unique=True, index=True, nullable=True, comment="微信UnionID")
     session_key = Column(String(64), nullable=True, comment="微信会话密钥")
+    
+    # 传统认证字段
+    username = Column(String(50), unique=True, index=True, nullable=True, comment="用户名")
+    email = Column(String(100), unique=True, index=True, nullable=True, comment="邮箱")
+    password_hash = Column(String(255), nullable=True, comment="密码哈希")
     
     # 用户基本信息
     nickname = Column(String(100), nullable=True, comment="用户昵称")
@@ -209,3 +216,49 @@ class User(Base):
             return "偏胖"
         else:
             return "肥胖"
+    
+    def set_password(self, password: str):
+        """
+        设置用户密码（加密存储）
+        
+        Args:
+            password: 明文密码
+        """
+        self.password_hash = pwd_context.hash(password)
+    
+    def verify_password(self, password: str) -> bool:
+        """
+        验证用户密码
+        
+        Args:
+            password: 明文密码
+            
+        Returns:
+            密码是否正确
+        """
+        if not self.password_hash:
+            return False
+        return pwd_context.verify(password, self.password_hash)
+    
+    @classmethod
+    def authenticate(cls, db, username_or_email: str, password: str):
+        """
+        用户认证
+        
+        Args:
+            db: 数据库会话
+            username_or_email: 用户名或邮箱
+            password: 密码
+            
+        Returns:
+            认证成功返回用户对象，失败返回None
+        """
+        # 尝试通过用户名查找
+        user = db.query(cls).filter(cls.username == username_or_email).first()
+        if not user:
+            # 尝试通过邮箱查找
+            user = db.query(cls).filter(cls.email == username_or_email).first()
+        
+        if user and user.verify_password(password):
+            return user
+        return None

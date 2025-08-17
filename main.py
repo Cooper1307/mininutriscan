@@ -8,14 +8,18 @@ from fastapi.responses import JSONResponse
 import uvicorn
 import os
 from dotenv import load_dotenv
-from app.database import engine, Base, create_tables, check_database_connection
-from app.api import auth, users, detection, reports, education, volunteers
+from app.database import engine, Base, check_database_connection
+from app.api import api_router
 
 # 加载环境变量
 load_dotenv()
 
-# 创建数据库表
-create_tables()
+# 检查数据库连接（不再自动创建表，使用Alembic迁移）
+print("检查数据库连接...")
+if check_database_connection():
+    print("数据库连接成功")
+else:
+    print("数据库连接失败，请检查配置")
 
 # 创建FastAPI应用实例
 app = FastAPI(
@@ -163,13 +167,9 @@ async def general_exception_handler(request, exc):
         }
     )
 
-# 注册路由模块
-app.include_router(auth.router, prefix="/api/v1/auth", tags=["用户认证"])
-app.include_router(users.router, prefix="/api/v1/users", tags=["用户管理"])
-app.include_router(detection.router, prefix="/api/v1/detection", tags=["营养检测"])
-app.include_router(reports.router, prefix="/api/v1/reports", tags=["营养报告"])
-app.include_router(education.router, prefix="/api/v1/education", tags=["教育内容"])
-app.include_router(volunteers.router, prefix="/api/v1/volunteers", tags=["志愿者服务"])
+# 注册API路由
+# 使用统一的API路由器，包含所有子路由
+app.include_router(api_router)
 
 if __name__ == "__main__":
     # 开发环境启动配置

@@ -9,6 +9,7 @@ from typing import Optional, List
 from datetime import datetime, date
 
 from ..core.database import get_db
+from ..core.security import validate_and_clean_input, build_safe_search_query, SecurityAudit
 from ..models.user import User
 from ..api.auth import get_current_user
 
@@ -383,13 +384,27 @@ async def get_users_list(
             query = query.filter(User.status == status)
         
         if search:
-            search_pattern = f"%{search}%"
-            query = query.filter(
-                or_(
-                    User.nickname.ilike(search_pattern),
-                    User.wechat_openid.ilike(search_pattern)
+            try:
+                # 使用安全验证清理搜索输入
+                clean_search = validate_and_clean_input(search, "搜索关键词", 50)
+                if clean_search:
+                    # 使用安全查询构建器
+                    query = build_safe_search_query(
+                        db, User, 
+                        ['nickname', 'wechat_openid'], 
+                        clean_search
+                    )
+            except ValueError as e:
+                # 记录可疑搜索活动
+                SecurityAudit.log_suspicious_activity(
+                    "INVALID_SEARCH",
+                    {"search_term": search[:100], "error": str(e)},
+                    current_user.id
                 )
-            )
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"搜索参数无效: {str(e)}"
+                )
         
         # 排序和分页
         users = query.order_by(User.created_at.desc()).offset(skip).limit(limit).all()

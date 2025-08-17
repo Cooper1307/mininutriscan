@@ -327,7 +327,18 @@ async def generate_report(
             
             # 更新报告
             report.set_risk_analysis(risk_analysis)
-            report.set_ai_analysis(ai_summary, ai_recommendations)
+            # 构建AI分析数据
+            ai_analysis_data = {
+                "summary": ai_summary,
+                "recommendations": ai_recommendations,
+                "generated_at": datetime.now().isoformat()
+            }
+            report.set_ai_analysis(
+                score=None,  # 报告级别的AI分析不需要评分
+                advice=ai_summary,
+                risk_level=None,
+                analysis_data=ai_analysis_data
+            )
             report.update_status("completed")
             
             # 更新用户统计

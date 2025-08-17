@@ -197,16 +197,30 @@ class OCRService:
             # 解析结果
             if "TextDetections" in result:
                 texts = []
+                confidence_sum = 0
+                text_parts = []
+                
                 for detection in result["TextDetections"]:
+                    detected_text = detection["DetectedText"]
+                    confidence = detection["Confidence"]
+                    
+                    text_parts.append(detected_text)
+                    confidence_sum += confidence
+                    
                     texts.append({
-                        "text": detection["DetectedText"],
-                        "confidence": detection["Confidence"],
+                        "text": detected_text,
+                        "confidence": confidence,
                         "polygon": detection.get("Polygon", [])
                     })
+                
+                avg_confidence = confidence_sum / len(texts) if texts else 0
+                full_text = ' '.join(text_parts)
                 
                 return {
                     "success": True,
                     "provider": "tencent",
+                    "text": full_text,
+                    "confidence": avg_confidence,
                     "texts": texts,
                     "raw_result": result
                 }
@@ -248,35 +262,48 @@ class OCRService:
             # 预处理图片
             image_base64 = self._preprocess_image(image_path)
             
-            # 创建请求
+            # 创建请求 - 使用正确的API调用方式
             request = ocr_models.RecognizeGeneralRequest()
-            request.body = ocr_models.RecognizeGeneralRequestBody(
-                image=image_base64,
-                configure=ocr_models.RecognizeGeneralConfigure(
-                    min_size=16,
-                    output_char_info=True,
-                    output_table=True
-                )
-            )
+            # 直接设置body为字典
+            request.body = {
+                "image": image_base64,
+                "configure": {
+                    "min_size": 16,
+                    "output_char_info": True,
+                    "output_table": True
+                }
+            }
             
             # 发起请求
             response = client.recognize_general(request)
             
             # 解析结果
-            if response.body and response.body.data:
+            if response.body and hasattr(response.body, 'data') and response.body.data:
                 texts = []
+                confidence_sum = 0
+                text_parts = []
+                
                 for item in response.body.data:
-                    texts.append({
-                        "text": item.text,
-                        "confidence": item.confidence,
-                        "polygon": item.text_rectangles if hasattr(item, 'text_rectangles') else []
-                    })
+                    if hasattr(item, 'text') and item.text:
+                        text_parts.append(item.text)
+                        confidence = getattr(item, 'confidence', 0.8)
+                        confidence_sum += confidence
+                        texts.append({
+                            "text": item.text,
+                            "confidence": confidence,
+                            "polygon": getattr(item, 'text_rectangles', [])
+                        })
+                
+                avg_confidence = confidence_sum / len(texts) if texts else 0
+                full_text = ' '.join(text_parts)
                 
                 return {
                     "success": True,
                     "provider": "alibaba",
+                    "text": full_text,
+                    "confidence": avg_confidence,
                     "texts": texts,
-                    "raw_result": response.body.to_map()
+                    "raw_result": response.body.to_map() if hasattr(response.body, 'to_map') else str(response.body)
                 }
             else:
                 return {
@@ -286,6 +313,8 @@ class OCRService:
                 }
                 
         except Exception as e:
+            # 如果阿里云OCR失败，返回错误但不中断程序
+            print(f"⚠️  阿里云OCR调用失败: {str(e)}")
             return {
                 "success": False,
                 "error": f"阿里云OCR调用失败: {str(e)}",
@@ -361,6 +390,9 @@ class OCRService:
         """
         return {
             "service_name": "OCR Service",
+            "configured": self.tencent_configured or self.alibaba_configured,
+            "tencent_available": self.tencent_configured,
+            "alibaba_available": self.alibaba_configured,
             "providers": {
                 "tencent": {
                     "available": TENCENT_AVAILABLE,

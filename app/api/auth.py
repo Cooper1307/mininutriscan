@@ -56,6 +56,22 @@ class UserInfoUpdateRequest(BaseModel):
     province: Optional[str] = None
     country: Optional[str] = None
 
+class UserRegisterRequest(BaseModel):
+    """
+    用户注册请求模型
+    """
+    username: str
+    email: str
+    password: str
+    nickname: Optional[str] = None
+    
+class UserLoginRequest(BaseModel):
+    """
+    用户登录请求模型
+    """
+    username_or_email: str  # 用户名或邮箱
+    password: str
+
 # JWT工具函数
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     """
@@ -441,4 +457,118 @@ async def check_token(
         "valid": True,
         "user_id": current_user.id,
         "message": "令牌有效"
+    }
+
+@router.post("/register", response_model=LoginResponse, summary="用户注册")
+async def register_user(
+    register_data: UserRegisterRequest,
+    db: Session = Depends(get_db)
+):
+    """
+    用户注册
+    
+    Args:
+        register_data: 注册数据
+        db: 数据库会话
+        
+    Returns:
+        注册成功后的登录信息
+        
+    Raises:
+        HTTPException: 用户名或邮箱已存在
+    """
+    # 检查用户名是否已存在
+    existing_user = db.query(User).filter(User.username == register_data.username).first()
+    if existing_user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="用户名已存在"
+        )
+    
+    # 检查邮箱是否已存在
+    existing_email = db.query(User).filter(User.email == register_data.email).first()
+    if existing_email:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="邮箱已存在"
+        )
+    
+    # 创建新用户
+    new_user = User(
+        username=register_data.username,
+        email=register_data.email,
+        nickname=register_data.nickname or register_data.username
+    )
+    new_user.set_password(register_data.password)
+    
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    
+    # 生成访问令牌
+    access_token_expires = timedelta(minutes=settings.JWT_ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": str(new_user.id)},
+        expires_delta=access_token_expires
+    )
+    
+    return {
+        "access_token": access_token,
+        "token_type": "bearer",
+        "expires_in": settings.JWT_ACCESS_TOKEN_EXPIRE_MINUTES * 60,
+        "user_info": new_user.to_dict(),
+        "is_new_user": True
+    }
+
+@router.post("/login", response_model=LoginResponse, summary="用户登录")
+async def login_user(
+    login_data: UserLoginRequest,
+    db: Session = Depends(get_db)
+):
+    """
+    用户登录
+    
+    Args:
+        login_data: 登录数据
+        db: 数据库会话
+        
+    Returns:
+        登录成功后的用户信息和令牌
+        
+    Raises:
+        HTTPException: 用户名/邮箱或密码错误
+    """
+    # 验证用户凭据
+    user = User.authenticate(db, login_data.username_or_email, login_data.password)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="用户名/邮箱或密码错误",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    
+    # 检查用户状态
+    if not user.is_active():
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="用户账户已被禁用"
+        )
+    
+    # 更新最后登录时间
+    user.last_login_at = datetime.utcnow()
+    db.commit()
+    
+    # 生成访问令牌
+    access_token_expires = timedelta(minutes=settings.JWT_ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": str(user.id)},
+        expires_delta=access_token_expires
+    )
+    
+    return {
+        "access_token": access_token,
+        "token_type": "bearer",
+        "expires_in": settings.JWT_ACCESS_TOKEN_EXPIRE_MINUTES * 60,
+        "user_info": user.to_dict(),
+        "is_new_user": False
     }

@@ -11,6 +11,7 @@ import json
 import os
 
 from ..core.database import get_db
+from ..core.security import validate_and_clean_input, build_safe_search_query, SecurityAudit
 from ..models.user import User
 from ..models.education import EducationContent
 from ..api.auth import get_current_user, get_current_user_optional
@@ -225,14 +226,30 @@ async def get_education_content_list(
                 query = query.filter(EducationContent.tags.contains([tag]))
         
         if search:
-            search_term = f"%{search}%"
-            query = query.filter(
-                or_(
-                    EducationContent.title.ilike(search_term),
-                    EducationContent.summary.ilike(search_term),
-                    EducationContent.content.ilike(search_term)
+            try:
+                # 使用安全验证清理搜索输入
+                clean_search = validate_and_clean_input(search, "搜索关键词", 100)
+                if clean_search:
+                    # 使用安全查询构建器
+                    search_term = f"%{clean_search}%"
+                    query = query.filter(
+                        or_(
+                            EducationContent.title.ilike(search_term),
+                            EducationContent.summary.ilike(search_term),
+                            EducationContent.content.ilike(search_term)
+                        )
+                    )
+            except ValueError as e:
+                # 记录可疑搜索活动
+                SecurityAudit.log_suspicious_activity(
+                    "INVALID_SEARCH",
+                    {"search_term": search[:100], "error": str(e)},
+                    current_user.id if current_user else None
                 )
-            )
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"搜索参数无效: {str(e)}"
+                )
         
         # 排序
         if sort_by == "view_count":

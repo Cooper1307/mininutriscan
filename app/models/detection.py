@@ -2,14 +2,12 @@
 # 检测记录数据模型
 
 from sqlalchemy import Column, Integer, String, DateTime, Boolean, Text, JSON, Float, ForeignKey, Enum
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from datetime import datetime
 import enum
 import json
-
-Base = declarative_base()
+from app.core.database import Base
 
 class DetectionStatus(enum.Enum):
     """
@@ -228,25 +226,43 @@ class Detection(Base):
         self.minerals = nutrition_data.get('minerals')
         self.other_nutrients = nutrition_data.get('other_nutrients')
     
-    def set_ai_analysis(self, analysis_result: dict):
+    def set_ai_analysis(self, score=None, advice=None, risk_level=None, analysis_data=None):
         """
         设置AI分析结果
         
         Args:
-            analysis_result: AI分析结果字典
+            score: 健康评分
+            advice: 健康建议
+            risk_level: 风险等级
+            analysis_data: 详细分析数据
         """
+        # 构建AI分析结果字典
+        analysis_result = {
+            "health_score": score,
+            "advice": advice,
+            "risk_level": risk_level,
+            "analysis": analysis_data,
+            "timestamp": datetime.now().isoformat()
+        }
+        
         self.ai_analysis = analysis_result
-        self.nutrition_score = analysis_result.get('nutrition_score')
-        self.health_advice = analysis_result.get('health_advice')
+        self.nutrition_score = score
+        self.health_advice = advice
         
         # 设置风险等级
-        risk_level_str = analysis_result.get('risk_level', 'unknown')
-        try:
-            self.risk_level = RiskLevel(risk_level_str)
-        except ValueError:
+        if risk_level:
+            try:
+                self.risk_level = RiskLevel(risk_level)
+            except ValueError:
+                self.risk_level = RiskLevel.UNKNOWN
+        else:
             self.risk_level = RiskLevel.UNKNOWN
         
-        self.risk_factors = analysis_result.get('risk_factors')
+        # 从分析数据中提取风险因素
+        if analysis_data and isinstance(analysis_data, dict):
+            self.risk_factors = analysis_data.get('risk_factors')
+        
+        self.updated_at = datetime.now()
     
     def add_user_feedback(self, rating: int, feedback: str = None, is_accurate: bool = None):
         """

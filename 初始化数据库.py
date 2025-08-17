@@ -40,10 +40,10 @@ def create_database_tables():
     try:
         # 导入所有模型以确保它们被注册
         from app.models.user import User
-        from app.models.detection import Detection, NutritionInfo
-        from app.models.report import Report, ReportComment
-        from app.models.volunteer import Volunteer, VolunteerTask
-        from app.models.education import EducationContent, UserProgress
+        from app.models.detection import Detection  # 移除 NutritionInfo
+        from app.models.report import Report
+        from app.models.volunteer import Volunteer
+        from app.models.education import EducationContent
         
         # 导入数据库基础类
         from app.database import Base, engine
@@ -247,3 +247,4 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
+

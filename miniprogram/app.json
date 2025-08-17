@@ -59,14 +59,11 @@
   "permission": {
     "scope.userLocation": {
       "desc": "您的位置信息将用于获取附近的食品安全信息"
-    },
-    "scope.camera": {
-      "desc": "需要使用您的相机进行食品检测"
-    },
-    "scope.album": {
-      "desc": "需要访问您的相册选择图片进行检测"
     }
   },
+  "requiredPrivateInfos": [
+    "getLocation"
+  ],
   "requiredBackgroundModes": ["audio"],
   "networkTimeout": {
     "request": 10000,

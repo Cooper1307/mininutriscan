@@ -1,0 +1,22 @@
+{
+  "test_time": "2025-08-18T00:40:21.438739",
+  "total_tests": 6,
+  "passed_tests": 3,
+  "success_rate": 50.0,
+  "test_results": {
+    "database_setup": true,
+    "detection_creation": true,
+    "nutrition_persistence": false,
+    "ai_analysis_persistence": true,
+    "status_updates": false,
+    "data_retrieval": false
+  },
+  "summary": {
+    "database_setup": true,
+    "detection_creation": true,
+    "nutrition_persistence": false,
+    "ai_analysis_persistence": true,
+    "status_updates": false,
+    "data_retrieval": false
+  }
+}
