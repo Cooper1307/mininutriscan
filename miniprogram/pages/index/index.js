@@ -45,6 +45,17 @@ Page({
 
   onLoad() {
     console.log('首页加载')
+    // 确保数据已初始化
+    this.setData({
+      userLocation: this.data.userLocation,
+      notificationCount: this.data.notificationCount,
+      todayDetections: this.data.todayDetections,
+      todayReports: this.data.todayReports,
+      quickActions: this.data.quickActions,
+      communityNews: this.data.communityNews,
+      recommendations: this.data.recommendations
+    })
+    
     this.loadUserData()
     this.loadCommunityData()
     this.loadStatistics()
@@ -191,7 +202,12 @@ Page({
         }
       },
       fail: (error) => {
-        console.warn('加载社区数据失败:', error)
+        console.warn('加载社区数据失败，使用默认数据:', error)
+        // 网络请求失败时使用默认数据，确保界面正常显示
+        this.setData({
+          communityNews: this.data.communityNews,
+          recommendations: this.data.recommendations
+        })
       },
       complete: () => {
         app.hideLoading()
@@ -214,7 +230,13 @@ Page({
         }
       },
       fail: (error) => {
-        console.warn('加载统计数据失败:', error)
+        console.warn('加载统计数据失败，使用默认数据:', error)
+        // 网络请求失败时使用默认数据，确保界面正常显示
+        this.setData({
+          todayDetections: this.data.todayDetections,
+          todayReports: this.data.todayReports,
+          notificationCount: this.data.notificationCount
+        })
       }
     })
   },

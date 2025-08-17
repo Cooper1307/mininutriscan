@@ -12,6 +12,12 @@
   --warning-color: #F39C12;      /* 警告色 */
   --danger-color: #E74C3C;       /* 危险色 */
   --info-color: #3498DB;         /* 信息色 */
+  
+  /* 圆角变量 */
+  --radius-sm: 8rpx;             /* 小圆角 */
+  --radius-md: 12rpx;            /* 中等圆角 */
+  --radius-lg: 16rpx;            /* 大圆角 */
+  --radius-xl: 24rpx;            /* 超大圆角 */
 }
 
 /* 字体大小 */
