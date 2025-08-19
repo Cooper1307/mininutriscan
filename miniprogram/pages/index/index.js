@@ -174,15 +174,34 @@ Page({
 
   // 统一加载所有数据，避免多个loading状态冲突
   loadAllData() {
+    console.log('开始加载数据')
     app.showLoading('加载中...')
     
-    // 并行执行所有数据加载请求
-    Promise.all([
-      this.loadUserDataAsync(),
-      this.loadCommunityDataAsync(),
-      this.loadStatisticsAsync()
+    // 临时测试：2秒后直接隐藏loading
+    setTimeout(() => {
+      console.log('强制隐藏loading - 测试')
+      app.hideLoading()
+    }, 2000)
+    
+    // 设置超时保护，确保loading状态能被正确隐藏
+    const timeout = new Promise((resolve) => {
+      setTimeout(() => {
+        console.warn('数据加载超时，强制隐藏loading')
+        resolve()
+      }, 10000) // 10秒超时
+    })
+    
+    // 并行执行所有数据加载请求，添加超时保护
+    Promise.race([
+      Promise.all([
+        this.loadUserDataAsync().catch(err => console.warn('用户数据加载失败:', err)),
+        this.loadCommunityDataAsync().catch(err => console.warn('社区数据加载失败:', err)),
+        this.loadStatisticsAsync().catch(err => console.warn('统计数据加载失败:', err))
+      ]),
+      timeout
     ]).finally(() => {
       app.hideLoading()
+      console.log('数据加载完成，loading已隐藏')
     })
   },
 
