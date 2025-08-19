@@ -56,15 +56,13 @@ Page({
       recommendations: this.data.recommendations
     })
     
-    this.loadUserData()
-    this.loadCommunityData()
-    this.loadStatistics()
+    // 统一管理loading状态，避免多个请求同时显示loading
+    this.loadAllData()
   },
 
   onShow() {
     console.log('首页显示')
-    // 刷新统计数据
-    this.loadStatistics()
+    // 页面显示时不自动刷新，避免频繁loading
   },
 
   onPullDownRefresh() {
@@ -174,6 +172,20 @@ Page({
     wx.switchTab({ url: '/pages/education/education' })
   },
 
+  // 统一加载所有数据，避免多个loading状态冲突
+  loadAllData() {
+    app.showLoading('加载中...')
+    
+    // 并行执行所有数据加载请求
+    Promise.all([
+      this.loadUserDataAsync(),
+      this.loadCommunityDataAsync(),
+      this.loadStatisticsAsync()
+    ]).finally(() => {
+      app.hideLoading()
+    })
+  },
+
   // 加载用户数据
   loadUserData() {
     // 获取用户位置
@@ -183,6 +195,23 @@ Page({
       } else {
         console.warn('获取位置失败:', result)
       }
+    })
+  },
+
+  // 异步版本的用户数据加载
+  loadUserDataAsync() {
+    return new Promise((resolve) => {
+      wx.getLocation({
+        type: 'gcj02',
+        success: (res) => {
+          this.reverseGeocode(res.latitude, res.longitude)
+          resolve()
+        },
+        fail: () => {
+          console.log('获取位置失败，使用默认位置')
+          resolve()
+        }
+      })
     })
   },
 
@@ -215,6 +244,34 @@ Page({
     })
   },
 
+  // 异步版本的社区数据加载
+  loadCommunityDataAsync() {
+    return new Promise((resolve) => {
+      app.request({
+        url: '/community/news',
+        method: 'GET',
+        success: (res) => {
+          if (res.statusCode === 200) {
+            this.setData({
+              communityNews: res.data.news || this.data.communityNews,
+              recommendations: res.data.recommendations || this.data.recommendations
+            })
+          }
+          resolve()
+        },
+        fail: (error) => {
+          console.warn('加载社区数据失败，使用默认数据:', error)
+          // 网络请求失败时使用默认数据，确保界面正常显示
+          this.setData({
+            communityNews: this.data.communityNews,
+            recommendations: this.data.recommendations
+          })
+          resolve()
+        }
+      })
+    })
+  },
+
   // 加载统计数据
   loadStatistics() {
     app.request({
@@ -241,12 +298,42 @@ Page({
     })
   },
 
+  // 异步版本的统计数据加载
+  loadStatisticsAsync() {
+    return new Promise((resolve) => {
+      app.request({
+        url: '/statistics/today',
+        method: 'GET',
+        success: (res) => {
+          if (res.statusCode === 200) {
+            this.setData({
+              todayDetections: res.data.detections || this.data.todayDetections,
+              todayReports: res.data.reports || this.data.todayReports,
+              notificationCount: res.data.notifications || this.data.notificationCount
+            })
+          }
+          resolve()
+        },
+        fail: (error) => {
+          console.warn('加载统计数据失败，使用默认数据:', error)
+          // 网络请求失败时使用默认数据，确保界面正常显示
+          this.setData({
+            todayDetections: this.data.todayDetections,
+            todayReports: this.data.todayReports,
+            notificationCount: this.data.notificationCount
+          })
+          resolve()
+        }
+      })
+    })
+  },
+
   // 刷新数据
   refreshData() {
     Promise.all([
-      this.loadCommunityData(),
-      this.loadStatistics(),
-      this.loadUserData()
+      this.loadCommunityDataAsync(),
+      this.loadStatisticsAsync(),
+      this.loadUserDataAsync()
     ]).finally(() => {
       wx.stopPullDownRefresh()
       app.showSuccess('刷新成功')
