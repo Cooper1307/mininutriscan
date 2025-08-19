@@ -321,19 +321,18 @@ async def _process_image_detection(
             ai_service = AIService()
             
             # 执行AI分析
-            ai_analysis = await ai_service.analyze_nutrition(
-                nutrition_data=nutrition_data,
-                product_info={
-                    "name": detection.product_name,
-                    "brand": detection.brand,
-                    "category": detection.category
-                },
-                user_profile={
+            # 构建用户档案（支持匿名用户）
+            user_profile = {}
+            if current_user:
+                user_profile = {
                     "age": current_user.age,
                     "health_conditions": current_user.health_conditions,
                     "dietary_preferences": current_user.dietary_preferences,
                     "allergies": current_user.allergies
                 }
+            
+            ai_analysis = await ai_service.analyze_nutrition(
+                nutrition_data=nutrition_data
             )
             
             if ai_analysis and ai_analysis.get("success"):
@@ -432,18 +431,7 @@ async def manual_input_detection(
             
             # 执行AI分析
             ai_analysis = await ai_service.analyze_nutrition(
-                nutrition_data=nutrition_dict,
-                product_info={
-                    "name": detection.product_name,
-                    "brand": detection.brand,
-                    "category": detection.category
-                },
-                user_profile={
-                    "age": current_user.age,
-                    "health_conditions": current_user.health_conditions,
-                    "dietary_preferences": current_user.dietary_preferences,
-                    "allergies": current_user.allergies
-                }
+                nutrition_data=nutrition_dict
             )
             
             if ai_analysis and ai_analysis.get("success"):
@@ -553,14 +541,7 @@ async def barcode_detection(
             # AI分析
             ai_service = AIService()
             ai_analysis = await ai_service.analyze_nutrition(
-                nutrition_data=nutrition_data,
-                product_info=product_info,
-                user_profile={
-                    "age": current_user.age,
-                    "health_conditions": current_user.health_conditions,
-                    "dietary_preferences": current_user.dietary_preferences,
-                    "allergies": current_user.allergies
-                }
+                nutrition_data=nutrition_data
             )
             
             if ai_analysis and ai_analysis.get("success"):

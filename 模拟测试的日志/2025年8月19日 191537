@@ -1,0 +1,122 @@
+[自动热重载] 已开启代码文件保存后自动热重载
+[Deprecation] SharedArrayBuffer will require cross-origin isolation as of M92, around July 2021. See https://developer.chrome.com/blog/enabling-shared-array-buffer/ for more details.
+[system] WeChatLib: 3.9.1 (2025.8.15 13:10:04)
+[system] Subpackages: N/A
+[system] LazyCodeLoading: false
+App: onLaunch have been invoked
+社区食安AI小卫士启动
+wx.getSystemInfo is deprecated.Please use wx.getSystemSetting/wx.getAppAuthorizeSetting/wx.getDeviceInfo/wx.getWindowInfo/wx.getAppBaseInfo instead.
+getSystemInfo @ app.js? [sm]:110
+onLaunch @ app.js? [sm]:16
+(anonymous) @ app.js? [sm]:2
+系统信息: {errMsg: "getSystemInfo:ok", batteryLevel: 80, benchmarkLevel: -1, brand: "devtools", memorySize: 2048, …}SDKVersion: "3.9.1"albumAuthorized: truebatteryLevel: 80benchmarkLevel: -1bluetoothAuthorized: truebluetoothEnabled: truebrand: "devtools"cameraAuthorized: truedeviceOrientation: "portrait"devicePixelRatio: 3.5enableDebug: trueerrMsg: "getSystemInfo:ok"fontSizeScaleFactor: 0.64fontSizeSetting: 16host: {env: "WeChat"}language: "zh_CN"locationAuthorized: truelocationEnabled: truelocationReducedAccuracy: truememorySize: 2048microphoneAuthorized: truemode: "default"model: "Nexus 6"notificationAlertAuthorized: truenotificationAuthorized: truenotificationBadgeAuthorized: truenotificationSoundAuthorized: truephoneCalendarAuthorized: truepixelRatio: 3.5platform: "devtools"safeArea: {top: 20, left: 0, right: 412, bottom: 732, width: 412, …}screenHeight: 732screenTop: 122screenWidth: 412statusBarHeight: 20system: "Android 5.0"version: "8.0.5"wifiEnabled: truewindowHeight: 610windowWidth: 412__proto__: Object
+App: onShow have been invoked
+应用显示
+Register: pages/index/index
+Register: pages/detection/detection
+Register: pages/report/report
+Register: pages/profile/profile
+Register: pages/settings/settings
+Register: pages/help/help
+Register: pages/about/about
+Register: pages/feedback/feedback
+Register: pages/encyclopedia/encyclopedia
+Register: pages/tips/tips
+App route: 
+- path: pages/index/index
+- openType: appLaunch
+- renderer: webview
+- componentFramework: exparser
+Update view with init data
+pages/index/index: onLoad have been invoked
+首页加载
+开始加载数据
+Tue Aug 19 2025 19:14:39 GMT+0800 (China Standard Time) 配置中关闭合法域名、web-view（业务域名）、TLS 版本以及 HTTPS 证书检查
+工具未校验合法域名、web-view（业务域名）、TLS 版本以及 HTTPS 证书。
+request @ app.js? [sm]:232
+(anonymous) @ index.js? [sm]:263
+loadCommunityDataAsync @ index.js? [sm]:262
+loadAllData @ index.js? [sm]:192
+onLoad @ index.js? [sm]:60
+pages/index/index: onShow have been invoked
+首页显示
+pages/index/index: onRouteDone have been invoked
+[Deprecation] SharedArrayBuffer will require cross-origin isolation as of M92, around July 2021. See https://developer.chrome.com/blog/enabling-shared-array-buffer/ for more details.
+Invoke event onReady in page: pages/index/index
+pages/index/index: onReady have been invoked
+[system] Launch Time: 2156 ms
+数据加载完成，loading已隐藏
+[自动热重载] 已开启代码文件保存后自动热重载
+App route: 
+- path: pages/detection/detection
+- openType: switchTab
+- renderer: webview
+- componentFramework: exparser
+pages/index/index: onHide have been invoked
+Update view with init data
+pages/detection/detection: onLoad have been invoked
+检测页面加载 {}
+pages/detection/detection: onShow have been invoked
+检测页面显示
+Invoke event onReady in page: pages/detection/detection
+pages/detection/detection: onReady have been invoked
+[渲染层网络层错误] Failed to load local image resource /assets/images/food-sample1.jpg 
+ the server responded with a status of 500 (HTTP/1.1 500 Internal Server Error) 
+(env: Windows,mp,2.01.2508152; lib: 3.9.1)
+[渲染层网络层错误] Failed to load local image resource /assets/images/food-sample2.jpg 
+ the server responded with a status of 500 (HTTP/1.1 500 Internal Server Error) 
+(env: Windows,mp,2.01.2508152; lib: 3.9.1)
+pages/detection/detection: onRouteDone have been invoked
+pages/detection/detection: onHide have been invoked
+App: onHide have been invoked
+应用隐藏
+App: onShow have been invoked
+应用显示
+pages/detection/detection: onShow have been invoked
+检测页面显示
+选择图片成功: http://tmp/oA_wu6dm0CuK33468d16b5709c98c3650fe17b388ba8.png
+数据加载超时，强制隐藏loading
+(anonymous) @ index.js? [sm]:183
+setTimeout (async)
+(anonymous) @ index.js? [sm]:182
+loadAllData @ index.js? [sm]:181
+onLoad @ index.js? [sm]:60
+app.js? [sm]:232 POST http://127.0.0.1:8000/api/v1/detection/analyze-base64 500 (Internal Server Error)(env: Windows,mp,2.01.2508152; lib: 3.9.1)
+request @ app.js? [sm]:232
+detectionResult @ detection.js? [sm]:258
+(anonymous) @ detection.js? [sm]:257
+s @ regeneratorRuntime.js?forceSync=true:1
+(anonymous) @ regeneratorRuntime.js?forceSync=true:1
+(anonymous) @ regeneratorRuntime.js?forceSync=true:1
+asyncGeneratorStep @ asyncToGenerator.js?forceSync=true:1
+c @ asyncToGenerator.js?forceSync=true:1
+Promise.then (async)
+asyncGeneratorStep @ asyncToGenerator.js?forceSync=true:1
+c @ asyncToGenerator.js?forceSync=true:1
+(anonymous) @ asyncToGenerator.js?forceSync=true:1
+(anonymous) @ asyncToGenerator.js?forceSync=true:1
+performActualDetection @ detection.js? [sm]:312
+startDetection @ detection.js? [sm]:160
+检测失败: Error: API错误 (500): 检测过程中发生错误: 'NoneType' object has no attribute 'age'
+    at detection.js? [sm]:302
+    at s (regeneratorRuntime.js?forceSync=true:1)
+    at Generator.<anonymous> (regeneratorRuntime.js?forceSync=true:1)
+    at Generator.next (regeneratorRuntime.js?forceSync=true:1)
+    at asyncGeneratorStep (asyncToGenerator.js?forceSync=true:1)
+    at c (asyncToGenerator.js?forceSync=true:1)(env: Windows,mp,2.01.2508152; lib: 3.9.1)
+(anonymous) @ detection.js? [sm]:305
+s @ regeneratorRuntime.js?forceSync=true:1
+(anonymous) @ regeneratorRuntime.js?forceSync=true:1
+(anonymous) @ regeneratorRuntime.js?forceSync=true:1
+asyncGeneratorStep @ asyncToGenerator.js?forceSync=true:1
+c @ asyncToGenerator.js?forceSync=true:1
+Promise.then (async)
+asyncGeneratorStep @ asyncToGenerator.js?forceSync=true:1
+c @ asyncToGenerator.js?forceSync=true:1
+Promise.then (async)
+asyncGeneratorStep @ asyncToGenerator.js?forceSync=true:1
+c @ asyncToGenerator.js?forceSync=true:1
+(anonymous) @ asyncToGenerator.js?forceSync=true:1
+(anonymous) @ asyncToGenerator.js?forceSync=true:1
+performActualDetection @ detection.js? [sm]:312
+startDetection @ detection.js? [sm]:160
