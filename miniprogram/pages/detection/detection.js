@@ -254,17 +254,25 @@ Page({
       }
 
       // 调用检测API（直接上传图片进行检测）
-      const detectionResult = await app.request({
-        url: '/detection/analyze-base64',
-        method: 'POST',
-        data: {
-          image_data: uploadResult.imageData,
-          detection_type: 'image_ocr',
-          user_notes: '小程序图片检测'
-        }
+      const detectionResult = await new Promise((resolve, reject) => {
+        app.request({
+          url: '/detection/analyze-base64',
+          method: 'POST',
+          data: {
+            image_data: uploadResult.imageData,
+            detection_type: 'image_ocr',
+            user_notes: '小程序图片检测'
+          },
+          success: (res) => {
+            resolve(res)
+          },
+          fail: (error) => {
+            reject(error)
+          }
+        })
       })
 
-      if (detectionResult.statusCode === 200 && detectionResult.data) {
+      if (detectionResult && detectionResult.statusCode === 200 && detectionResult.data) {
         // 将后端返回的数据转换为前端期望的格式
         const apiData = detectionResult.data
         const formattedResult = {
@@ -283,7 +291,15 @@ Page({
         
         this.navigateToResult(formattedResult)
       } else {
-        throw new Error('检测API返回异常')
+        // 处理API错误响应
+        let errorMessage = '检测API返回异常'
+        if (detectionResult && detectionResult.statusCode) {
+          errorMessage = `API错误 (${detectionResult.statusCode})`
+          if (detectionResult.data && detectionResult.data.message) {
+            errorMessage += `: ${detectionResult.data.message}`
+          }
+        }
+        throw new Error(errorMessage)
       }
     } catch (error) {
       console.error('检测失败:', error)

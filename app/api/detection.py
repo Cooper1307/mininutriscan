@@ -16,7 +16,7 @@ from PIL import Image
 from ..core.database import get_db
 from ..core.config import get_settings
 from ..models.user import User
-from ..models.detection import Detection
+from ..models.detection import Detection, DetectionType, DetectionStatus
 from ..services.ai_service import AIService
 from ..services.ocr_service import OCRService
 from ..api.auth import get_current_user, get_current_user_optional
@@ -282,10 +282,11 @@ async def _process_image_detection(
             )
         
         # 创建检测记录（支持匿名用户）
+        from ..models.detection import DetectionType, DetectionStatus
         detection = Detection(
             user_id=current_user.id if current_user else None,
-            detection_type="image_ocr",
-            status="processing",
+            detection_type=DetectionType.OCR_SCAN,
+            status=DetectionStatus.PROCESSING,
             image_url=file_path
         )
         db.add(detection)
@@ -300,7 +301,7 @@ async def _process_image_detection(
             ocr_result = await ocr_service.recognize_nutrition_label(file_path)
             
             if not ocr_result or not ocr_result.get("success"):
-                detection.update_status("failed", "OCR识别失败")
+                detection.update_status(DetectionStatus.FAILED, "OCR识别失败")
                 db.commit()
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
@@ -346,7 +347,7 @@ async def _process_image_detection(
             # 更新处理时间和状态
             processing_time = (datetime.now() - start_time).total_seconds()
             detection.processing_time = processing_time
-            detection.update_status("completed")
+            detection.update_status(DetectionStatus.COMPLETED)
             
             # 更新用户统计
             current_user.increment_scan_count()
@@ -371,7 +372,7 @@ async def _process_image_detection(
             
         except Exception as e:
             # 更新检测状态为失败
-            detection.update_status("failed", str(e))
+            detection.update_status(DetectionStatus.FAILED, str(e))
             db.commit()
             raise
             
@@ -409,8 +410,8 @@ async def manual_input_detection(
         # 创建检测记录
         detection = Detection(
             user_id=current_user.id,
-            detection_type="manual_input",
-            status="processing",
+            detection_type=DetectionType.MANUAL_INPUT,
+            status=DetectionStatus.PROCESSING,
             raw_text=detection_data.raw_text,
             product_name=detection_data.product_name,
             brand=detection_data.brand,
@@ -456,7 +457,7 @@ async def manual_input_detection(
             # 更新处理时间和状态
             processing_time = (datetime.now() - start_time).total_seconds()
             detection.processing_time = processing_time
-            detection.update_status("completed")
+            detection.update_status(DetectionStatus.COMPLETED)
             
             # 更新用户统计
             current_user.increment_scan_count()
@@ -480,7 +481,7 @@ async def manual_input_detection(
             )
             
         except Exception as e:
-            detection.update_status("failed", str(e))
+            detection.update_status(DetectionStatus.FAILED, str(e))
             db.commit()
             raise
             
@@ -517,8 +518,8 @@ async def barcode_detection(
         # 创建检测记录
         detection = Detection(
             user_id=current_user.id,
-            detection_type="barcode",
-            status="processing",
+            detection_type=DetectionType.BARCODE_SCAN,
+            status=DetectionStatus.PROCESSING,
             barcode=barcode
         )
         db.add(detection)
@@ -573,7 +574,7 @@ async def barcode_detection(
             # 更新处理时间和状态
             processing_time = (datetime.now() - start_time).total_seconds()
             detection.processing_time = processing_time
-            detection.update_status("completed")
+            detection.update_status(DetectionStatus.COMPLETED)
             
             # 更新用户统计
             current_user.increment_scan_count()
@@ -637,10 +638,22 @@ async def get_detection_history(
         
         # 应用筛选条件
         if status:
-            query = query.filter(Detection.status == status)
+            # 将字符串状态转换为枚举类型
+            try:
+                status_enum = DetectionStatus(status)
+                query = query.filter(Detection.status == status_enum)
+            except ValueError:
+                # 如果状态值无效，返回空结果
+                return []
         
         if detection_type:
-            query = query.filter(Detection.detection_type == detection_type)
+            # 将字符串检测类型转换为枚举类型
+            try:
+                detection_type_enum = DetectionType(detection_type)
+                query = query.filter(Detection.detection_type == detection_type_enum)
+            except ValueError:
+                # 如果检测类型值无效，返回空结果
+                return []
         
         # 排序和分页
         detections = query.order_by(Detection.created_at.desc()).offset(skip).limit(limit).all()
