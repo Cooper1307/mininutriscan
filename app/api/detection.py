@@ -348,8 +348,9 @@ async def _process_image_detection(
             detection.processing_time = processing_time
             detection.update_status(DetectionStatus.COMPLETED)
             
-            # 更新用户统计
-            current_user.increment_scan_count()
+            # 更新用户统计（仅对已登录用户）
+            if current_user:
+                current_user.increment_scan_count()
             
             db.commit()
             db.refresh(detection)
@@ -447,8 +448,9 @@ async def manual_input_detection(
             detection.processing_time = processing_time
             detection.update_status(DetectionStatus.COMPLETED)
             
-            # 更新用户统计
-            current_user.increment_scan_count()
+            # 更新用户统计（仅对已登录用户）
+            if current_user:
+                current_user.increment_scan_count()
             
             db.commit()
             db.refresh(detection)
@@ -557,8 +559,9 @@ async def barcode_detection(
             detection.processing_time = processing_time
             detection.update_status(DetectionStatus.COMPLETED)
             
-            # 更新用户统计
-            current_user.increment_scan_count()
+            # 更新用户统计（仅对已登录用户）
+            if current_user:
+                current_user.increment_scan_count()
             
             db.commit()
             db.refresh(detection)
