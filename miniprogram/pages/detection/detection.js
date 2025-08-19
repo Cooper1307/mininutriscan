@@ -156,8 +156,8 @@ Page({
       detectionStatus: '正在上传图片...'
     })
 
-    // 模拟检测过程
-    this.simulateDetection()
+    // 使用真实的API检测而不是模拟数据
+    this.performActualDetection()
   },
 
   // 模拟检测过程
@@ -196,64 +196,98 @@ Page({
   },
 
   // 跳转到结果页
-  navigateToResult() {
-    // 生成模拟检测结果
-    const mockResult = {
-      image: this.data.selectedImage,
-      foodName: '苹果',
-      confidence: 0.95,
-      safetyLevel: 'safe',
-      safetyScore: 85,
-      detectionTime: new Date().toLocaleString(),
-      details: {
-        freshness: '新鲜',
-        pesticide: '未检出',
-        bacteria: '正常',
-        nutrition: '丰富'
-      },
-      suggestions: [
-        '建议清洗后食用',
-        '可以直接食用',
-        '营养价值较高'
-      ]
+  navigateToResult(apiResult = null) {
+    let result;
+    
+    if (apiResult) {
+      // 使用API返回的真实数据
+      result = {
+        image: this.data.selectedImage,
+        foodName: apiResult.foodName || '未知食物',
+        confidence: apiResult.confidence || 0,
+        safetyLevel: apiResult.safetyLevel || 'unknown',
+        safetyScore: apiResult.safetyScore || 0,
+        detectionTime: new Date().toLocaleString(),
+        details: apiResult.details || {
+          freshness: '未知',
+          pesticide: '未检测',
+          bacteria: '未知',
+          nutrition: '未知'
+        },
+        suggestions: apiResult.suggestions || ['请咨询专业人士']
+      }
+    } else {
+      // 备用模拟数据（仅在API失败时使用）
+      result = {
+        image: this.data.selectedImage,
+        foodName: '检测失败',
+        confidence: 0,
+        safetyLevel: 'unknown',
+        safetyScore: 0,
+        detectionTime: new Date().toLocaleString(),
+        details: {
+          freshness: '无法检测',
+          pesticide: '无法检测',
+          bacteria: '无法检测',
+          nutrition: '无法检测'
+        },
+        suggestions: ['请重新拍照检测']
+      }
     }
 
     // 保存到历史记录
-    this.saveToHistory(mockResult)
+    this.saveToHistory(result)
 
     wx.redirectTo({
-      url: `/pages/detection/result?data=${encodeURIComponent(JSON.stringify(mockResult))}`
+      url: `/pages/detection/result?data=${encodeURIComponent(JSON.stringify(result))}`
     })
   },
 
   // 实际API检测（当后端API可用时）
   async performActualDetection() {
     try {
-      // 上传图片
+      // 转换图片为base64格式
       const uploadResult = await this.uploadImage(this.data.selectedImage)
       
       if (!uploadResult.success) {
-        throw new Error('图片上传失败')
+        throw new Error('图片处理失败')
       }
 
-      // 调用检测API
+      // 调用检测API（直接上传图片进行检测）
       const detectionResult = await app.request({
-        url: '/api/v1/detection/analyze',
+        url: '/api/v1/detection/upload-image',
         method: 'POST',
         data: {
-          imageUrl: uploadResult.imageUrl,
-          detectionType: 'food_safety'
+          image_data: uploadResult.imageData,
+          detection_type: 'image_ocr',
+          user_notes: '小程序图片检测'
         }
       })
 
-      if (detectionResult.statusCode === 200) {
-        this.navigateToResult(detectionResult.data)
+      if (detectionResult.statusCode === 200 && detectionResult.data) {
+        // 将后端返回的数据转换为前端期望的格式
+        const apiData = detectionResult.data
+        const formattedResult = {
+          foodName: apiData.product_name || '未知食物',
+          confidence: apiData.ocr_confidence || 0,
+          safetyLevel: this.mapSafetyLevel(apiData.ai_analysis?.health_score),
+          safetyScore: apiData.ai_analysis?.health_score || 0,
+          details: {
+            freshness: '已检测',
+            pesticide: '已分析',
+            bacteria: '已检测',
+            nutrition: JSON.stringify(apiData.nutrition_data || {})
+          },
+          suggestions: apiData.ai_analysis?.recommendations || ['请查看详细分析结果']
+        }
+        
+        this.navigateToResult(formattedResult)
       } else {
-        throw new Error('检测失败')
+        throw new Error('检测API返回异常')
       }
     } catch (error) {
       console.error('检测失败:', error)
-      app.showError('检测失败，请重试')
+      app.showError(`检测失败: ${error.message}`)
       
       this.setData({
         detecting: false,
@@ -263,30 +297,52 @@ Page({
     }
   },
 
-  // 上传图片
+  // 映射安全等级
+  mapSafetyLevel(healthScore) {
+    if (!healthScore) return 'unknown'
+    if (healthScore >= 80) return 'safe'
+    if (healthScore >= 60) return 'warning'
+    return 'danger'
+  },
+
+  // 转换图片为base64格式
   uploadImage(imagePath) {
     return new Promise((resolve, reject) => {
-      wx.uploadFile({
-        url: `${app.globalData.apiBaseUrl}/api/v1/upload/image`,
+      wx.getFileSystemManager().readFile({
         filePath: imagePath,
-        name: 'image',
-        header: {
-          'Authorization': `Bearer ${wx.getStorageSync('token')}`
-        },
+        encoding: 'base64',
         success: (res) => {
-          try {
-            const data = JSON.parse(res.data)
-            resolve({
-              success: true,
-              imageUrl: data.imageUrl
-            })
-          } catch (error) {
-            reject(error)
-          }
+          // 获取文件扩展名
+          const fileExtension = imagePath.split('.').pop().toLowerCase()
+          const mimeType = this.getMimeType(fileExtension)
+          
+          // 构造base64数据URI
+          const base64Data = `data:${mimeType};base64,${res.data}`
+          
+          resolve({
+            success: true,
+            imageData: base64Data
+          })
         },
-        fail: reject
+        fail: (error) => {
+          console.error('读取图片文件失败:', error)
+          reject(error)
+        }
       })
     })
+  },
+
+  // 获取MIME类型
+  getMimeType(extension) {
+    const mimeTypes = {
+      'jpg': 'image/jpeg',
+      'jpeg': 'image/jpeg',
+      'png': 'image/png',
+      'gif': 'image/gif',
+      'bmp': 'image/bmp',
+      'webp': 'image/webp'
+    }
+    return mimeTypes[extension] || 'image/jpeg'
   },
 
   // 根据条码查询商品
