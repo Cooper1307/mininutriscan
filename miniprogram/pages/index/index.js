@@ -257,7 +257,6 @@ Page({
               recommendations: res.data.recommendations || this.data.recommendations
             })
           }
-          resolve()
         },
         fail: (error) => {
           console.warn('加载社区数据失败，使用默认数据:', error)
@@ -266,6 +265,9 @@ Page({
             communityNews: this.data.communityNews,
             recommendations: this.data.recommendations
           })
+        },
+        complete: () => {
+          // 确保请求完全结束后才resolve
           resolve()
         }
       })
@@ -312,7 +314,6 @@ Page({
               notificationCount: res.data.notifications || this.data.notificationCount
             })
           }
-          resolve()
         },
         fail: (error) => {
           console.warn('加载统计数据失败，使用默认数据:', error)
@@ -322,6 +323,9 @@ Page({
             todayReports: this.data.todayReports,
             notificationCount: this.data.notificationCount
           })
+        },
+        complete: () => {
+          // 确保请求完全结束后才resolve
           resolve()
         }
       })

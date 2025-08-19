@@ -222,7 +222,7 @@ App({
 
   // 网络请求封装
   request(options) {
-    const { url, method = 'GET', data = {}, header = {}, success, fail } = options
+    const { url, method = 'GET', data = {}, header = {}, success, fail, complete } = options
     
     // 添加token
     if (this.globalData.token) {
@@ -257,6 +257,10 @@ App({
       fail: (error) => {
         console.error('网络请求失败:', error)
         if (fail) fail(error)
+      },
+      complete: (res) => {
+        // 确保complete回调被正确执行，用于隐藏loading状态
+        if (complete) complete(res)
       }
     })
   }
