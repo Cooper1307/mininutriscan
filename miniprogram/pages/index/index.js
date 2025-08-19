@@ -177,12 +177,6 @@ Page({
     console.log('开始加载数据')
     app.showLoading('加载中...')
     
-    // 临时测试：2秒后直接隐藏loading
-    setTimeout(() => {
-      console.log('强制隐藏loading - 测试')
-      app.hideLoading()
-    }, 2000)
-    
     // 设置超时保护，确保loading状态能被正确隐藏
     const timeout = new Promise((resolve) => {
       setTimeout(() => {
