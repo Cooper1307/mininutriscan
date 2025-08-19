@@ -1,0 +1,162 @@
+[自动热重载] 已开启代码文件保存后自动热重载
+[system] WeChatLib: 3.9.1 (2025.8.15 13:10:04)
+[system] Subpackages: N/A
+[system] LazyCodeLoading: false
+App: onLaunch have been invoked
+社区食安AI小卫士启动
+wx.getSystemInfo is deprecated.Please use wx.getSystemSetting/wx.getAppAuthorizeSetting/wx.getDeviceInfo/wx.getWindowInfo/wx.getAppBaseInfo instead.
+getSystemInfo @ app.js? [sm]:110
+onLaunch @ app.js? [sm]:16
+(anonymous) @ app.js? [sm]:2
+系统信息: {errMsg: "getSystemInfo:ok", batteryLevel: 80, benchmarkLevel: -1, brand: "devtools", memorySize: 2048, …}
+App: onShow have been invoked
+应用显示
+Register: pages/index/index
+Register: pages/detection/detection
+Register: pages/report/report
+Register: pages/profile/profile
+Register: pages/settings/settings
+Register: pages/help/help
+Register: pages/about/about
+Register: pages/feedback/feedback
+Register: pages/encyclopedia/encyclopedia
+Register: pages/tips/tips
+App route: 
+- path: pages/index/index
+- openType: appLaunch
+- renderer: webview
+- componentFramework: exparser
+Update view with init data
+pages/index/index: onLoad have been invoked
+首页加载
+开始加载数据
+pages/index/index: onShow have been invoked
+首页显示
+Invoke event onReady in page: pages/index/index
+pages/index/index: onReady have been invoked
+[system] Launch Time: 1142 ms
+pages/index/index: onRouteDone have been invoked
+数据加载完成，loading已隐藏
+[自动热重载] 已开启代码文件保存后自动热重载
+App route: 
+- path: pages/detection/detection
+- openType: switchTab
+- renderer: webview
+- componentFramework: exparser
+pages/index/index: onHide have been invoked
+Update view with init data
+pages/detection/detection: onLoad have been invoked
+检测页面加载 {}
+pages/detection/detection: onShow have been invoked
+检测页面显示
+Invoke event onReady in page: pages/detection/detection
+pages/detection/detection: onReady have been invoked
+[渲染层网络层错误] Failed to load local image resource /assets/images/food-sample1.jpg 
+ the server responded with a status of 500 (HTTP/1.1 500 Internal Server Error) 
+(env: Windows,mp,2.01.2508152; lib: 3.9.1)
+[渲染层网络层错误] Failed to load local image resource /assets/images/food-sample2.jpg 
+ the server responded with a status of 500 (HTTP/1.1 500 Internal Server Error) 
+(env: Windows,mp,2.01.2508152; lib: 3.9.1)
+pages/detection/detection: onRouteDone have been invoked
+pages/detection/detection: onHide have been invoked
+App: onHide have been invoked
+应用隐藏
+App: onShow have been invoked
+应用显示
+pages/detection/detection: onShow have been invoked
+检测页面显示
+选择图片成功: http://tmp/U8vx_eN8RNpO33468d16b5709c98c3650fe17b388ba8.png
+数据加载超时，强制隐藏loading
+(anonymous) @ index.js? [sm]:183
+setTimeout (async)
+(anonymous) @ index.js? [sm]:182
+loadAllData @ index.js? [sm]:181
+onLoad @ index.js? [sm]:60
+app.js? [sm]:232 POST http://127.0.0.1:8000/api/v1/detection/analyze-base64 500 (Internal Server Error)(env: Windows,mp,2.01.2508152; lib: 3.9.1)
+request @ app.js? [sm]:232
+detectionResult @ detection.js? [sm]:258
+(anonymous) @ detection.js? [sm]:257
+s @ regeneratorRuntime.js?forceSync=true:1
+(anonymous) @ regeneratorRuntime.js?forceSync=true:1
+(anonymous) @ regeneratorRuntime.js?forceSync=true:1
+asyncGeneratorStep @ asyncToGenerator.js?forceSync=true:1
+c @ asyncToGenerator.js?forceSync=true:1
+Promise.then (async)
+asyncGeneratorStep @ asyncToGenerator.js?forceSync=true:1
+c @ asyncToGenerator.js?forceSync=true:1
+(anonymous) @ asyncToGenerator.js?forceSync=true:1
+(anonymous) @ asyncToGenerator.js?forceSync=true:1
+performActualDetection @ detection.js? [sm]:312
+startDetection @ detection.js? [sm]:160
+检测失败: Error: API错误 (500): 检测过程中发生错误: (psycopg2.errors.NotNullViolation) null value in column "user_id" of relation "detections" violates not-null constraint
+DETAIL:  Failing row contains (2, null, OCR_SCAN, PROCESSING, uploads\aaf6fb0e-387a-4b4d-8f15-0a56c7217755.png, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, UNKNOWN, null, null, null, null, null, null, null, 2025-08-19 18:58:08.338017, 2025-08-19 18:58:08.338017, null, f, f, null).
+
+[SQL: INSERT INTO detections (user_id, detection_type, status, image_url, image_path, raw_text, manual_input, barcode, product_name, brand, category, manufacturer, production_date, expiry_date, net_weight, energy_kj, energy_kcal, protein, fat, saturated_fat, carbohydrate, sugar, dietary_fiber, sodium, ingredients, nutrition_score, health_advice, risk_level, processing_time, error_message, confidence_score, user_rating, user_feedback, is_accurate, created_at, updated_at, completed_at, is_favorite, is_shared) VALUES (%(user_id)s, %(detection_type)s, %(status)s, %(image_url)s, %(image_path)s, %(raw_text)s, %(manual_input)s, %(barcode)s, %(product_name)s, %(brand)s, %(category)s, %(manufacturer)s, %(production_date)s, %(expiry_date)s, %(net_weight)s, %(energy_kj)s, %(energy_kcal)s, %(protein)s, %(fat)s, %(saturated_fat)s, %(carbohydrate)s, %(sugar)s, %(dietary_fiber)s, %(sodium)s, %(ingredients)s, %(nutrition_score)s, %(health_advice)s, %(risk_level)s, %(processing_time)s, %(error_message)s, %(confidence_score)s, %(user_rating)s, %(user_feedback)s, %(is_accurate)s, now(), now(), %(completed_at)s, %(is_favorite)s, %(is_shared)s) RETURNING detections.id, detections.created_at, detections.updated_at]
+[parameters: {'user_id': None, 'detection_type': 'OCR_SCAN', 'status': 'PROCESSING', 'image_url': 'uploads\\aaf6fb0e-387a-4b4d-8f15-0a56c7217755.png', 'image_path': None, 'raw_text': None, 'manual_input': None, 'barcode': None, 'product_name': None, 'brand': None, 'category': None, 'manufacturer': None, 'production_date': None, 'expiry_date': None, 'net_weight': None, 'energy_kj': None, 'energy_kcal': None, 'protein': None, 'fat': None, 'saturated_fat': None, 'carbohydrate': None, 'sugar': None, 'dietary_fiber': None, 'sodium': None, 'ingredients': None, 'nutrition_score': None, 'health_advice': None, 'risk_level': 'UNKNOWN', 'processing_time': None, 'error_message': None, 'confidence_score': None, 'user_rating': None, 'user_feedback': None, 'is_accurate': None, 'completed_at': None, 'is_favorite': False, 'is_shared': False}]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+    at detection.js? [sm]:302
+    at s (regeneratorRuntime.js?forceSync=true:1)
+    at Generator.<anonymous> (regeneratorRuntime.js?forceSync=true:1)
+    at Generator.next (regeneratorRuntime.js?forceSync=true:1)
+    at asyncGeneratorStep (asyncToGenerator.js?forceSync=true:1)
+    at c (asyncToGenerator.js?forceSync=true:1)(env: Windows,mp,2.01.2508152; lib: 3.9.1)
+(anonymous) @ detection.js? [sm]:305
+s @ regeneratorRuntime.js?forceSync=true:1
+(anonymous) @ regeneratorRuntime.js?forceSync=true:1
+(anonymous) @ regeneratorRuntime.js?forceSync=true:1
+asyncGeneratorStep @ asyncToGenerator.js?forceSync=true:1
+c @ asyncToGenerator.js?forceSync=true:1
+Promise.then (async)
+asyncGeneratorStep @ asyncToGenerator.js?forceSync=true:1
+c @ asyncToGenerator.js?forceSync=true:1
+Promise.then (async)
+asyncGeneratorStep @ asyncToGenerator.js?forceSync=true:1
+c @ asyncToGenerator.js?forceSync=true:1
+(anonymous) @ asyncToGenerator.js?forceSync=true:1
+(anonymous) @ asyncToGenerator.js?forceSync=true:1
+performActualDetection @ detection.js? [sm]:312
+startDetection @ detection.js? [sm]:160
+app.js? [sm]:232 POST http://127.0.0.1:8000/api/v1/detection/analyze-base64 500 (Internal Server Error)(env: Windows,mp,2.01.2508152; lib: 3.9.1)
+request @ app.js? [sm]:232
+detectionResult @ detection.js? [sm]:258
+(anonymous) @ detection.js? [sm]:257
+s @ regeneratorRuntime.js?forceSync=true:1
+(anonymous) @ regeneratorRuntime.js?forceSync=true:1
+(anonymous) @ regeneratorRuntime.js?forceSync=true:1
+asyncGeneratorStep @ asyncToGenerator.js?forceSync=true:1
+c @ asyncToGenerator.js?forceSync=true:1
+Promise.then (async)
+asyncGeneratorStep @ asyncToGenerator.js?forceSync=true:1
+c @ asyncToGenerator.js?forceSync=true:1
+(anonymous) @ asyncToGenerator.js?forceSync=true:1
+(anonymous) @ asyncToGenerator.js?forceSync=true:1
+performActualDetection @ detection.js? [sm]:312
+startDetection @ detection.js? [sm]:160
+检测失败: Error: API错误 (500): 检测过程中发生错误: (psycopg2.errors.NotNullViolation) null value in column "user_id" of relation "detections" violates not-null constraint
+DETAIL:  Failing row contains (3, null, OCR_SCAN, PROCESSING, uploads\1025eb08-44f5-48d3-899f-700dfdea6940.png, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, UNKNOWN, null, null, null, null, null, null, null, 2025-08-19 18:58:11.971834, 2025-08-19 18:58:11.971834, null, f, f, null).
+
+[SQL: INSERT INTO detections (user_id, detection_type, status, image_url, image_path, raw_text, manual_input, barcode, product_name, brand, category, manufacturer, production_date, expiry_date, net_weight, energy_kj, energy_kcal, protein, fat, saturated_fat, carbohydrate, sugar, dietary_fiber, sodium, ingredients, nutrition_score, health_advice, risk_level, processing_time, error_message, confidence_score, user_rating, user_feedback, is_accurate, created_at, updated_at, completed_at, is_favorite, is_shared) VALUES (%(user_id)s, %(detection_type)s, %(status)s, %(image_url)s, %(image_path)s, %(raw_text)s, %(manual_input)s, %(barcode)s, %(product_name)s, %(brand)s, %(category)s, %(manufacturer)s, %(production_date)s, %(expiry_date)s, %(net_weight)s, %(energy_kj)s, %(energy_kcal)s, %(protein)s, %(fat)s, %(saturated_fat)s, %(carbohydrate)s, %(sugar)s, %(dietary_fiber)s, %(sodium)s, %(ingredients)s, %(nutrition_score)s, %(health_advice)s, %(risk_level)s, %(processing_time)s, %(error_message)s, %(confidence_score)s, %(user_rating)s, %(user_feedback)s, %(is_accurate)s, now(), now(), %(completed_at)s, %(is_favorite)s, %(is_shared)s) RETURNING detections.id, detections.created_at, detections.updated_at]
+[parameters: {'user_id': None, 'detection_type': 'OCR_SCAN', 'status': 'PROCESSING', 'image_url': 'uploads\\1025eb08-44f5-48d3-899f-700dfdea6940.png', 'image_path': None, 'raw_text': None, 'manual_input': None, 'barcode': None, 'product_name': None, 'brand': None, 'category': None, 'manufacturer': None, 'production_date': None, 'expiry_date': None, 'net_weight': None, 'energy_kj': None, 'energy_kcal': None, 'protein': None, 'fat': None, 'saturated_fat': None, 'carbohydrate': None, 'sugar': None, 'dietary_fiber': None, 'sodium': None, 'ingredients': None, 'nutrition_score': None, 'health_advice': None, 'risk_level': 'UNKNOWN', 'processing_time': None, 'error_message': None, 'confidence_score': None, 'user_rating': None, 'user_feedback': None, 'is_accurate': None, 'completed_at': None, 'is_favorite': False, 'is_shared': False}]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+    at detection.js? [sm]:302
+    at s (regeneratorRuntime.js?forceSync=true:1)
+    at Generator.<anonymous> (regeneratorRuntime.js?forceSync=true:1)
+    at Generator.next (regeneratorRuntime.js?forceSync=true:1)
+    at asyncGeneratorStep (asyncToGenerator.js?forceSync=true:1)
+    at c (asyncToGenerator.js?forceSync=true:1)(env: Windows,mp,2.01.2508152; lib: 3.9.1)
+(anonymous) @ detection.js? [sm]:305
+s @ regeneratorRuntime.js?forceSync=true:1
+(anonymous) @ regeneratorRuntime.js?forceSync=true:1
+(anonymous) @ regeneratorRuntime.js?forceSync=true:1
+asyncGeneratorStep @ asyncToGenerator.js?forceSync=true:1
+c @ asyncToGenerator.js?forceSync=true:1
+Promise.then (async)
+asyncGeneratorStep @ asyncToGenerator.js?forceSync=true:1
+c @ asyncToGenerator.js?forceSync=true:1
+Promise.then (async)
+asyncGeneratorStep @ asyncToGenerator.js?forceSync=true:1
+c @ asyncToGenerator.js?forceSync=true:1
+(anonymous) @ asyncToGenerator.js?forceSync=true:1
+(anonymous) @ asyncToGenerator.js?forceSync=true:1
+performActualDetection @ detection.js? [sm]:312
+startDetection @ detection.js? [sm]:160
