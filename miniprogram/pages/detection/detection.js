@@ -255,7 +255,7 @@ Page({
 
       // 调用检测API（直接上传图片进行检测）
       const detectionResult = await app.request({
-        url: '/detection/upload-image',
+        url: '/detection/analyze-base64',
         method: 'POST',
         data: {
           image_data: uploadResult.imageData,

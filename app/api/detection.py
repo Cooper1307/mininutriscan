@@ -9,6 +9,9 @@ from datetime import datetime
 import json
 import uuid
 import os
+import base64
+import io
+from PIL import Image
 
 from ..core.database import get_db
 from ..core.config import get_settings
@@ -144,6 +147,76 @@ def validate_file(file: UploadFile) -> None:
             detail=f"不支持的文件类型，支持的类型: {settings.ALLOWED_EXTENSIONS}"
         )
 
+async def save_base64_image(image_data: str) -> str:
+    """
+    保存base64编码的图片数据
+    
+    Args:
+        image_data: base64编码的图片数据（可能包含data:image/xxx;base64,前缀）
+        
+    Returns:
+        保存的文件路径
+        
+    Raises:
+        HTTPException: 文件保存失败时抛出异常
+    """
+    try:
+        # 处理data URI格式
+        if image_data.startswith('data:'):
+            # 提取base64数据部分
+            header, base64_data = image_data.split(',', 1)
+            # 从header中提取文件类型
+            mime_type = header.split(';')[0].split(':')[1]
+            file_extension = '.' + mime_type.split('/')[1]
+        else:
+            # 纯base64数据，默认为jpeg
+            base64_data = image_data
+            file_extension = '.jpg'
+        
+        # 解码base64数据
+        image_bytes = base64.b64decode(base64_data)
+        
+        # 验证图片数据
+        try:
+            image = Image.open(io.BytesIO(image_bytes))
+            image.verify()  # 验证图片完整性
+        except Exception:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="无效的图片数据"
+            )
+        
+        # 生成唯一文件名
+        unique_filename = f"{uuid.uuid4()}{file_extension}"
+        
+        # 确保上传目录存在
+        upload_dir = settings.UPLOAD_FOLDER
+        os.makedirs(upload_dir, exist_ok=True)
+        
+        # 保存文件
+        file_path = os.path.join(upload_dir, unique_filename)
+        with open(file_path, "wb") as buffer:
+            buffer.write(image_bytes)
+        
+        return file_path
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"图片保存失败: {str(e)}"
+        )
+
+# 新增base64图片数据模型
+class Base64ImageRequest(BaseModel):
+    """
+    Base64图片检测请求模型
+    """
+    image_data: str = Field(..., description="Base64编码的图片数据")
+    detection_type: str = Field(default="image_ocr", description="检测类型")
+    user_notes: Optional[str] = Field(None, description="用户备注")
+
 # API端点
 @router.post("/upload-image", response_model=DetectionResponse, summary="上传图片进行OCR检测")
 async def upload_image_detection(
@@ -152,10 +225,33 @@ async def upload_image_detection(
     db: Session = Depends(get_db)
 ):
     """
-    上传图片进行OCR营养检测
+    上传图片文件进行OCR营养检测
+    """
+    return await _process_image_detection(file, None, current_user, db)
+
+@router.post("/analyze-base64", response_model=DetectionResponse, summary="分析Base64图片数据")
+async def analyze_base64_image(
+    request: Base64ImageRequest,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    分析Base64编码的图片数据进行OCR营养检测
+    """
+    return await _process_image_detection(None, request, current_user, db)
+
+async def _process_image_detection(
+    file: Optional[UploadFile],
+    base64_request: Optional[Base64ImageRequest],
+    current_user: User,
+    db: Session
+):
+    """
+    处理图片检测（支持文件上传和base64数据）
     
     Args:
-        file: 上传的图片文件
+        file: 上传的图片文件（可选）
+        base64_request: base64图片请求（可选）
         current_user: 当前用户
         db: 数据库会话
         
@@ -166,13 +262,23 @@ async def upload_image_detection(
         HTTPException: 检测失败时抛出异常
     """
     start_time = datetime.now()
+    file_path = None
     
     try:
-        # 验证文件
-        validate_file(file)
-        
-        # 保存文件
-        file_path = save_uploaded_file(file)
+        # 处理文件上传或base64数据
+        if file:
+            # 验证文件
+            validate_file(file)
+            # 保存文件
+            file_path = save_uploaded_file(file)
+        elif base64_request:
+            # 处理base64数据
+            file_path = await save_base64_image(base64_request.image_data)
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="必须提供图片文件或base64数据"
+            )
         
         # 创建检测记录
         detection = Detection(
