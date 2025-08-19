@@ -19,7 +19,7 @@ from ..models.user import User
 from ..models.detection import Detection
 from ..services.ai_service import AIService
 from ..services.ocr_service import OCRService
-from ..api.auth import get_current_user
+from ..api.auth import get_current_user, get_current_user_optional
 
 # 创建路由器
 router = APIRouter()
@@ -105,7 +105,7 @@ def save_uploaded_file(file: UploadFile) -> str:
         unique_filename = f"{uuid.uuid4()}{file_extension}"
         
         # 确保上传目录存在
-        upload_dir = settings.UPLOAD_FOLDER
+        upload_dir = settings.UPLOAD_DIR
         os.makedirs(upload_dir, exist_ok=True)
         
         # 保存文件
@@ -190,7 +190,7 @@ async def save_base64_image(image_data: str) -> str:
         unique_filename = f"{uuid.uuid4()}{file_extension}"
         
         # 确保上传目录存在
-        upload_dir = settings.UPLOAD_FOLDER
+        upload_dir = settings.UPLOAD_DIR
         os.makedirs(upload_dir, exist_ok=True)
         
         # 保存文件
@@ -232,18 +232,19 @@ async def upload_image_detection(
 @router.post("/analyze-base64", response_model=DetectionResponse, summary="分析Base64图片数据")
 async def analyze_base64_image(
     request: Base64ImageRequest,
-    current_user: User = Depends(get_current_user),
+    current_user: Optional[User] = Depends(get_current_user_optional),
     db: Session = Depends(get_db)
 ):
     """
     分析Base64编码的图片数据进行OCR营养检测
+    支持匿名用户访问（不需要登录）
     """
     return await _process_image_detection(None, request, current_user, db)
 
 async def _process_image_detection(
     file: Optional[UploadFile],
     base64_request: Optional[Base64ImageRequest],
-    current_user: User,
+    current_user: Optional[User],
     db: Session
 ):
     """
@@ -280,13 +281,12 @@ async def _process_image_detection(
                 detail="必须提供图片文件或base64数据"
             )
         
-        # 创建检测记录
+        # 创建检测记录（支持匿名用户）
         detection = Detection(
-            user_id=current_user.id,
+            user_id=current_user.id if current_user else None,
             detection_type="image_ocr",
             status="processing",
-            image_url=file_path,
-            processing_started_at=start_time
+            image_url=file_path
         )
         db.add(detection)
         db.commit()
@@ -414,8 +414,7 @@ async def manual_input_detection(
             raw_text=detection_data.raw_text,
             product_name=detection_data.product_name,
             brand=detection_data.brand,
-            category=detection_data.category,
-            processing_started_at=start_time
+            category=detection_data.category
         )
         
         # 设置营养数据
@@ -520,8 +519,7 @@ async def barcode_detection(
             user_id=current_user.id,
             detection_type="barcode",
             status="processing",
-            barcode=barcode,
-            processing_started_at=start_time
+            barcode=barcode
         )
         db.add(detection)
         db.commit()

@@ -47,8 +47,8 @@ class Detection(Base):
     # 主键
     id = Column(Integer, primary_key=True, index=True, comment="检测记录ID")
     
-    # 关联用户
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True, comment="用户ID")
+    # 关联用户（支持匿名用户）
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=True, index=True, comment="用户ID（匿名用户时为空）")
     
     # 检测基本信息
     detection_type = Column(Enum(DetectionType), nullable=False, comment="检测类型")
