@@ -121,6 +121,39 @@ class Detection(Base):
     def __repr__(self):
         return f"<Detection(id={self.id}, user_id={self.user_id}, product_name={self.product_name}, status={self.status})>"
     
+    @property
+    def nutrition_data(self):
+        """
+        获取营养数据字典
+        
+        Returns:
+            营养数据字典
+        """
+        return {
+            "energy_kj": self.energy_kj,
+            "energy_kcal": self.energy_kcal,
+            "protein": self.protein,
+            "fat": self.fat,
+            "saturated_fat": self.saturated_fat,
+            "carbohydrate": self.carbohydrate,
+            "sugar": self.sugar,
+            "dietary_fiber": self.dietary_fiber,
+            "sodium": self.sodium,
+            "vitamins": self.vitamins,
+            "minerals": self.minerals,
+            "other_nutrients": self.other_nutrients
+        }
+    
+    @property
+    def health_score(self):
+        """
+        获取健康评分（nutrition_score的别名）
+        
+        Returns:
+            健康评分
+        """
+        return self.nutrition_score
+    
     def to_dict(self, include_details=True):
         """
         转换为字典格式
