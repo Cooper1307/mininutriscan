@@ -39,7 +39,10 @@ class Settings:
     def database_url(self) -> str:
         """
         构建数据库连接URL
+        优先使用DATABASE_URL环境变量，否则根据分项构建
         """
+        if os.getenv("DATABASE_URL"):
+            return os.getenv("DATABASE_URL")
         return f"postgresql://{self.DB_USER}:{self.DB_PASSWORD}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
     
     # ===========================================

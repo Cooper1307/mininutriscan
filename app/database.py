@@ -1,5 +1,4 @@
 from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 import os
@@ -39,8 +38,8 @@ SessionLocal = sessionmaker(
     bind=engine
 )
 
-# 创建基础模型类
-Base = declarative_base()
+# The Base is now centralized in app.core.database
+from app.core.database import Base
 
 # 数据库依赖注入函数
 def get_db() -> Generator:
