@@ -53,6 +53,11 @@ if not os.path.exists(uploads_dir):
 
 app.mount("/uploads", StaticFiles(directory=uploads_dir), name="uploads")
 
+# 小程序静态资源服务（用于提供小程序的图片资源）
+miniprogram_assets_dir = "miniprogram/assets"
+if os.path.exists(miniprogram_assets_dir):
+    app.mount("/assets", StaticFiles(directory=miniprogram_assets_dir), name="assets")
+
 # 根路径 - 健康检查接口
 @app.get("/")
 async def root():

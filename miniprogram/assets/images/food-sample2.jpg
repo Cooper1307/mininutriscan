@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="150" viewBox="0 0 200 150">
+  <!-- 牛奶图片的SVG表示 -->
+  <rect width="200" height="150" fill="#f8f9fa"/>
+  
+  <!-- 牛奶盒主体 -->
+  <rect x="70" y="40" width="60" height="80" fill="#ffffff" stroke="#ddd" stroke-width="2"/>
+  
+  <!-- 牛奶盒顶部 -->
+  <polygon points="70,40 100,25 130,40" fill="#e9ecef"/>
+  
+  <!-- 牛奶盒侧面 -->
+  <polygon points="130,40 130,120 145,105 145,25 130,40" fill="#f1f3f4"/>
+  
+  <!-- 品牌标识区域 -->
+  <rect x="75" y="50" width="50" height="25" fill="#4285f4" rx="3"/>
+  <text x="100" y="67" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="white">MILK</text>
+  
+  <!-- 营养信息区域 -->
+  <rect x="75" y="80" width="50" height="30" fill="#f8f9fa" stroke="#ddd"/>
+  <text x="100" y="92" text-anchor="middle" font-family="Arial, sans-serif" font-size="6" fill="#333">营养成分</text>
+  <text x="100" y="100" text-anchor="middle" font-family="Arial, sans-serif" font-size="5" fill="#666">蛋白质 3.2g</text>
+  <text x="100" y="106" text-anchor="middle" font-family="Arial, sans-serif" font-size="5" fill="#666">钙 120mg</text>
+  
+  <!-- 文字标签 -->
+  <text x="100" y="140" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#333">纯牛奶</text>
+</svg>
