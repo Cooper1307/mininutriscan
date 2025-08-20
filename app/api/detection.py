@@ -178,8 +178,21 @@ async def save_base64_image(image_data: str) -> str:
         
         # 验证图片数据
         try:
-            image = Image.open(io.BytesIO(image_bytes))
-            image.verify()  # 验证图片完整性
+            # 检查是否为SVG格式
+            if file_extension.lower() == '.svg' or (image_data.startswith('data:') and 'svg' in mime_type):
+                # SVG格式验证：检查是否包含基本的SVG标签
+                image_text = image_bytes.decode('utf-8', errors='ignore')
+                if '<svg' not in image_text.lower() or '</svg>' not in image_text.lower():
+                    raise HTTPException(
+                        status_code=status.HTTP_400_BAD_REQUEST,
+                        detail="无效的SVG图片数据"
+                    )
+            else:
+                # 其他格式使用PIL验证
+                image = Image.open(io.BytesIO(image_bytes))
+                image.verify()  # 验证图片完整性
+        except HTTPException:
+            raise
         except Exception:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
@@ -309,13 +322,57 @@ async def _process_image_detection(
                 )
             
             # 更新检测记录
-            detection.raw_text = ocr_result.get("text", "")
+            # 处理不同OCR服务返回格式的差异
+            if "texts" in ocr_result:
+                # 模拟OCR和其他返回texts数组的服务
+                texts = ocr_result.get("texts", [])
+                detection.raw_text = " ".join([item["text"] for item in texts])
+            else:
+                # 直接返回text字段的服务
+                detection.raw_text = ocr_result.get("text", "")
             detection.ocr_confidence = ocr_result.get("confidence", 0)
             
             # 解析营养信息
-            nutrition_data = ocr_result.get("nutrition_data", {})
-            if nutrition_data:
-                detection.set_nutrition_data(nutrition_data)
+            nutrition_data = {}
+            if ocr_result.get("success"):
+                # 从OCR结果中提取营养信息
+                nutrition_extract_result = ocr_service.extract_nutrition_info(ocr_result)
+                if nutrition_extract_result.get("success") and nutrition_extract_result.get("nutrition_info"):
+                    raw_nutrition_data = nutrition_extract_result.get("nutrition_info", {})
+                    
+                    # 转换嵌套的营养数据格式为简单的键值对
+                    nutrition_data = {}
+                    for key, value in raw_nutrition_data.items():
+                        if isinstance(value, dict) and 'value' in value:
+                            # 处理嵌套格式：{'value': 12.5, 'unit': 'g', 'keyword': '蛋白质'}
+                            nutrition_data[key] = value['value']
+                        else:
+                            # 处理简单格式
+                            nutrition_data[key] = value
+                    
+                    # 映射字段名到数据库字段
+                    db_nutrition_data = {}
+                    if 'energy' in nutrition_data:
+                        # 能量默认按kJ存储，如果需要kcal可以转换
+                        db_nutrition_data['energy_kj'] = nutrition_data['energy']
+                        # 1 kcal = 4.184 kJ
+                        db_nutrition_data['energy_kcal'] = nutrition_data['energy'] / 4.184 if nutrition_data['energy'] else None
+                    
+                    # 直接映射的字段
+                    field_mapping = {
+                        'protein': 'protein',
+                        'fat': 'fat', 
+                        'carbohydrate': 'carbohydrate',
+                        'sodium': 'sodium'
+                    }
+                    
+                    for ocr_field, db_field in field_mapping.items():
+                        if ocr_field in nutrition_data:
+                            db_nutrition_data[db_field] = nutrition_data[ocr_field]
+                    
+                    detection.set_nutrition_data(db_nutrition_data)
+                    # 保留原始营养数据用于AI分析
+                    nutrition_data = raw_nutrition_data
             
             # 初始化AI服务进行分析
             ai_service = AIService()

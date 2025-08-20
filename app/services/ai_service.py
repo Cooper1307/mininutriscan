@@ -2,7 +2,7 @@
 # AI服务模块 - 集成Qwen3大语言模型
 
 import json
-import httpx
+import aiohttp
 from typing import Dict, Any, Optional
 from ..core.config import settings
 
@@ -55,17 +55,18 @@ class AIService:
         }
         
         try:
-            async with httpx.AsyncClient(timeout=30.0) as client:
-                response = await client.post(
+            timeout = aiohttp.ClientTimeout(total=30.0)
+            async with aiohttp.ClientSession(timeout=timeout) as session:
+                async with session.post(
                     self.api_url,
                     headers=headers,
                     json=payload
-                )
-                response.raise_for_status()
-                return response.json()
+                ) as response:
+                    response.raise_for_status()
+                    return await response.json()
                 
-        except httpx.HTTPError as e:
-            raise Exception(f"Qwen API请求失败: {str(e)}")
+        except aiohttp.ClientError as e:
+            raise Exception(f"API请求失败: {str(e)}")
         except Exception as e:
             raise Exception(f"AI服务调用异常: {str(e)}")
     
@@ -100,9 +101,21 @@ class AIService:
             if "output" in response and "text" in response["output"]:
                 analysis_result = response["output"]["text"]
                 
+                # 基于营养数据计算健康评分（简单算法）
+                health_score = self._calculate_health_score(nutrition_data)
+                
+                # 基于评分确定风险等级
+                risk_level = self._determine_risk_level(health_score)
+                
+                # 提取建议（从分析文本中提取或生成简短建议）
+                advice = self._extract_advice(analysis_result)
+                
                 return {
                     "success": True,
                     "analysis": analysis_result,
+                    "health_score": health_score,
+                    "advice": advice,
+                    "risk_level": risk_level,
                     "nutrition_data": nutrition_data,
                     "timestamp": json.dumps({"timestamp": "now"}, default=str)
                 }
@@ -115,6 +128,132 @@ class AIService:
                 "error": str(e),
                 "nutrition_data": nutrition_data
             }
+    
+    def _calculate_health_score(self, nutrition_data: Dict[str, Any]) -> float:
+        """
+        基于营养数据计算健康评分（0-100分）
+        
+        Args:
+            nutrition_data: 营养数据字典
+            
+        Returns:
+            健康评分（0-100）
+        """
+        score = 70.0  # 基础分数
+        
+        try:
+            # 提取营养数值
+            energy = self._extract_nutrition_value(nutrition_data, 'energy')
+            protein = self._extract_nutrition_value(nutrition_data, 'protein')
+            fat = self._extract_nutrition_value(nutrition_data, 'fat')
+            carbohydrate = self._extract_nutrition_value(nutrition_data, 'carbohydrate')
+            sodium = self._extract_nutrition_value(nutrition_data, 'sodium')
+            
+            # 能量评估（以每100g为基准）
+            if energy:
+                if energy < 1000:  # 低热量
+                    score += 5
+                elif energy > 2500:  # 高热量
+                    score -= 10
+            
+            # 蛋白质评估
+            if protein:
+                if protein >= 10:  # 高蛋白
+                    score += 10
+                elif protein >= 5:  # 中等蛋白
+                    score += 5
+            
+            # 脂肪评估
+            if fat:
+                if fat > 20:  # 高脂肪
+                    score -= 15
+                elif fat > 10:  # 中等脂肪
+                    score -= 5
+                elif fat < 3:  # 低脂肪
+                    score += 5
+            
+            # 钠含量评估
+            if sodium:
+                if sodium > 600:  # 高钠
+                    score -= 15
+                elif sodium > 300:  # 中等钠
+                    score -= 5
+                elif sodium < 100:  # 低钠
+                    score += 5
+            
+            # 确保分数在0-100范围内
+            score = max(0, min(100, score))
+            
+        except Exception:
+            # 如果计算出错，返回中等分数
+            score = 60.0
+        
+        return round(score, 1)
+    
+    def _extract_nutrition_value(self, nutrition_data: Dict[str, Any], key: str) -> Optional[float]:
+        """
+        从营养数据中提取数值
+        
+        Args:
+            nutrition_data: 营养数据字典
+            key: 营养成分键名
+            
+        Returns:
+            营养成分数值
+        """
+        if key in nutrition_data:
+            value = nutrition_data[key]
+            if isinstance(value, dict) and 'value' in value:
+                return float(value['value'])
+            elif isinstance(value, (int, float)):
+                return float(value)
+        return None
+    
+    def _determine_risk_level(self, health_score: float) -> str:
+        """
+        基于健康评分确定风险等级
+        
+        Args:
+            health_score: 健康评分
+            
+        Returns:
+            风险等级字符串
+        """
+        if health_score >= 80:
+            return "LOW"
+        elif health_score >= 60:
+            return "MEDIUM"
+        elif health_score >= 40:
+            return "HIGH"
+        else:
+            return "VERY_HIGH"
+    
+    def _extract_advice(self, analysis_text: str) -> str:
+        """
+        从分析文本中提取简短建议
+        
+        Args:
+            analysis_text: AI分析文本
+            
+        Returns:
+            简短建议
+        """
+        # 简单的建议提取逻辑
+        if "建议" in analysis_text:
+            # 尝试提取建议部分
+            lines = analysis_text.split('\n')
+            advice_lines = []
+            for line in lines:
+                if "建议" in line or "推荐" in line or "应该" in line:
+                    advice_lines.append(line.strip())
+                    if len(advice_lines) >= 3:  # 最多3条建议
+                        break
+            
+            if advice_lines:
+                return " ".join(advice_lines)
+        
+        # 如果没有找到具体建议，返回通用建议
+        return "建议均衡饮食，适量运动，关注营养成分标签。"
     
     async def answer_question(self, question: str, context: Optional[str] = None) -> Dict[str, Any]:
         """

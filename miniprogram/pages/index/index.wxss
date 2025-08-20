@@ -4,7 +4,48 @@
 .page {
   background-color: var(--background-color);
   min-height: 100vh;
-  padding-bottom: 120rpx; /* 为底部导航留空间 */
+  padding-bottom: 120rpx;
+}
+
+/* 测试样式 */
+.test-content {
+  padding: 60rpx 40rpx;
+  text-align: center;
+}
+
+.test-title {
+  display: block;
+  font-size: 48rpx;
+  font-weight: bold;
+  color: var(--primary-color);
+  margin-bottom: 20rpx;
+}
+
+.test-subtitle {
+  display: block;
+  font-size: 28rpx;
+  color: var(--text-secondary);
+  margin-bottom: 60rpx;
+}
+
+.test-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 30rpx;
+}
+
+.test-btn {
+  background: var(--primary-color);
+  color: white;
+  padding: 30rpx;
+  border-radius: var(--radius-lg);
+  font-size: 32rpx;
+  font-weight: 500;
+}
+
+.test-btn:active {
+  background: #236B47;
+  transform: scale(0.98);
 }
 
 /* 顶部状态栏 */

@@ -1,0 +1,24 @@
+6[自动热重载] 已开启代码文件保存后自动热重载
+[Deprecation] SharedArrayBuffer will require cross-origin isolation as of M92, around July 2021. See https://developer.chrome.com/blog/enabling-shared-array-buffer/ for more details.
+[system] WeChatLib: 3.9.1 (2025.8.15 13:10:04)
+[system] Subpackages: N/A
+[system] LazyCodeLoading: false
+App: onLaunch have been invoked
+社区食安AI小卫士启动
+wx.getSystemInfo is deprecated.Please use wx.getSystemSetting/wx.getAppAuthorizeSetting/wx.getDeviceInfo/wx.getWindowInfo/wx.getAppBaseInfo instead.
+getSystemInfo @ VM96 app.js:104
+onLaunch @ VM96 app.js:20
+(anonymous) @ VM96 app.js:6
+系统信息: {errMsg: "getSystemInfo:ok", batteryLevel: 80, benchmarkLevel: -1, brand: "devtools", memorySize: 2048, …}
+App: onShow have been invoked
+应用显示
+Register: pages/index/index
+Register: pages/detection/detection
+Register: pages/report/report
+Register: pages/profile/profile
+Register: pages/settings/settings
+Register: pages/help/help
+Register: pages/about/about
+Register: pages/feedback/feedback
+Register: pages/encyclopedia/encyclopedia
+Register: pages/tips/tips

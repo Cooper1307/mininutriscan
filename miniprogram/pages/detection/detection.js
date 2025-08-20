@@ -255,6 +255,9 @@ Page({
 
       // 调用检测API（直接上传图片进行检测）
       const detectionResult = await new Promise((resolve, reject) => {
+        console.log('开始API调用 - URL: /detection/analyze-base64');
+        console.log('请求数据大小:', uploadResult.imageData ? uploadResult.imageData.length : 0, '字符');
+        
         app.request({
           url: '/detection/analyze-base64',
           method: 'POST',
@@ -264,9 +267,14 @@ Page({
             user_notes: '小程序图片检测'
           },
           success: (res) => {
+            console.log('API调用成功 - 完整响应:', res)
+            console.log('API响应数据:', res.data)
             resolve(res)
           },
           fail: (error) => {
+            console.error('API调用失败 - 完整错误:', error)
+            console.error('错误状态码:', error.statusCode)
+            console.error('错误信息:', error.errMsg)
             reject(error)
           }
         })
@@ -442,8 +450,32 @@ Page({
   // 加载历史记录
   loadHistory() {
     const history = wx.getStorageSync('detectionHistory') || []
+    console.log('加载历史记录:', history)
     this.setData({
       historyList: history.slice(0, 5) // 只显示最近5条
+    })
+  },
+
+  // 清除历史记录（调试用）
+  clearHistory() {
+    wx.showModal({
+      title: '确认清除',
+      content: '确定要清除所有检测历史记录吗？此操作不可恢复。',
+      confirmText: '清除',
+      confirmColor: '#ff4757',
+      success: (res) => {
+        if (res.confirm) {
+          wx.removeStorageSync('detectionHistory')
+          this.setData({
+            historyList: []
+          })
+          wx.showToast({
+            title: '历史记录已清除',
+            icon: 'success'
+          })
+          console.log('历史记录已清除')
+        }
+      }
     })
   },
 
@@ -479,5 +511,12 @@ Page({
       title: 'AI智能检测 - 守护食品安全',
       imageUrl: '/assets/images/share-detection.jpg'
     }
+  },
+
+  // 返回首页
+  goBack() {
+    wx.switchTab({
+      url: '/pages/index/index'
+    });
   }
 })

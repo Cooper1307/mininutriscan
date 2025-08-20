@@ -1,0 +1,64 @@
+<svg width="400" height="600" xmlns="http://www.w3.org/2000/svg">
+  <!-- 营养成分表测试图片 -->
+  <rect width="400" height="600" fill="white" stroke="black" stroke-width="2"/>
+  
+  <!-- 标题 -->
+  <text x="200" y="40" text-anchor="middle" font-family="Arial" font-size="20" font-weight="bold">营养成分表</text>
+  <text x="200" y="65" text-anchor="middle" font-family="Arial" font-size="14">Nutrition Facts</text>
+  
+  <!-- 分隔线 -->
+  <line x1="20" y1="80" x2="380" y2="80" stroke="black" stroke-width="2"/>
+  
+  <!-- 每100g营养成分 -->
+  <text x="30" y="110" font-family="Arial" font-size="16" font-weight="bold">每100g营养成分</text>
+  
+  <!-- 能量 -->
+  <text x="30" y="140" font-family="Arial" font-size="14">能量</text>
+  <text x="350" y="140" font-family="Arial" font-size="14" text-anchor="end">1850kJ</text>
+  
+  <!-- 蛋白质 -->
+  <text x="30" y="170" font-family="Arial" font-size="14">蛋白质</text>
+  <text x="350" y="170" font-family="Arial" font-size="14" text-anchor="end">12.5g</text>
+  
+  <!-- 脂肪 -->
+  <text x="30" y="200" font-family="Arial" font-size="14">脂肪</text>
+  <text x="350" y="200" font-family="Arial" font-size="14" text-anchor="end">8.2g</text>
+  
+  <!-- 碳水化合物 -->
+  <text x="30" y="230" font-family="Arial" font-size="14">碳水化合物</text>
+  <text x="350" y="230" font-family="Arial" font-size="14" text-anchor="end">65.3g</text>
+  
+  <!-- 钠 -->
+  <text x="30" y="260" font-family="Arial" font-size="14">钠</text>
+  <text x="350" y="260" font-family="Arial" font-size="14" text-anchor="end">420mg</text>
+  
+  <!-- 分隔线 -->
+  <line x1="20" y1="280" x2="380" y2="280" stroke="black" stroke-width="1"/>
+  
+  <!-- 维生素和矿物质 -->
+  <text x="30" y="310" font-family="Arial" font-size="16" font-weight="bold">维生素和矿物质</text>
+  
+  <!-- 维生素C -->
+  <text x="30" y="340" font-family="Arial" font-size="14">维生素C</text>
+  <text x="350" y="340" font-family="Arial" font-size="14" text-anchor="end">15mg</text>
+  
+  <!-- 钙 -->
+  <text x="30" y="370" font-family="Arial" font-size="14">钙</text>
+  <text x="350" y="370" font-family="Arial" font-size="14" text-anchor="end">120mg</text>
+  
+  <!-- 铁 -->
+  <text x="30" y="400" font-family="Arial" font-size="14">铁</text>
+  <text x="350" y="400" font-family="Arial" font-size="14" text-anchor="end">2.5mg</text>
+  
+  <!-- 分隔线 -->
+  <line x1="20" y1="420" x2="380" y2="420" stroke="black" stroke-width="1"/>
+  
+  <!-- 配料表 -->
+  <text x="30" y="450" font-family="Arial" font-size="16" font-weight="bold">配料表</text>
+  <text x="30" y="480" font-family="Arial" font-size="12">小麦粉、植物油、白砂糖、鸡蛋、</text>
+  <text x="30" y="500" font-family="Arial" font-size="12">牛奶、酵母、食盐、香草精</text>
+  
+  <!-- 底部信息 -->
+  <text x="30" y="540" font-family="Arial" font-size="10">保质期：12个月</text>
+  <text x="30" y="560" font-family="Arial" font-size="10">储存条件：阴凉干燥处</text>
+</svg>

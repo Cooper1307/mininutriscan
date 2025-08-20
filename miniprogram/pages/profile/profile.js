@@ -546,5 +546,12 @@ Page({
       title: '食品安全检测神器，守护健康生活',
       imageUrl: '/images/share-profile.png'
     };
+  },
+
+  // 返回首页
+  goBack() {
+    wx.switchTab({
+      url: '/pages/index/index'
+    });
   }
 });

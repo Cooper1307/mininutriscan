@@ -281,6 +281,27 @@
   color: var(--text-primary);
 }
 
+.header-actions {
+  display: flex;
+  gap: 24rpx;
+  align-items: center;
+}
+
+.clear-btn {
+  font-size: 24rpx;
+  color: #ff4757;
+  font-weight: 500;
+  padding: 8rpx 16rpx;
+  border: 1rpx solid #ff4757;
+  border-radius: 12rpx;
+  background: transparent;
+}
+
+.clear-btn:active {
+  background: #ff4757;
+  color: white;
+}
+
 .view-all {
   font-size: 24rpx;
   color: var(--primary-color);

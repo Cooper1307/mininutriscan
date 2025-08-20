@@ -44,7 +44,7 @@ Page({
   },
 
   onLoad() {
-    console.log('首页加载')
+    console.log('首页加载 - 简化测试版本')
     // 确保数据已初始化
     this.setData({
       userLocation: this.data.userLocation,
@@ -404,5 +404,35 @@ Page({
       title: '社区食安AI小卫士 - 守护您的餐桌安全',
       imageUrl: '/assets/images/share-cover.jpg'
     }
+  },
+
+  // 测试跳转方法
+  goToDetection() {
+    console.log('跳转到检测页面');
+    wx.switchTab({
+      url: '/pages/detection/detection'
+    });
+  },
+
+  goToReport() {
+    console.log('跳转到举报页面');
+    wx.switchTab({
+      url: '/pages/report/report'
+    });
+  },
+
+  goToProfile() {
+    console.log('跳转到个人中心');
+    wx.switchTab({
+      url: '/pages/profile/profile'
+    });
+  },
+
+  testClick() {
+    console.log('测试按钮被点击');
+    wx.showToast({
+      title: '页面正常工作！',
+      icon: 'success'
+    });
   }
 })
