@@ -172,10 +172,10 @@ cd android-app
 
 如有问题或建议，请通过以下方式联系：
 - 项目Issues: [GitHub Issues](https://github.com/your-repo/issues)
-- 邮箱: your-email@example.com
+- 邮箱: 2877739094@qq.com
 
 ---
 
-**最后更新**: 2025年1月21日
+**最后更新**: 2025年9月21日
 **版本**: v1.0.0-alpha
 **状态**: 开发中
