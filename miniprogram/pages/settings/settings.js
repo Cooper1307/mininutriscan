@@ -69,6 +69,11 @@ Page({
       });
     } catch (error) {
       console.error('加载用户信息失败:', error);
+      wx.showModal({
+        title: '加载失败',
+        content: '用户信息加载失败，请重新进入页面或重启应用',
+        showCancel: false
+      });
     }
   },
 
@@ -113,11 +118,35 @@ Page({
       };
       
       wx.setStorageSync('appSettings', settings);
+      
+      // 触觉反馈
+      if (this.data.vibration) {
+        wx.vibrateShort({
+          type: 'light'
+        });
+      }
     } catch (error) {
       console.error('保存设置失败:', error);
-      wx.showToast({
+      
+      let errorMsg = '设置保存失败';
+      if (error.message && error.message.includes('storage')) {
+        errorMsg = '存储空间不足，请清理缓存后重试';
+      } else if (error.message && error.message.includes('permission')) {
+        errorMsg = '没有存储权限，请检查应用权限设置';
+      }
+      
+      wx.showModal({
         title: '保存失败',
-        icon: 'error'
+        content: errorMsg + '\n\n如问题持续存在，请重启应用或联系客服',
+        confirmText: '重试',
+        cancelText: '取消',
+        success: (res) => {
+          if (res.confirm) {
+            setTimeout(() => {
+              this.saveSettings();
+            }, 500);
+          }
+        }
       });
     }
   },

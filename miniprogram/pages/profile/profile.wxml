@@ -1,5 +1,204 @@
-<!--pages/profile/profile.wxml-->
-<view>
-  <text>个人中心页面</text>
-  <button bindtap="goBack">返回首页</button>
+<view class="page">
+  <!-- 自定义导航栏 -->
+  <navigation-bar title="个人中心" show-back="{{false}}">
+    <view slot="right" class="nav-right">
+      <text class="nav-icon" bindtap="onSettings">⚙️</text>
+    </view>
+  </navigation-bar>
+
+  <!-- 用户信息卡片 -->
+  <view class="user-card">
+    <view class="user-info">
+      <view class="avatar-container" bindtap="onAvatarTap">
+        <image class="user-avatar" src="{{userInfo.avatar || '/images/default-avatar.svg'}}" mode="aspectFill" />
+        <view class="avatar-badge" wx:if="{{userInfo.isVip}}">
+          <text class="badge-icon">👑</text>
+        </view>
+      </view>
+      
+      <view class="user-details">
+        <view class="user-name" bindtap="onNameEdit">{{userInfo.nickname || '点击设置昵称'}}</view>
+        <view class="user-level">
+          <text class="level-text">{{userInfo.level || 'LV1'}}</text>
+          <text class="level-desc">{{userInfo.levelDesc || '新手用户'}}</text>
+        </view>
+        <view class="user-stats">
+          <text class="stat-item">检测次数: {{userInfo.detectCount || 0}}</text>
+          <text class="stat-divider">|</text>
+          <text class="stat-item">积分: {{userInfo.points || 0}}</text>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 会员状态 -->
+    <view class="vip-status" wx:if="{{!userInfo.isVip}}" bindtap="onVipUpgrade">
+      <view class="vip-content">
+        <text class="vip-icon">💎</text>
+        <text class="vip-text">升级会员享受更多特权</text>
+      </view>
+      <text class="vip-arrow">></text>
+    </view>
+    
+    <view class="vip-status active" wx:else>
+      <view class="vip-content">
+        <text class="vip-icon">👑</text>
+        <text class="vip-text">会员有效期至 {{userInfo.vipExpire}}</text>
+      </view>
+      <text class="vip-arrow">></text>
+    </view>
+  </view>
+
+  <!-- 数据统计 -->
+  <view class="stats-section">
+    <view class="section-header">
+      <text class="section-title">我的数据</text>
+    </view>
+    
+    <view class="stats-grid">
+      <view class="stat-card" bindtap="onStatTap" data-type="detect">
+        <view class="stat-number">{{stats.totalDetections}}</view>
+        <view class="stat-label">总检测次数</view>
+        <view class="stat-icon">🔍</view>
+      </view>
+      
+      <view class="stat-card" bindtap="onStatTap" data-type="safe">
+        <view class="stat-number">{{stats.safeCount}}</view>
+        <view class="stat-label">安全食品</view>
+        <view class="stat-icon">✅</view>
+      </view>
+      
+      <view class="stat-card" bindtap="onStatTap" data-type="warning">
+        <view class="stat-number">{{stats.warningCount}}</view>
+        <view class="stat-label">风险食品</view>
+        <view class="stat-icon">⚠️</view>
+      </view>
+      
+      <view class="stat-card" bindtap="onStatTap" data-type="points">
+        <view class="stat-number">{{stats.totalPoints}}</view>
+        <view class="stat-label">累计积分</view>
+        <view class="stat-icon">⭐</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 功能菜单 -->
+  <view class="menu-section">
+    <view class="menu-group">
+      <view class="menu-item" bindtap="onMenuTap" data-type="history">
+        <view class="menu-left">
+          <text class="menu-icon">📋</text>
+          <text class="menu-text">检测历史</text>
+        </view>
+        <view class="menu-right">
+          <text class="menu-badge" wx:if="{{stats.todayDetections > 0}}">{{stats.todayDetections}}</text>
+          <text class="menu-arrow">></text>
+        </view>
+      </view>
+      
+      <view class="menu-item" bindtap="onMenuTap" data-type="favorites">
+        <view class="menu-left">
+          <text class="menu-icon">❤️</text>
+          <text class="menu-text">我的收藏</text>
+        </view>
+        <view class="menu-right">
+          <text class="menu-arrow">></text>
+        </view>
+      </view>
+      
+      <view class="menu-item" bindtap="onMenuTap" data-type="reports">
+        <view class="menu-left">
+          <text class="menu-icon">📝</text>
+          <text class="menu-text">我的举报</text>
+        </view>
+        <view class="menu-right">
+          <text class="menu-badge" wx:if="{{stats.pendingReports > 0}}">{{stats.pendingReports}}</text>
+          <text class="menu-arrow">></text>
+        </view>
+      </view>
+    </view>
+    
+    <view class="menu-group">
+      <view class="menu-item" bindtap="onMenuTap" data-type="points">
+        <view class="menu-left">
+          <text class="menu-icon">🎁</text>
+          <text class="menu-text">积分商城</text>
+        </view>
+        <view class="menu-right">
+          <text class="menu-hot">HOT</text>
+          <text class="menu-arrow">></text>
+        </view>
+      </view>
+      
+      <view class="menu-item" bindtap="onMenuTap" data-type="invite">
+        <view class="menu-left">
+          <text class="menu-icon">👥</text>
+          <text class="menu-text">邀请好友</text>
+        </view>
+        <view class="menu-right">
+          <text class="menu-desc">赚积分</text>
+          <text class="menu-arrow">></text>
+        </view>
+      </view>
+      
+      <view class="menu-item" bindtap="onMenuTap" data-type="feedback">
+        <view class="menu-left">
+          <text class="menu-icon">💬</text>
+          <text class="menu-text">意见反馈</text>
+        </view>
+        <view class="menu-right">
+          <text class="menu-arrow">></text>
+        </view>
+      </view>
+    </view>
+    
+    <view class="menu-group">
+      <view class="menu-item" bindtap="onMenuTap" data-type="help">
+        <view class="menu-left">
+          <text class="menu-icon">❓</text>
+          <text class="menu-text">帮助中心</text>
+        </view>
+        <view class="menu-right">
+          <text class="menu-arrow">></text>
+        </view>
+      </view>
+      
+      <view class="menu-item" bindtap="onMenuTap" data-type="about">
+        <view class="menu-left">
+          <text class="menu-icon">ℹ️</text>
+          <text class="menu-text">关于我们</text>
+        </view>
+        <view class="menu-right">
+          <text class="menu-version">v{{version}}</text>
+          <text class="menu-arrow">></text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 退出登录 -->
+  <view class="logout-section" wx:if="{{userInfo.isLogin}}">
+    <button class="logout-btn" bindtap="onLogout">退出登录</button>
+  </view>
+  
+  <!-- 登录按钮 -->
+  <view class="login-section" wx:else>
+    <button class="login-btn" bindtap="onLogin">立即登录</button>
+    <view class="login-tips">
+      <text class="tip-text">登录后可享受更多个性化服务</text>
+    </view>
+  </view>
+
+  <!-- 底部信息 -->
+  <view class="footer-info">
+    <view class="footer-links">
+      <text class="footer-link" bindtap="onFooterTap" data-type="privacy">隐私政策</text>
+      <text class="footer-divider">|</text>
+      <text class="footer-link" bindtap="onFooterTap" data-type="terms">服务条款</text>
+      <text class="footer-divider">|</text>
+      <text class="footer-link" bindtap="onFooterTap" data-type="contact">联系我们</text>
+    </view>
+    <view class="footer-copyright">
+      <text class="copyright-text">© 2024 MiniNutriScan. All rights reserved.</text>
+    </view>
+  </view>
 </view>

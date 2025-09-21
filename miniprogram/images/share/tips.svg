@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200">
+  <defs>
+    <linearGradient id="tipsGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFF3E0;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FFE0B2;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="300" height="200" fill="url(#tipsGradient)"/>
+  
+  <!-- 标题区域 -->
+  <rect x="20" y="20" width="260" height="40" fill="#FF9800" rx="8"/>
+  <text x="150" y="45" text-anchor="middle" fill="#fff" font-family="Arial, sans-serif" font-size="18" font-weight="bold">营养贴士集锦</text>
+  
+  <!-- 内容区域 -->
+  <rect x="20" y="80" width="260" height="100" fill="#fff" rx="8" stroke="#E0E0E0" stroke-width="1"/>
+  
+  <!-- 多个小图标 -->
+  <circle cx="40" cy="100" r="8" fill="#4CAF50"/>
+  <circle cx="40" cy="125" r="8" fill="#2196F3"/>
+  <circle cx="40" cy="150" r="8" fill="#FF5722"/>
+  
+  <!-- 文本内容 -->
+  <text x="60" y="105" fill="#333" font-family="Arial, sans-serif" font-size="12">每日8杯水，保持身体水分平衡</text>
+  <text x="60" y="130" fill="#333" font-family="Arial, sans-serif" font-size="12">彩虹饮食法，多样化营养摄入</text>
+  <text x="60" y="155" fill="#333" font-family="Arial, sans-serif" font-size="12">细嚼慢咽，有助消化和控制食量</text>
+</svg>

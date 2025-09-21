@@ -466,7 +466,7 @@ Page({
     return {
       title: '食品安全举报 - 共同守护食品安全',
       path: '/pages/report/report',
-      imageUrl: '/images/share-report.png'
+      imageUrl: '/images/share-report.svg'
     };
   },
 
@@ -475,12 +475,5 @@ Page({
       title: '食品安全举报 - 共同守护食品安全',
       imageUrl: '/images/share-report.png'
     };
-  },
-
-  // 返回首页
-  goBack() {
-    wx.switchTab({
-      url: '/pages/index/index'
-    });
   }
 });

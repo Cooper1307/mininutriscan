@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+  <circle cx="50" cy="50" r="45" fill="#f0f0f0" stroke="#ddd" stroke-width="2"/>
+  <circle cx="50" cy="35" r="15" fill="#ccc"/>
+  <path d="M25 75 Q50 60 75 75 L75 85 Q50 70 25 85 Z" fill="#ccc"/>
+  <text x="50" y="95" text-anchor="middle" font-family="Arial" font-size="8" fill="#999">默认头像</text>
+</svg>

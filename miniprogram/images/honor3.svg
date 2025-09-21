@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <defs>
+    <linearGradient id="honor3Gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#CD7F32;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8D4E1F;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- 奖牌背景 -->
+  <circle cx="60" cy="60" r="50" fill="url(#honor3Gradient)" stroke="#5D4037" stroke-width="3"/>
+  
+  <!-- 内圈 -->
+  <circle cx="60" cy="60" r="35" fill="#EFEBE9" stroke="#CD7F32" stroke-width="2"/>
+  
+  <!-- 盾牌图标 -->
+  <g transform="translate(60, 60)">
+    <path d="M 0,-20 C -12,-20 -15,-10 -15,0 C -15,10 0,20 0,20 C 0,20 15,10 15,0 C 15,-10 12,-20 0,-20 Z" fill="#CD7F32"/>
+    <path d="M 0,-15 C -8,-15 -10,-8 -10,0 C -10,8 0,15 0,15 C 0,15 10,8 10,0 C 10,-8 8,-15 0,-15 Z" fill="#EFEBE9"/>
+    <text x="0" y="3" text-anchor="middle" fill="#CD7F32" font-family="Arial, sans-serif" font-size="12" font-weight="bold">3</text>
+  </g>
+  
+  <!-- 文字 -->
+  <text x="60" y="95" text-anchor="middle" fill="#5D4037" font-family="Arial, sans-serif" font-size="10" font-weight="bold">铜奖</text>
+</svg>

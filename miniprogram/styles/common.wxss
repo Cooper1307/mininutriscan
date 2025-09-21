@@ -121,18 +121,37 @@
 .text-center { text-align: center; }
 .text-right { text-align: right; }
 
-/* 按钮样式 */
+/* 按钮样式 - 严格按照UI设计规范 */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   padding: 24rpx 48rpx;
   border-radius: 16rpx;
-  font-size: 32rpx;
+  font-size: 32rpx;              /* 按钮文字：32rpx，加粗 */
   font-weight: bold;
   border: none;
   transition: all 0.3s ease;
   cursor: pointer;
+  min-height: 88rpx;             /* 确保按钮有足够的点击区域 */
+  position: relative;
+  overflow: hidden;
+}
+
+/* 适老化 - 大字体模式 */
+.btn.large-text {
+  font-size: 36rpx;
+  min-height: 96rpx;
+  padding: 28rpx 52rpx;
+}
+
+/* 响应式设计 - 小屏幕适配 */
+@media (max-width: 375px) {
+  .btn {
+    font-size: 30rpx;
+    min-height: 84rpx;
+    padding: 22rpx 44rpx;
+  }
 }
 
 .btn:active {
@@ -505,4 +524,71 @@
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
+}
+
+/* 响应式设计 */
+@media (max-width: 320px) {
+  .container {
+    padding: 24rpx;
+  }
+  
+  .card {
+    padding: 24rpx;
+    margin-bottom: 16rpx;
+  }
+  
+  .list-item {
+    padding: 24rpx;
+  }
+}
+
+/* 适老化功能 */
+.accessibility-mode {
+  /* 增大字体 */
+  font-size: 120% !important;
+}
+
+.accessibility-mode .btn {
+  min-height: 100rpx;
+  font-size: 36rpx;
+  padding: 32rpx 56rpx;
+}
+
+.accessibility-mode .list-item {
+  padding: 40rpx;
+  min-height: 120rpx;
+}
+
+.accessibility-mode .list-item-title {
+  font-size: 32rpx;
+}
+
+.accessibility-mode .list-item-desc {
+  font-size: 28rpx;
+}
+
+/* 高对比度模式 */
+.high-contrast {
+  --text-primary: #000000;
+  --text-secondary: #333333;
+  --background-color: #ffffff;
+  --border-color: #000000;
+}
+
+/* 触摸友好 - 增大点击区域 */
+.touch-friendly {
+  min-height: 88rpx;
+  min-width: 88rpx;
+  padding: 24rpx;
+}
+
+/* 动画减少模式 */
+.reduce-motion,
+.reduce-motion view,
+.reduce-motion text,
+.reduce-motion image,
+.reduce-motion button {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
 }

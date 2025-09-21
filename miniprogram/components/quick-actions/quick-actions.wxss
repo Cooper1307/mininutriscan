@@ -24,20 +24,21 @@
 }
 
 .action-icon {
-  width: 96rpx;
-  height: 96rpx;
+  width: 88rpx;
+  height: 88rpx;
   background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 16rpx;
-  box-shadow: 0 4rpx 12rpx rgba(46, 139, 87, 0.3);
+  box-shadow: 0 4rpx 12rpx var(--shadow-color);
 }
 
 .icon {
-  font-size: 48rpx;
+  font-size: 44rpx;
   color: white;
+  line-height: 1;
 }
 
 .action-label {

@@ -69,25 +69,25 @@ Page({
         id: 1,
         title: '国家高新技术企业',
         organization: '科技部',
-        image: '/images/honor1.png'
+        image: '/images/honor1.svg'
       },
       {
         id: 2,
         title: 'ISO27001认证',
         organization: '国际标准化组织',
-        image: '/images/honor2.png'
+        image: '/images/honor2.svg'
       },
       {
         id: 3,
         title: '食品安全创新奖',
         organization: '中国食品工业协会',
-        image: '/images/honor3.png'
+        image: '/images/honor3.svg'
       },
       {
         id: 4,
         title: 'AI应用优秀案例',
         organization: '人工智能产业联盟',
-        image: '/images/honor4.png'
+        image: '/images/honor4.svg'
       }
     ],
     
@@ -299,7 +299,7 @@ Page({
     return {
       title: 'NutriScan - 智能食品安全检测专家',
       path: '/pages/index/index',
-      imageUrl: '/images/share-logo.png'
+      imageUrl: '/images/share-logo.svg'
     };
   },
 

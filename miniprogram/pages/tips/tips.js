@@ -494,14 +494,14 @@ Page({
       return {
         title: tip.title,
         path: `/pages/tips/tips?tipId=${tip.id}`,
-        imageUrl: '/images/share/tip.jpg'
+        imageUrl: '/images/share/tip.svg'
       };
     }
     
     return {
       title: '营养贴士 - 健康生活从这里开始',
       path: '/pages/tips/tips',
-      imageUrl: '/images/share/tips.jpg'
+      imageUrl: '/images/share/tips.svg'
     };
   },
 

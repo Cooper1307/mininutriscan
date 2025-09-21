@@ -44,7 +44,9 @@ Page({
   },
 
   onLoad() {
-    console.log('首页加载 - 简化测试版本')
+    console.log('首页加载')
+    // 先设置默认数据，确保页面有内容显示
+    this.ensureDefaultData()
     // 确保数据已初始化
     this.setData({
       userLocation: this.data.userLocation,
@@ -175,27 +177,37 @@ Page({
   // 统一加载所有数据，避免多个loading状态冲突
   loadAllData() {
     console.log('开始加载数据')
-    app.showLoading('加载中...')
     
-    // 设置超时保护，确保loading状态能被正确隐藏
+    // 不显示全局loading，让各个组件自己处理
+    // 设置超时保护，确保不会无限等待
     const timeout = new Promise((resolve) => {
       setTimeout(() => {
-        console.warn('数据加载超时，强制隐藏loading')
+        console.warn('数据加载超时，使用默认数据')
         resolve()
-      }, 10000) // 10秒超时
+      }, 5000) // 减少到5秒超时
     })
     
     // 并行执行所有数据加载请求，添加超时保护
     Promise.race([
-      Promise.all([
-        this.loadUserDataAsync().catch(err => console.warn('用户数据加载失败:', err)),
-        this.loadCommunityDataAsync().catch(err => console.warn('社区数据加载失败:', err)),
-        this.loadStatisticsAsync().catch(err => console.warn('统计数据加载失败:', err))
+      Promise.allSettled([
+        this.loadUserDataAsync().catch(err => {
+          console.warn('用户数据加载失败:', err)
+          return null
+        }),
+        this.loadCommunityDataAsync().catch(err => {
+          console.warn('社区数据加载失败:', err)
+          return null
+        }),
+        this.loadStatisticsAsync().catch(err => {
+          console.warn('统计数据加载失败:', err)
+          return null
+        })
       ]),
       timeout
     ]).finally(() => {
-      app.hideLoading()
-      console.log('数据加载完成，loading已隐藏')
+      console.log('数据加载完成')
+      // 确保页面数据已设置
+      this.ensureDefaultData()
     })
   },
 
@@ -233,7 +245,7 @@ Page({
     app.showLoading('加载中...')
     
     app.request({
-      url: '/community/news',
+      url: '/api/v1/community/news',
       method: 'GET',
       success: (res) => {
         if (res.statusCode === 200) {
@@ -260,27 +272,34 @@ Page({
   // 异步版本的社区数据加载
   loadCommunityDataAsync() {
     return new Promise((resolve) => {
+      // 设置较短的超时时间
+      const timeoutId = setTimeout(() => {
+        console.warn('社区数据请求超时，使用默认数据')
+        resolve()
+      }, 3000)
+      
       app.request({
-        url: '/community/news',
+        url: '/api/v1/community/news',
         method: 'GET',
+        timeout: 3000,
         success: (res) => {
-          if (res.statusCode === 200) {
+          clearTimeout(timeoutId)
+          if (res.statusCode === 200 && res.data) {
             this.setData({
               communityNews: res.data.news || this.data.communityNews,
               recommendations: res.data.recommendations || this.data.recommendations
             })
           }
+          resolve()
         },
         fail: (error) => {
+          clearTimeout(timeoutId)
           console.warn('加载社区数据失败，使用默认数据:', error)
           // 网络请求失败时使用默认数据，确保界面正常显示
           this.setData({
             communityNews: this.data.communityNews,
             recommendations: this.data.recommendations
           })
-        },
-        complete: () => {
-          // 确保请求完全结束后才resolve
           resolve()
         }
       })
@@ -290,7 +309,7 @@ Page({
   // 加载统计数据
   loadStatistics() {
     app.request({
-      url: '/statistics/today',
+      url: '/api/v1/statistics/today',
       method: 'GET',
       success: (res) => {
         if (res.statusCode === 200) {
@@ -317,7 +336,7 @@ Page({
   loadStatisticsAsync() {
     return new Promise((resolve) => {
       app.request({
-        url: '/statistics/today',
+        url: '/api/v1/statistics/today',
         method: 'GET',
         success: (res) => {
           if (res.statusCode === 200) {
@@ -345,9 +364,40 @@ Page({
     })
   },
 
+  // 确保页面有默认数据
+  ensureDefaultData() {
+    // 检查并设置默认数据
+    if (!this.data.communityNews || this.data.communityNews.length === 0) {
+      this.setData({
+        communityNews: [
+          {
+            id: 1,
+            title: '营养健康小贴士',
+            summary: '了解更多营养知识，保持健康生活',
+            image: '/images/tips.svg',
+            time: '刚刚'
+          }
+        ]
+      })
+    }
+    
+    if (!this.data.recommendations || this.data.recommendations.length === 0) {
+      this.setData({
+        recommendations: [
+          {
+            id: 1,
+            title: '均衡饮食指南',
+            image: '/images/food-guide.svg',
+            category: '营养指导'
+          }
+        ]
+      })
+    }
+  },
+
   // 刷新数据
   refreshData() {
-    Promise.all([
+    Promise.allSettled([
       this.loadCommunityDataAsync(),
       this.loadStatisticsAsync(),
       this.loadUserDataAsync()
@@ -394,7 +444,7 @@ Page({
     return {
       title: '社区食安AI小卫士 - 守护您的餐桌安全',
       path: '/pages/index/index',
-      imageUrl: '/assets/images/share-cover.jpg'
+      imageUrl: '/assets/images/share-cover.svg'
     }
   },
 
@@ -404,35 +454,5 @@ Page({
       title: '社区食安AI小卫士 - 守护您的餐桌安全',
       imageUrl: '/assets/images/share-cover.jpg'
     }
-  },
-
-  // 测试跳转方法
-  goToDetection() {
-    console.log('跳转到检测页面');
-    wx.switchTab({
-      url: '/pages/detection/detection'
-    });
-  },
-
-  goToReport() {
-    console.log('跳转到举报页面');
-    wx.switchTab({
-      url: '/pages/report/report'
-    });
-  },
-
-  goToProfile() {
-    console.log('跳转到个人中心');
-    wx.switchTab({
-      url: '/pages/profile/profile'
-    });
-  },
-
-  testClick() {
-    console.log('测试按钮被点击');
-    wx.showToast({
-      title: '页面正常工作！',
-      icon: 'success'
-    });
   }
 })

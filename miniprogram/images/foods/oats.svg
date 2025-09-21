@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+  <ellipse cx="30" cy="40" rx="4" ry="8" fill="#deb887" stroke="#cd853f" stroke-width="1" transform="rotate(15 30 40)"/>
+  <ellipse cx="45" cy="35" rx="4" ry="8" fill="#f5deb3" stroke="#deb887" stroke-width="1" transform="rotate(-10 45 35)"/>
+  <ellipse cx="60" cy="42" rx="4" ry="8" fill="#deb887" stroke="#cd853f" stroke-width="1" transform="rotate(20 60 42)"/>
+  <ellipse cx="35" cy="55" rx="4" ry="8" fill="#f5deb3" stroke="#deb887" stroke-width="1" transform="rotate(-15 35 55)"/>
+  <ellipse cx="50" cy="50" rx="4" ry="8" fill="#deb887" stroke="#cd853f" stroke-width="1" transform="rotate(5 50 50)"/>
+  <ellipse cx="65" cy="58" rx="4" ry="8" fill="#f5deb3" stroke="#deb887" stroke-width="1" transform="rotate(-20 65 58)"/>
+  <text x="50" y="85" text-anchor="middle" font-family="Arial" font-size="12" fill="#666">燕麦</text>
+</svg>

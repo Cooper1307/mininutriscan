@@ -28,25 +28,25 @@ Page({
       {
         id: 1,
         name: '蓝莓',
-        image: '/images/foods/blueberry.jpg',
+        image: '/images/foods/blueberry.svg',
         benefit: '富含花青素，抗氧化'
       },
       {
         id: 2,
         name: '三文鱼',
-        image: '/images/foods/salmon.jpg',
+        image: '/images/foods/salmon.svg',
         benefit: '优质蛋白，Omega-3'
       },
       {
         id: 3,
         name: '牛油果',
-        image: '/images/foods/avocado.jpg',
+        image: '/images/foods/avocado.svg',
         benefit: '健康脂肪，维生素E'
       },
       {
         id: 4,
         name: '燕麦',
-        image: '/images/foods/oats.jpg',
+        image: '/images/foods/oats.svg',
         benefit: '膳食纤维，降胆固醇'
       }
     ],
@@ -58,7 +58,7 @@ Page({
         name: '苹果',
         category: '水果',
         categoryId: 'fruits',
-        image: '/images/foods/apple.jpg',
+        image: '/images/foods/apple.svg',
         tags: ['维生素C', '膳食纤维', '低热量'],
         nutritionScore: 85,
         latinName: 'Malus domestica',
@@ -79,7 +79,7 @@ Page({
         name: '香蕉',
         category: '水果',
         categoryId: 'fruits',
-        image: '/images/foods/banana.jpg',
+        image: '/images/foods/banana.svg',
         tags: ['钾', '维生素B6', '快速能量'],
         nutritionScore: 78,
         latinName: 'Musa acuminata',
@@ -99,7 +99,7 @@ Page({
         name: '西兰花',
         category: '蔬菜',
         categoryId: 'vegetables',
-        image: '/images/foods/broccoli.jpg',
+        image: '/images/foods/broccoli.svg',
         tags: ['维生素K', '叶酸', '抗癌'],
         nutritionScore: 92,
         latinName: 'Brassica oleracea',
@@ -119,7 +119,7 @@ Page({
         name: '三文鱼',
         category: '海鲜',
         categoryId: 'seafood',
-        image: '/images/foods/salmon.jpg',
+        image: '/images/foods/salmon.svg',
         tags: ['Omega-3', '优质蛋白', 'DHA'],
         nutritionScore: 95,
         latinName: 'Salmo salar',
@@ -140,7 +140,7 @@ Page({
         name: '燕麦',
         category: '谷物',
         categoryId: 'grains',
-        image: '/images/foods/oats.jpg',
+        image: '/images/foods/oats.svg',
         tags: ['β-葡聚糖', '膳食纤维', '低GI'],
         nutritionScore: 88,
         latinName: 'Avena sativa',
@@ -519,7 +519,7 @@ Page({
     return {
       title: '食品百科 - 了解食物营养知识',
       path: '/pages/encyclopedia/encyclopedia',
-      imageUrl: '/images/share/encyclopedia.jpg'
+      imageUrl: '/images/share/encyclopedia.svg'
     };
   },
 

@@ -3,11 +3,13 @@
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from sqlalchemy import func, and_
 from datetime import datetime, timedelta
 from app.database import get_db
 from app.models.user import User
 from app.models.detection import Detection
 from app.models.report import Report
+from app.core.validators import ComprehensiveValidator
 from typing import Dict, Any
 
 # 创建路由器
@@ -20,25 +22,42 @@ async def get_today_statistics(db: Session = Depends(get_db)) -> Dict[str, Any]:
     返回今天的检测次数、用户活跃度、报告生成数等统计信息
     """
     try:
-        # 使用模拟数据（实际项目中应该从数据库获取真实数据）
-        # 今日检测次数
-        today_detections = 45
+        # 获取今日日期范围
+        today = datetime.now().date()
+        today_start = datetime.combine(today, datetime.min.time())
+        today_end = datetime.combine(today, datetime.max.time())
         
-        # 今日活跃用户数
-        today_active_users = 23
+        # 今日检测次数（从数据库查询真实数据）
+        today_detections = db.query(Detection).filter(
+            Detection.created_at >= today_start,
+            Detection.created_at <= today_end
+        ).count()
+        
+        # 今日活跃用户数（有检测记录的用户）
+        today_active_users = db.query(Detection.user_id).filter(
+            Detection.created_at >= today_start,
+            Detection.created_at <= today_end
+        ).distinct().count()
         
         # 今日生成报告数
-        today_reports = 18
+        today_reports = db.query(Report).filter(
+            Report.created_at >= today_start,
+            Report.created_at <= today_end
+        ).count()
         
         # 今日新注册用户数
-        today_users = 5
+        today_users = db.query(User).filter(
+            User.created_at >= today_start,
+            User.created_at <= today_end
+        ).count()
         
-        # 统计总数据（模拟数据）
-        total_detections = 1250
-        total_users = 320
-        total_reports = 890
+        # 统计总数据（从数据库查询真实数据）
+        total_detections = db.query(Detection).count()
+        total_users = db.query(User).count()
+        total_reports = db.query(Report).count()
         
-        return {
+        # 构建响应数据
+        response_data = {
             "success": True,
             "data": {
                 "today": {
@@ -62,6 +81,16 @@ async def get_today_statistics(db: Session = Depends(get_db)) -> Dict[str, Any]:
             },
             "message": "今日统计数据获取成功"
         }
+        
+        # 数据验证
+        validation_result = APIResponseValidator.validate_response_structure(
+            response_data, ['success', 'data', 'message']
+        )
+        if not validation_result.is_valid:
+            print(f"⚠️ 统计数据验证警告: {validation_result.errors}")
+            # 记录验证问题但不阻止响应
+        
+        return response_data
         
     except Exception as e:
         raise HTTPException(
@@ -103,7 +132,8 @@ async def get_weekly_statistics(db: Session = Depends(get_db)) -> Dict[str, Any]
                 "day_name": day.strftime("%A")
             })
         
-        return {
+        # 构建响应数据
+        response_data = {
             "success": True,
             "data": {
                 "weekly_trend": weekly_data,
@@ -112,6 +142,16 @@ async def get_weekly_statistics(db: Session = Depends(get_db)) -> Dict[str, Any]
             },
             "message": "本周统计数据获取成功"
         }
+        
+        # 数据验证
+        validation_result = APIResponseValidator.validate_response_structure(
+            response_data, ['success', 'data', 'message']
+        )
+        if not validation_result.is_valid:
+            print(f"⚠️ 本周统计数据验证警告: {validation_result.errors}")
+            # 记录验证问题但不阻止响应
+        
+        return response_data
         
     except Exception as e:
         raise HTTPException(
@@ -140,7 +180,8 @@ async def get_statistics_summary(db: Session = Depends(get_db)) -> Dict[str, Any
         # 计算平均每用户检测次数
         avg_detections_per_user = round(total_detections / total_users, 2) if total_users > 0 else 0
         
-        return {
+        # 构建响应数据
+        response_data = {
             "success": True,
             "data": {
                 "total_users": total_users,
@@ -152,6 +193,16 @@ async def get_statistics_summary(db: Session = Depends(get_db)) -> Dict[str, Any
             },
             "message": "统计摘要获取成功"
         }
+        
+        # 数据验证
+        validation_result = APIResponseValidator.validate_response_structure(
+            response_data, ['success', 'data', 'message']
+        )
+        if not validation_result.is_valid:
+            print(f"⚠️ 统计摘要数据验证警告: {validation_result.errors}")
+            # 记录验证问题但不阻止响应
+        
+        return response_data
         
     except Exception as e:
         raise HTTPException(

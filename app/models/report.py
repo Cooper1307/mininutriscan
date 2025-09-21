@@ -9,7 +9,8 @@ from datetime import datetime, timedelta
 import enum
 import json
 
-Base = declarative_base()
+# 导入共享的 Base
+from app.core.database import Base
 
 class ReportType(enum.Enum):
     """

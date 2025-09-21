@@ -5,7 +5,7 @@
   <!-- 应用信息 -->
   <view class="app-section">
     <view class="app-logo">
-      <image class="logo-image" src="/images/logo.png" mode="aspectFit"></image>
+      <image class="logo-image" src="/images/logo.svg" mode="aspectFit"></image>
     </view>
     
     <view class="app-info">

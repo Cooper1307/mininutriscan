@@ -12,7 +12,7 @@ const REQUEST_CONFIG = API_CONFIG.REQUEST_CONFIG;
 // 兼容原有配置
 const LEGACY_CONFIG = {
   // 基础URL（开发环境）
-  BASE_URL_DEV: API_CONFIG.BASE_URL_DEV || 'https://dev-api.nutriscan.com',
+  BASE_URL_DEV: API_CONFIG.BASE_URL_DEV || 'http://127.0.0.1:8000',
   // 基础URL（生产环境）
   BASE_URL_PROD: API_CONFIG.BASE_URL_PROD || 'https://api.nutriscan.com',
   // 请求超时时间
@@ -55,13 +55,32 @@ function requestInterceptor(config) {
     config.header['Authorization'] = `Bearer ${token}`;
   }
   
-  // 添加设备信息
-  const systemInfo = wx.getSystemInfoSync();
-  config.header['X-Device-Info'] = JSON.stringify({
-    platform: systemInfo.platform,
-    version: systemInfo.version,
-    model: systemInfo.model
-  });
+  // 添加设备信息（使用新的API避免弃用警告）
+  try {
+    const deviceInfo = wx.getDeviceInfo();
+    const windowInfo = wx.getWindowInfo();
+    const appBaseInfo = wx.getAppBaseInfo();
+    
+    config.header['X-Device-Info'] = JSON.stringify({
+      platform: deviceInfo.platform,
+      version: appBaseInfo.version,
+      model: deviceInfo.model,
+      screenWidth: windowInfo.screenWidth,
+      screenHeight: windowInfo.screenHeight
+    });
+  } catch (error) {
+    // 降级处理：如果新API不可用，使用旧API
+    try {
+      const systemInfo = wx.getSystemInfoSync();
+      config.header['X-Device-Info'] = JSON.stringify({
+        platform: systemInfo.platform,
+        version: systemInfo.version,
+        model: systemInfo.model
+      });
+    } catch (fallbackError) {
+      console.warn('获取设备信息失败:', fallbackError);
+    }
+  }
   
   return config;
 }
@@ -274,6 +293,7 @@ export function upload(url, filePath, formData = {}, config = {}) {
     
     // 添加认证头
     const header = {
+      'Content-Type': 'multipart/form-data',
       ...config.header
     };
     
@@ -285,12 +305,13 @@ export function upload(url, filePath, formData = {}, config = {}) {
     // 构建完整URL
     const fullUrl = url.startsWith('http') ? url : getBaseUrl() + url;
     
-    wx.uploadFile({
+    const uploadTask = wx.uploadFile({
       url: fullUrl,
       filePath,
       name: config.name || 'file',
       formData,
       header,
+      timeout: config.timeout || 30000,
       success: (response) => {
         // 隐藏加载提示
         if (config.showLoading !== false) {
@@ -298,16 +319,30 @@ export function upload(url, filePath, formData = {}, config = {}) {
         }
         
         try {
-          const data = JSON.parse(response.data);
-          if (data.code === 0 || data.success) {
-            resolve(data.data || data);
+          // 处理不同的响应格式
+          let data;
+          if (typeof response.data === 'string') {
+            data = JSON.parse(response.data);
           } else {
-            const error = new Error(data.message || '上传失败');
-            error.code = data.code;
-            error.data = data;
-            reject(error);
+            data = response.data;
+          }
+          
+          // 检查HTTP状态码
+          if (response.statusCode >= 200 && response.statusCode < 300) {
+            // 检查业务状态码
+            if (data.code === 0 || data.success === true || !data.code) {
+              resolve(data.data || data);
+            } else {
+              const error = new Error(data.message || data.msg || '上传失败');
+              error.code = data.code;
+              error.data = data;
+              reject(error);
+            }
+          } else {
+            reject(new Error(`HTTP ${response.statusCode}: ${data.message || '上传失败'}`));
           }
         } catch (e) {
+          console.error('响应解析失败:', e, response.data);
           reject(new Error('响应数据解析失败'));
         }
       },
@@ -317,9 +352,27 @@ export function upload(url, filePath, formData = {}, config = {}) {
           hideLoading();
         }
         
-        handleError(error, config).catch(reject);
+        console.error('上传失败:', error);
+        
+        let errorMessage = '上传失败';
+        if (error.errMsg) {
+          if (error.errMsg.includes('timeout')) {
+            errorMessage = '上传超时，请重试';
+          } else if (error.errMsg.includes('fail')) {
+            errorMessage = '网络连接失败';
+          }
+        }
+        
+        const uploadError = new Error(errorMessage);
+        uploadError.originalError = error;
+        reject(uploadError);
       }
     });
+    
+    // 监听上传进度
+    if (config.onProgress) {
+      uploadTask.onProgressUpdate(config.onProgress);
+    }
   });
 }
 

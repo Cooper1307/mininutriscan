@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 150">
+  <defs>
+    <linearGradient id="tip2Gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F3E5F5;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#E1BEE7;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="200" height="150" fill="url(#tip2Gradient)" rx="8"/>
+  
+  <!-- 图标 -->
+  <circle cx="100" cy="50" r="25" fill="#9C27B0"/>
+  <text x="100" y="58" text-anchor="middle" fill="#fff" font-family="Arial, sans-serif" font-size="20">🥗</text>
+  
+  <!-- 标题 -->
+  <text x="100" y="95" text-anchor="middle" fill="#7B1FA2" font-family="Arial, sans-serif" font-size="14" font-weight="bold">均衡饮食</text>
+  
+  <!-- 描述 -->
+  <text x="100" y="115" text-anchor="middle" fill="#666" font-family="Arial, sans-serif" font-size="11">蔬果搭配</text>
+  <text x="100" y="130" text-anchor="middle" fill="#666" font-family="Arial, sans-serif" font-size="11">营养全面</text>
+</svg>

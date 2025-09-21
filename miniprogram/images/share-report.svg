@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200">
+  <defs>
+    <linearGradient id="reportGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFEBEE;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FFCDD2;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="300" height="200" fill="url(#reportGradient)"/>
+  
+  <!-- 标题区域 -->
+  <rect x="20" y="20" width="260" height="40" fill="#F44336" rx="8"/>
+  <text x="150" y="45" text-anchor="middle" fill="#fff" font-family="Arial, sans-serif" font-size="18" font-weight="bold">食品安全举报</text>
+  
+  <!-- 举报图标 -->
+  <circle cx="80" cy="120" r="25" fill="#F44336"/>
+  <text x="80" y="128" text-anchor="middle" fill="#fff" font-family="Arial, sans-serif" font-size="20">⚠️</text>
+  
+  <!-- 信息区域 -->
+  <rect x="120" y="90" width="160" height="60" fill="#fff" rx="6" stroke="#E0E0E0" stroke-width="1"/>
+  
+  <!-- 文本信息 -->
+  <text x="130" y="110" fill="#333" font-family="Arial, sans-serif" font-size="14" font-weight="bold">维护食品安全</text>
+  <text x="130" y="130" fill="#666" font-family="Arial, sans-serif" font-size="12">发现问题食品？</text>
+  <text x="130" y="145" fill="#666" font-family="Arial, sans-serif" font-size="12">立即举报，保护大家</text>
+  
+  <!-- 底部信息 -->
+  <text x="150" y="180" text-anchor="middle" fill="#666" font-family="Arial, sans-serif" font-size="12">共同守护食品安全</text>
+</svg>

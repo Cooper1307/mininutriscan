@@ -1,0 +1,27 @@
+选择图片成功: http://tmp/ya1k765kiRsS33468d16b5709c98c3650fe17b388ba8.png
+app.js? [sm]:146 POST http://127.0.0.1:8000/api/v1/detection/analyze-base64 500 (Internal Server Error)(env: Windows,mp,2.01.2508252; lib: 3.9.1)
+request @ app.js? [sm]:146
+detectionResult @ detection.js? [sm]:275
+(anonymous) @ detection.js? [sm]:274
+s @ regeneratorRuntime.js?forceSync=true:1
+(anonymous) @ regeneratorRuntime.js?forceSync=true:1
+(anonymous) @ regeneratorRuntime.js?forceSync=true:1
+asyncGeneratorStep @ asyncToGenerator.js?forceSync=true:1
+c @ asyncToGenerator.js?forceSync=true:1
+Promise.then (async)
+asyncGeneratorStep @ asyncToGenerator.js?forceSync=true:1
+c @ asyncToGenerator.js?forceSync=true:1
+(anonymous) @ asyncToGenerator.js?forceSync=true:1
+(anonymous) @ asyncToGenerator.js?forceSync=true:1
+performActualDetection @ detection.js? [sm]:369
+startDetection @ detection.js? [sm]:177
+(anonymous) @ detection.js? [sm]:114
+setTimeout (async)
+success @ detection.js? [sm]:113
+检测失败: Error: API错误 (500): 检测过程中发生错误: 'ComprehensiveValidator' object has no attribute 'validate_api_response'
+    at detection.js? [sm]:321
+    at s (regeneratorRuntime.js?forceSync=true:1)
+    at Generator.<anonymous> (regeneratorRuntime.js?forceSync=true:1)
+    at Generator.next (regeneratorRuntime.js?forceSync=true:1)
+    at asyncGeneratorStep (asyncToGenerator.js?forceSync=true:1)
+    at c (asyncToGenerator.js?forceSync=true:1)(env: Windows,mp,2.01.2508252; lib: 3.9.1)

@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200">
+  <defs>
+    <linearGradient id="profileGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#E8EAF6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#C5CAE9;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="300" height="200" fill="url(#profileGradient)"/>
+  
+  <!-- 标题区域 -->
+  <rect x="20" y="20" width="260" height="40" fill="#3F51B5" rx="8"/>
+  <text x="150" y="45" text-anchor="middle" fill="#fff" font-family="Arial, sans-serif" font-size="18" font-weight="bold">个人营养档案</text>
+  
+  <!-- 用户头像区域 -->
+  <circle cx="80" cy="120" r="25" fill="#fff" stroke="#3F51B5" stroke-width="2"/>
+  <circle cx="80" cy="110" r="8" fill="#3F51B5"/>
+  <ellipse cx="80" cy="130" rx="12" ry="8" fill="#3F51B5"/>
+  
+  <!-- 信息区域 -->
+  <rect x="120" y="90" width="160" height="60" fill="#fff" rx="6" stroke="#E0E0E0" stroke-width="1"/>
+  
+  <!-- 文本信息 -->
+  <text x="130" y="110" fill="#333" font-family="Arial, sans-serif" font-size="14" font-weight="bold">营养达人</text>
+  <text x="130" y="130" fill="#666" font-family="Arial, sans-serif" font-size="12">健康等级: LV3</text>
+  <text x="130" y="145" fill="#666" font-family="Arial, sans-serif" font-size="12">已检测: 128次</text>
+  
+  <!-- 底部信息 -->
+  <text x="150" y="180" text-anchor="middle" fill="#666" font-family="Arial, sans-serif" font-size="12">记录每一次健康选择</text>
+</svg>

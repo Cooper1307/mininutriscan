@@ -1,0 +1,37 @@
+<svg width="200" height="150" viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="tipsGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2196F3;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#03A9F4;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="200" height="150" fill="url(#tipsGrad)" rx="10"/>
+  
+  <!-- 灯泡图标 -->
+  <g transform="translate(100, 75)">
+    <!-- 灯泡主体 -->
+    <ellipse cx="0" cy="-10" rx="20" ry="25" fill="#FFF" opacity="0.9"/>
+    
+    <!-- 灯泡底座 -->
+    <rect x="-15" y="10" width="30" height="8" fill="#FFF" opacity="0.9" rx="2"/>
+    <rect x="-12" y="18" width="24" height="4" fill="#FFF" opacity="0.7" rx="2"/>
+    
+    <!-- 灯泡内的光线 -->
+    <path d="M -10 -15 Q 0 -25 10 -15" stroke="#2196F3" stroke-width="2" fill="none" opacity="0.6"/>
+    <path d="M -8 -8 Q 0 -18 8 -8" stroke="#2196F3" stroke-width="2" fill="none" opacity="0.6"/>
+    
+    <!-- 光芒效果 -->
+    <g opacity="0.8">
+      <line x1="-35" y1="-10" x2="-25" y2="-10" stroke="#FFF" stroke-width="3" stroke-linecap="round"/>
+      <line x1="25" y1="-10" x2="35" y2="-10" stroke="#FFF" stroke-width="3" stroke-linecap="round"/>
+      <line x1="-25" y1="-30" x2="-20" y2="-25" stroke="#FFF" stroke-width="3" stroke-linecap="round"/>
+      <line x1="20" y1="-25" x2="25" y2="-30" stroke="#FFF" stroke-width="3" stroke-linecap="round"/>
+      <line x1="0" y1="-45" x2="0" y2="-35" stroke="#FFF" stroke-width="3" stroke-linecap="round"/>
+    </g>
+  </g>
+  
+  <!-- 标题 -->
+  <text x="100" y="135" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFF">营养健康小贴士</text>
+</svg>

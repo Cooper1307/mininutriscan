@@ -163,12 +163,18 @@ Page({
     const remainCount = 3 - images.length;
     
     if (remainCount <= 0) {
-      wx.showToast({
-        title: '最多上传3张图片',
-        icon: 'none'
+      wx.showModal({
+        title: '提示',
+        content: '最多只能上传3张图片，请先删除部分图片后再添加',
+        showCancel: false
       });
       return;
     }
+    
+    // 触觉反馈
+    wx.vibrateShort({
+      type: 'light'
+    });
     
     wx.chooseMedia({
       count: remainCount,
@@ -185,12 +191,28 @@ Page({
         this.setData({
           'formData.images': [...images, ...newImages]
         });
+        
+        wx.showToast({
+          title: '图片添加成功',
+          icon: 'success'
+        });
       },
       fail: (err) => {
         console.error('选择图片失败:', err);
-        wx.showToast({
+        
+        let errorMsg = '选择图片失败';
+        if (err.errMsg && err.errMsg.includes('cancel')) {
+          return; // 用户取消，不显示错误
+        } else if (err.errMsg && err.errMsg.includes('permission')) {
+          errorMsg = '请允许访问相册和相机权限';
+        } else if (err.errMsg && err.errMsg.includes('size')) {
+          errorMsg = '图片文件过大，请选择较小的图片';
+        }
+        
+        wx.showModal({
           title: '选择图片失败',
-          icon: 'none'
+          content: errorMsg + '，请重试或联系客服',
+          showCancel: false
         });
       }
     });
@@ -244,9 +266,17 @@ Page({
    */
   async submitFeedback() {
     if (!this.isFormValid()) {
-      wx.showToast({
-        title: '请完善必填信息',
-        icon: 'none'
+      const { type, title, description } = this.data.formData;
+      let missingFields = [];
+      
+      if (!type) missingFields.push('反馈类型');
+      if (!title.trim()) missingFields.push('问题标题');
+      if (!description.trim()) missingFields.push('详细描述');
+      
+      wx.showModal({
+        title: '信息不完整',
+        content: `请填写以下必填信息：${missingFields.join('、')}`,
+        showCancel: false
       });
       return;
     }
@@ -254,6 +284,11 @@ Page({
     if (this.data.isSubmitting) {
       return;
     }
+    
+    // 触觉反馈
+    wx.vibrateShort({
+      type: 'medium'
+    });
     
     this.setData({ isSubmitting: true });
     
@@ -272,22 +307,46 @@ Page({
       // 模拟API调用
       await this.mockSubmitFeedback(submitData);
       
-      wx.showToast({
+      wx.showModal({
         title: '提交成功',
-        icon: 'success'
+        content: '感谢您的反馈！我们会尽快处理您的问题，处理结果将通过微信消息通知您。',
+        showCancel: false,
+        success: () => {
+          // 重置表单
+          this.resetForm();
+          
+          // 刷新历史记录
+          this.loadHistoryFeedback();
+        }
       });
-      
-      // 重置表单
-      this.resetForm();
-      
-      // 刷新历史记录
-      this.loadHistoryFeedback();
       
     } catch (error) {
       console.error('提交反馈失败:', error);
-      wx.showToast({
-        title: '提交失败，请重试',
-        icon: 'none'
+      
+      let errorMsg = '提交失败，请重试';
+      if (error.message) {
+        if (error.message.includes('network')) {
+          errorMsg = '网络连接异常，请检查网络后重试';
+        } else if (error.message.includes('upload')) {
+          errorMsg = '图片上传失败，请重新选择图片或稍后重试';
+        } else if (error.message.includes('server')) {
+          errorMsg = '服务器繁忙，请稍后重试';
+        }
+      }
+      
+      wx.showModal({
+        title: '提交失败',
+        content: errorMsg + '\n\n如问题持续存在，请联系客服：400-123-4567',
+        confirmText: '重试',
+        cancelText: '取消',
+        success: (res) => {
+          if (res.confirm) {
+            // 用户选择重试
+            setTimeout(() => {
+              this.submitFeedback();
+            }, 500);
+          }
+        }
       });
     } finally {
       this.setData({ isSubmitting: false });
@@ -461,7 +520,7 @@ Page({
     return {
       title: 'NutriScan - 智能食品安全检测',
       path: '/pages/index/index',
-      imageUrl: '/images/share-bg.jpg'
+      imageUrl: '/images/share-bg.svg'
     };
   },
 

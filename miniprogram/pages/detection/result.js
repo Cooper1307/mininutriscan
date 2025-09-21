@@ -10,23 +10,23 @@ Page({
         id: 1,
         title: '食品安全小贴士',
         description: '如何正确保存水果',
-        image: '/assets/images/tip1.jpg'
+        image: '/assets/images/tip1.svg'
       },
       {
         id: 2,
         title: '营养搭配指南',
         description: '均衡饮食的重要性',
-        image: '/assets/images/tip2.jpg'
+        image: '/assets/images/tip2.svg'
       },
       {
         id: 3,
         title: '食材选购技巧',
         description: '挑选新鲜食材的方法',
-        image: '/assets/images/tip3.jpg'
+        image: '/assets/images/tip3.svg'
       }
     ],
     expertComment: {
-      avatar: '/assets/images/expert-avatar.jpg',
+      avatar: '/assets/images/expert-avatar.svg',
       name: '张教授',
       title: '食品安全专家',
       content: '从检测结果来看，这个苹果的各项指标都在正常范围内，新鲜度良好，可以放心食用。建议食用前清洗干净，以去除表面可能残留的灰尘和细菌。'

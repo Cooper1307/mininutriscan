@@ -1,31 +1,46 @@
 // app.js
+import api from './utils/api.js'
+const { API_CONFIG } = require('./config/api')
+
 App({
-  onLaunch() {
-    console.log('社区食安AI小卫士启动')
+  // 全局数据
+  globalData: {
+    userInfo: null,
+    hasLogin: false,
+    openid: null,
+    sessionKey: null,
+    baseUrl: API_CONFIG.BASE_URL,
+    version: '1.0.0'
+  },
+
+  // 应用启动
+  onLaunch(options) {
+    console.log('小程序启动', options)
     
     // 检查更新
     this.checkForUpdate()
     
-    // 初始化全局数据
-    this.initGlobalData()
+    // 初始化用户信息
+    this.initUserInfo()
     
-    // 检查登录状态
-    this.checkLoginStatus()
-    
-    // 获取系统信息
-    this.getSystemInfo()
+    // 设置网络状态监听
+    this.setupNetworkListener()
   },
 
-  onShow() {
-    console.log('应用显示')
+  // 应用显示
+  onShow(options) {
+    console.log('小程序显示', options)
   },
 
+  // 应用隐藏
   onHide() {
-    console.log('应用隐藏')
+    console.log('小程序隐藏')
   },
 
-  onError(msg) {
-    console.error('应用错误:', msg)
+  // 应用错误
+  onError(error) {
+    console.error('小程序错误:', error)
+    // 可以在这里上报错误信息
   },
 
   // 检查小程序更新
@@ -57,143 +72,30 @@ App({
     }
   },
 
-  // 初始化全局数据
-  initGlobalData() {
-    this.globalData = {
-      userInfo: null,
-      token: null,
-      systemInfo: null,
-      apiBaseUrl: 'http://127.0.0.1:8000/api/v1',
-      isLoggedIn: false,
-      userLocation: null,
-      detectionHistory: [],
-      reportHistory: []
-    }
-  },
-
-  // 检查登录状态
-  checkLoginStatus() {
-    const token = wx.getStorageSync('token')
+  // 初始化用户信息
+  initUserInfo() {
+    // 从缓存获取用户信息
     const userInfo = wx.getStorageSync('userInfo')
-    
-    if (token && userInfo) {
-      this.globalData.token = token
+    if (userInfo) {
       this.globalData.userInfo = userInfo
-      this.globalData.isLoggedIn = true
-      
-      // 验证token有效性
-      this.validateToken()
+      this.globalData.hasLogin = true
     }
   },
 
-  // 验证token有效性
-  validateToken() {
-    wx.request({
-      url: `${this.globalData.apiBaseUrl}/auth/validate`,
-      method: 'GET',
-      header: {
-        'Authorization': `Bearer ${this.globalData.token}`
-      },
-      success: (res) => {
-        if (res.statusCode !== 200) {
-          this.logout()
-        }
-      },
-      fail: () => {
-        this.logout()
-      }
-    })
-  },
-
-  // 获取系统信息
-  getSystemInfo() {
-    wx.getSystemInfo({
-      success: (res) => {
-        this.globalData.systemInfo = res
-        console.log('系统信息:', res)
-      }
-    })
-  },
-
-  // 登录方法
-  login(userInfo, callback) {
-    wx.login({
-      success: (res) => {
-        if (res.code) {
-          // 发送code到后端
-          wx.request({
-            url: `${this.globalData.apiBaseUrl}/auth/wechat/login`,
-            method: 'POST',
-            data: {
-              code: res.code,
-              userInfo: userInfo
-            },
-            success: (response) => {
-              if (response.statusCode === 200) {
-                const { token, user } = response.data
-                
-                // 保存登录信息
-                this.globalData.token = token
-                this.globalData.userInfo = user
-                this.globalData.isLoggedIn = true
-                
-                // 持久化存储
-                wx.setStorageSync('token', token)
-                wx.setStorageSync('userInfo', user)
-                
-                if (callback) callback(true, user)
-              } else {
-                if (callback) callback(false, response.data.message)
-              }
-            },
-            fail: (error) => {
-              console.error('登录失败:', error)
-              if (callback) callback(false, '网络错误')
-            }
-          })
-        } else {
-          console.error('获取用户登录态失败:', res.errMsg)
-          if (callback) callback(false, '获取登录态失败')
-        }
-      }
-    })
-  },
-
-  // 登出方法
-  logout() {
-    this.globalData.token = null
-    this.globalData.userInfo = null
-    this.globalData.isLoggedIn = false
-    
-    wx.removeStorageSync('token')
-    wx.removeStorageSync('userInfo')
-    
-    console.log('用户已登出')
-  },
-
-  // 获取用户位置
-  getUserLocation(callback) {
-    wx.getLocation({
-      type: 'gcj02',
-      success: (res) => {
-        this.globalData.userLocation = {
-          latitude: res.latitude,
-          longitude: res.longitude
-        }
-        if (callback) callback(true, res)
-      },
-      fail: (error) => {
-        console.error('获取位置失败:', error)
-        if (callback) callback(false, error)
+  // 设置网络状态监听
+  setupNetworkListener() {
+    wx.onNetworkStatusChange((res) => {
+      if (!res.isConnected) {
+        this.showToast('网络连接已断开', 'none')
       }
     })
   },
 
   // 显示加载提示
-  showLoading(title = '加载中...') {
+  showLoading(title = '加载中...', mask = true) {
     wx.showLoading({
       title: title,
-      mask: true
+      mask: mask
     })
   },
 
@@ -203,65 +105,138 @@ App({
   },
 
   // 显示成功提示
-  showSuccess(title) {
+  showSuccess(title, duration = 2000) {
     wx.showToast({
       title: title,
       icon: 'success',
-      duration: 2000
+      duration: duration
     })
   },
 
   // 显示错误提示
-  showError(title) {
+  showError(title, duration = 2000) {
     wx.showToast({
       title: title,
-      icon: 'none',
-      duration: 2000
+      icon: 'error',
+      duration: duration
+    })
+  },
+
+  // 显示普通提示
+  showToast(title, icon = 'none', duration = 2000) {
+    wx.showToast({
+      title: title,
+      icon: icon,
+      duration: duration
     })
   },
 
   // 网络请求封装
   request(options) {
-    const { url, method = 'GET', data = {}, header = {}, success, fail, complete } = options
-    
-    // 添加token
-    if (this.globalData.token) {
-      header['Authorization'] = `Bearer ${this.globalData.token}`
+    // 确保传递完整的配置
+    const config = {
+      ...options,
+      baseUrl: this.globalData.baseUrl
     }
     
-    wx.request({
-      url: url.startsWith('http') ? url : `${this.globalData.apiBaseUrl}${url}`,
-      method: method,
-      data: data,
-      header: {
-        'Content-Type': 'application/json',
-        ...header
-      },
+    // 如果有success/fail回调，直接使用微信原生请求
+    if (options.success || options.fail) {
+      const url = options.url.startsWith('http') ? options.url : this.globalData.baseUrl + options.url
+      
+      return wx.request({
+        url,
+        method: options.method || 'GET',
+        data: options.data,
+        header: {
+          'Content-Type': 'application/json',
+          ...options.header
+        },
+        timeout: options.timeout || 30000,
+        success: options.success,
+        fail: options.fail,
+        complete: options.complete
+      })
+    }
+    
+    // 否则使用封装的api.request
+    return api.request(config)
+  },
+
+  // 获取用户位置
+  getUserLocation(callback) {
+    wx.getLocation({
+      type: 'gcj02',
       success: (res) => {
-        if (res.statusCode === 401) {
-          // token过期，重新登录
-          this.logout()
-          wx.showModal({
-            title: '提示',
-            content: '登录已过期，请重新登录',
-            showCancel: false,
-            success: () => {
-              wx.switchTab({ url: '/pages/profile/profile' })
-            }
-          })
-          return
-        }
-        
-        if (success) success(res)
+        if (callback) callback(true, res)
       },
       fail: (error) => {
-        console.error('网络请求失败:', error)
-        if (fail) fail(error)
-      },
-      complete: (res) => {
-        // 确保complete回调被正确执行，用于隐藏loading状态
-        if (complete) complete(res)
+        console.warn('获取位置失败:', error)
+        if (callback) callback(false, error)
       }
     })
+  },
+
+  // 登录
+  login() {
+    return new Promise((resolve, reject) => {
+      wx.login({
+        success: (res) => {
+          if (res.code) {
+            // 发送 res.code 到后台换取 openId, sessionKey, unionId
+            this.request({
+              url: '/auth/login',
+              method: 'POST',
+              data: {
+                code: res.code
+              },
+              success: (result) => {
+                if (result.statusCode === 200) {
+                  this.globalData.openid = result.data.openid
+                  this.globalData.sessionKey = result.data.sessionKey
+                  this.globalData.hasLogin = true
+                  resolve(result.data)
+                } else {
+                  reject(new Error('登录失败'))
+                }
+              },
+              fail: reject
+            })
+          } else {
+            reject(new Error('获取登录凭证失败'))
+          }
+        },
+        fail: reject
+      })
+    })
+  },
+
+  // 获取用户信息
+  getUserInfo() {
+    return new Promise((resolve, reject) => {
+      if (this.globalData.userInfo) {
+        resolve(this.globalData.userInfo)
+        return
+      }
+      
+      wx.getUserProfile({
+        desc: '用于完善用户资料',
+        success: (res) => {
+          this.globalData.userInfo = res.userInfo
+          wx.setStorageSync('userInfo', res.userInfo)
+          resolve(res.userInfo)
+        },
+        fail: reject
+      })
+    })
+  },
+
+  // 退出登录
+  logout() {
+    this.globalData.userInfo = null
+    this.globalData.hasLogin = false
+    this.globalData.openid = null
+    this.globalData.sessionKey = null
+    wx.removeStorageSync('userInfo')
+    wx.removeStorageSync('token')
   }
 })

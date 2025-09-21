@@ -4,5 +4,8 @@
   "backgroundTextStyle": "dark",
   "backgroundColor": "#f5f5f5",
   "onReachBottomDistance": 50,
-  "usingComponents": {}
+  "usingComponents": {
+    "navigation-bar": "/components/navigation-bar/navigation-bar",
+    "quick-actions": "/components/quick-actions/quick-actions"
+  }
 }

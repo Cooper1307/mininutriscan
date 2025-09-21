@@ -47,6 +47,9 @@ Page({
   // 刷新数据
   async refreshData() {
     try {
+      // 触发触觉反馈
+      wx.vibrateShort()
+      
       await Promise.all([
         this.loadUserInfo(),
         this.loadUserStats()
@@ -54,13 +57,16 @@ Page({
       
       wx.showToast({
         title: '刷新成功',
-        icon: 'success'
+        icon: 'success',
+        duration: 1500
       });
     } catch (error) {
       console.error('刷新失败:', error);
-      wx.showToast({
+      wx.showModal({
         title: '刷新失败',
-        icon: 'none'
+        content: '网络连接异常，请检查网络后重试',
+        showCancel: false,
+        confirmText: '知道了'
       });
     } finally {
       wx.stopPullDownRefresh();
@@ -78,59 +84,107 @@ Page({
         return;
       }
 
-      // 这里应该调用实际的API
-      // const result = await app.request({
-      //   url: '/api/user/profile',
-      //   method: 'GET'
-      // });
-      
-      // 模拟用户数据
-      const mockUserInfo = {
-        avatar: '/images/default-avatar.png',
-        nickname: '营养达人',
-        level: 'LV3',
-        levelDesc: '资深用户',
-        detectCount: 156,
-        points: 2580,
-        isVip: true,
-        vipExpire: '2024-12-31',
-        isLogin: true
-      };
-      
-      this.setData({
-        userInfo: mockUserInfo
+      // 调用真实的用户信息API
+      const result = await app.request({
+        url: '/api/user/profile',
+        method: 'GET'
       });
+      
+      if (result.success && result.data) {
+        // 使用API返回的真实用户数据
+        const userInfo = {
+          avatar: result.data.avatar || '/images/default-avatar.svg',
+          nickname: result.data.nickname || '用户',
+          level: result.data.level || 'LV1',
+          levelDesc: result.data.level_desc || '新手用户',
+          detectCount: result.data.detect_count || 0,
+          points: result.data.points || 0,
+          isVip: result.data.is_vip || false,
+          vipExpire: result.data.vip_expire || '',
+          isLogin: true
+        };
+        
+        this.setData({
+          userInfo: userInfo
+        });
+      } else {
+        // API调用失败，设置为未登录状态
+        this.setData({
+          'userInfo.isLogin': false
+        });
+        wx.removeStorageSync('token');
+      }
       
     } catch (error) {
       console.error('加载用户信息失败:', error);
+      // 网络错误或API错误，保持当前状态但显示错误提示
+      wx.showToast({
+        title: '加载用户信息失败',
+        icon: 'none'
+      });
     }
   },
 
   // 加载用户统计
   async loadUserStats() {
     try {
-      // 这里应该调用实际的API
-      // const result = await app.request({
-      //   url: '/api/user/stats',
-      //   method: 'GET'
-      // });
-      
-      // 模拟统计数据
-      const mockStats = {
-        totalDetections: 156,
-        safeCount: 128,
-        warningCount: 28,
-        totalPoints: 2580,
-        todayDetections: 3,
-        pendingReports: 1
-      };
-      
-      this.setData({
-        stats: mockStats
+      const token = wx.getStorageSync('token');
+      if (!token) {
+        // 未登录用户显示默认统计数据
+        this.setData({
+          stats: {
+            totalDetections: 0,
+            safeCount: 0,
+            warningCount: 0,
+            totalPoints: 0,
+            todayDetections: 0,
+            pendingReports: 0
+          }
+        });
+        return;
+      }
+
+      // 调用真实的用户统计API
+      const result = await app.request({
+        url: '/api/user/stats',
+        method: 'GET'
       });
+      
+      if (result.success && result.data) {
+        // 使用API返回的真实统计数据
+        const stats = {
+          totalDetections: result.data.total_detections || 0,
+          safeCount: result.data.safe_count || 0,
+          warningCount: result.data.warning_count || 0,
+          totalPoints: result.data.total_points || 0,
+          todayDetections: result.data.today_detections || 0,
+          pendingReports: result.data.pending_reports || 0
+        };
+        
+        this.setData({
+          stats: stats
+        });
+      } else {
+        // API调用失败，显示默认数据
+        this.setData({
+          stats: {
+            totalDetections: 0,
+            safeCount: 0,
+            warningCount: 0,
+            totalPoints: 0,
+            todayDetections: 0,
+            pendingReports: 0
+          }
+        });
+      }
       
     } catch (error) {
       console.error('加载统计数据失败:', error);
+      // 网络错误时显示错误提示
+      wx.showToast({
+        title: '加载统计数据失败',
+        icon: 'none'
+      });
     }
   },
 
@@ -143,6 +197,9 @@ Page({
 
   // 头像点击
   onAvatarTap() {
+    // 触发触觉反馈
+    wx.vibrateShort()
+    
     if (!this.data.userInfo.isLogin) {
       this.onLogin();
       return;
@@ -159,6 +216,9 @@ Page({
             this.changeAvatar();
             break;
         }
+      },
+      fail: (error) => {
+        console.log('用户取消操作');
       }
     });
   },
@@ -192,36 +252,45 @@ Page({
     wx.showLoading({ title: '上传中...' });
     
     try {
-      // 这里应该调用实际的上传API
-      // const result = await new Promise((resolve, reject) => {
-      //   wx.uploadFile({
-      //     url: `${app.globalData.apiBaseUrl}/api/upload/avatar`,
-      //     filePath: filePath,
-      //     name: 'avatar',
-      //     header: {
-      //       'Authorization': `Bearer ${wx.getStorageSync('token')}`
-      //     },
-      //     success: resolve,
-      //     fail: reject
-      //   });
-      // });
-      
-      // 模拟上传成功
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      this.setData({
-        'userInfo.avatar': filePath
+      // 调用真实的头像上传API
+      const result = await new Promise((resolve, reject) => {
+        wx.uploadFile({
+          url: `${app.globalData.apiBaseUrl}/api/upload/avatar`,
+          filePath: filePath,
+          name: 'avatar',
+          header: {
+            'Authorization': `Bearer ${wx.getStorageSync('token')}`
+          },
+          success: (res) => {
+            try {
+              const data = JSON.parse(res.data);
+              resolve(data);
+            } catch (e) {
+              reject(new Error('响应数据格式错误'));
+            }
+          },
+          fail: reject
+        });
       });
       
-      wx.showToast({
-        title: '头像更新成功',
-        icon: 'success'
-      });
+      if (result.success && result.data && result.data.avatar_url) {
+        // 上传成功，更新头像URL
+        this.setData({
+          'userInfo.avatar': result.data.avatar_url
+        });
+        
+        wx.showToast({
+          title: '头像更新成功',
+          icon: 'success'
+        });
+      } else {
+        throw new Error(result.message || '上传失败');
+      }
       
     } catch (error) {
       console.error('上传头像失败:', error);
       wx.showToast({
-        title: '上传失败',
+        title: error.message || '上传失败',
         icon: 'none'
       });
     } finally {
@@ -250,29 +319,38 @@ Page({
 
   // 更新昵称
   async updateNickname(nickname) {
+    wx.showLoading({ title: '更新中...' });
+    
     try {
-      // 这里应该调用实际的API
-      // await app.request({
-      //   url: '/api/user/nickname',
-      //   method: 'PUT',
-      //   data: { nickname }
-      // });
-      
-      this.setData({
-        'userInfo.nickname': nickname
+      // 调用真实的昵称更新API
+      const result = await app.request({
+        url: '/api/user/profile',
+        method: 'PUT',
+        data: { nickname }
       });
       
-      wx.showToast({
-        title: '昵称更新成功',
-        icon: 'success'
-      });
+      if (result.success) {
+        // 更新成功，更新本地数据
+        this.setData({
+          'userInfo.nickname': nickname
+        });
+        
+        wx.showToast({
+          title: '昵称更新成功',
+          icon: 'success'
+        });
+      } else {
+        throw new Error(result.message || '更新失败');
+      }
       
     } catch (error) {
       console.error('更新昵称失败:', error);
       wx.showToast({
-        title: '更新失败',
+        title: error.message || '更新失败',
         icon: 'none'
       });
+    } finally {
+      wx.hideLoading();
     }
   },
 
@@ -536,7 +614,7 @@ Page({
     return {
       title: '发现一个超好用的食品检测小程序！',
       path: '/pages/index/index',
-      imageUrl: '/images/share-profile.png'
+      imageUrl: '/images/share-profile.svg'
     };
   },
 
@@ -546,12 +624,5 @@ Page({
       title: '食品安全检测神器，守护健康生活',
       imageUrl: '/images/share-profile.png'
     };
-  },
-
-  // 返回首页
-  goBack() {
-    wx.switchTab({
-      url: '/pages/index/index'
-    });
   }
 });

@@ -1,17 +1,17 @@
-/* 色彩变量 */
+/* 色彩变量 - 严格按照UI设计规范 */
 :root {
-  --primary-color: #2E8B57;      /* 主色调-海绿色 */
-  --secondary-color: #4169E1;    /* 辅助色-皇家蓝 */
-  --accent-color: #FF6B35;       /* 强调色-橙红色 */
-  --background-color: #F8F9FA;   /* 背景色 */
-  --text-primary: #2C3E50;       /* 主要文字色 */
-  --text-secondary: #7F8C8D;     /* 次要文字色 */
-  --border-color: #E9ECEF;       /* 边框色 */
-  --shadow-color: rgba(0,0,0,0.1); /* 阴影色 */
-  --success-color: #27AE60;      /* 成功色 */
-  --warning-color: #F39C12;      /* 警告色 */
-  --danger-color: #E74C3C;       /* 危险色 */
-  --info-color: #3498DB;         /* 信息色 */
+  --primary-color: #2E8B57;      /* 主色调-海绿色 (Sea Green) */
+  --secondary-color: #4169E1;    /* 辅助色-皇家蓝 (Royal Blue) */
+  --accent-color: #FF6347;       /* 强调色-橙红色 (Tomato) - 调整为更符合设计规范 */
+  --background-color: #F8F9FA;   /* 背景色-浅灰白 */
+  --text-primary: #2C3E50;       /* 主要文字色-深蓝灰 */
+  --text-secondary: #7F8C8D;     /* 次要文字色-中性灰 */
+  --border-color: #E9ECEF;       /* 边框色-浅灰 */
+  --shadow-color: rgba(44,62,80,0.1); /* 阴影色-基于主文字色的半透明 */
+  --success-color: #27AE60;      /* 成功色-绿色 */
+  --warning-color: #F39C12;      /* 警告色-橙色 */
+  --danger-color: #E74C3C;       /* 危险色-红色 */
+  --info-color: #3498DB;         /* 信息色-蓝色 */
   
   /* 圆角变量 */
   --radius-sm: 8rpx;             /* 小圆角 */
@@ -20,38 +20,47 @@
   --radius-xl: 24rpx;            /* 超大圆角 */
 }
 
-/* 字体大小 */
+/* 字体大小 - 严格按照UI设计规范 */
 .text-title { 
-  font-size: 36rpx; 
+  font-size: 40rpx;             /* 标题：40rpx，加粗 */
   font-weight: bold; 
   color: var(--text-primary);
 }
 
 .text-subtitle { 
-  font-size: 32rpx; 
+  font-size: 32rpx;             /* 副标题：32rpx，半粗体 */
   font-weight: 600; 
   color: var(--text-primary);
 }
 
 .text-body { 
-  font-size: 28rpx; 
+  font-size: 28rpx;             /* 正文：28rpx，常规 */
+  font-weight: 400;
   color: var(--text-primary);
 }
 
 .text-caption { 
-  font-size: 24rpx; 
+  font-size: 24rpx;             /* 辅助文字：24rpx，常规 */
+  font-weight: 400;
   color: var(--text-secondary); 
 }
 
 .text-small { 
-  font-size: 22rpx; 
+  font-size: 22rpx;             /* 小字：22rpx，常规 */
+  font-weight: 400;
   color: var(--text-secondary); 
 }
 
 .text-large {
-  font-size: 40rpx;
+  font-size: 44rpx;             /* 大标题：44rpx，加粗 */
   font-weight: bold;
   color: var(--text-primary);
+}
+
+/* 按钮文字规范 */
+.text-button {
+  font-size: 32rpx;             /* 按钮文字：32rpx，加粗 */
+  font-weight: bold;
 }
 
 /* 字体权重 */

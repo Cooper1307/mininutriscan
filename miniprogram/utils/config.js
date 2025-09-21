@@ -11,10 +11,9 @@ import { STORAGE_KEYS, THEME, LANGUAGES, DEFAULTS } from './constants.js';
 const ENV_CONFIG = {
   // 开发环境
   development: {
-    API_BASE_URL: 'https://dev-api.nutriscan.com',
+    API_BASE_URL: 'http://127.0.0.1:8000',
     DEBUG: true,
     LOG_LEVEL: 'debug',
-    MOCK_DATA: true,
     ANALYTICS_ENABLED: false
   },
   
@@ -23,7 +22,6 @@ const ENV_CONFIG = {
     API_BASE_URL: 'https://test-api.nutriscan.com',
     DEBUG: true,
     LOG_LEVEL: 'info',
-    MOCK_DATA: false,
     ANALYTICS_ENABLED: false
   },
   
@@ -32,7 +30,6 @@ const ENV_CONFIG = {
     API_BASE_URL: 'https://api.nutriscan.com',
     DEBUG: false,
     LOG_LEVEL: 'error',
-    MOCK_DATA: false,
     ANALYTICS_ENABLED: true
   }
 };
@@ -311,7 +308,6 @@ class ConfigManager {
     delete userConfig.API_BASE_URL;
     delete userConfig.DEBUG;
     delete userConfig.LOG_LEVEL;
-    delete userConfig.MOCK_DATA;
     delete userConfig.ANALYTICS_ENABLED;
     
     return userConfig;
@@ -402,12 +398,7 @@ class ConfigManager {
     return this.get('DEBUG', false);
   }
   
-  /**
-   * 检查是否启用模拟数据
-   */
-  isMockEnabled() {
-    return this.get('MOCK_DATA', false);
-  }
+
   
   /**
    * 导出配置
@@ -536,7 +527,7 @@ export const setConfig = (key, value) => configManager.set(key, value);
 export const resetConfig = (key) => configManager.reset(key);
 export const watchConfig = (key, callback) => configManager.watch(key, callback);
 export const isDebug = () => configManager.isDebugEnabled();
-export const isMock = () => configManager.isMockEnabled();
+
 export const isDev = () => configManager.isDevelopment();
 export const isProd = () => configManager.isProduction();
 

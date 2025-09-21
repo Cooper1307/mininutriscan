@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 150">
+  <defs>
+    <linearGradient id="tip3Gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFF8E1;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FFECB3;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="200" height="150" fill="url(#tip3Gradient)" rx="8"/>
+  
+  <!-- 图标 -->
+  <circle cx="100" cy="50" r="25" fill="#FFC107"/>
+  <text x="100" y="58" text-anchor="middle" fill="#fff" font-family="Arial, sans-serif" font-size="20">🏃</text>
+  
+  <!-- 标题 -->
+  <text x="100" y="95" text-anchor="middle" fill="#F57F17" font-family="Arial, sans-serif" font-size="14" font-weight="bold">适量运动</text>
+  
+  <!-- 描述 -->
+  <text x="100" y="115" text-anchor="middle" fill="#666" font-family="Arial, sans-serif" font-size="11">每日30分钟</text>
+  <text x="100" y="130" text-anchor="middle" fill="#666" font-family="Arial, sans-serif" font-size="11">增强体质</text>
+</svg>

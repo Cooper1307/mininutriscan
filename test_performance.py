@@ -254,8 +254,12 @@ class PerformanceTester:
                     }
                 }
                 
-                # 调用AI分析（使用模拟数据避免实际API调用）
-                result = self.ai_service.analyze_nutrition_mock(test_data)
+                # 调用AI分析（使用真实AI服务）
+                if hasattr(self.ai_service, 'is_configured') and self.ai_service.is_configured():
+                    result = self.ai_service.analyze_nutrition(test_data["nutrition"])
+                else:
+                    # AI服务未配置时使用模拟结果
+                    result = {"analysis": "mock_analysis", "recommendations": ["mock_recommendation"]}
                 
                 end_time = time.time()
                 return True, end_time - start_time
@@ -543,24 +547,9 @@ class PerformanceTester:
         except Exception as e:
             print(f"⚠️  保存性能报告失败: {str(e)}")
 
-# 为AI服务添加模拟方法
-class MockAIService:
-    """模拟AI服务用于性能测试"""
-    
-    def analyze_nutrition_mock(self, data):
-        """模拟营养分析"""
-        # 模拟处理时间
-        time.sleep(0.05)  # 50ms模拟处理时间
-        
-        return {
-            "analysis": "模拟营养分析结果",
-            "health_score": 85,
-            "recommendations": ["建议增加蛋白质摄入", "注意控制糖分"]
-        }
-
-# 扩展AI服务类
-if 'AIService' in globals():
-    AIService.analyze_nutrition_mock = MockAIService().analyze_nutrition_mock
+# 使用真实AI服务进行性能测试
+# 注意：真实AI服务调用会产生实际费用，请谨慎使用
+# 如需使用模拟数据，请在配置中设置MOCK_DATA=true
 
 def main():
     """

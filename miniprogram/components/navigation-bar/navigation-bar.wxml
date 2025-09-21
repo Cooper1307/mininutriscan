@@ -2,7 +2,7 @@
   <view class="nav-content">
     <view class="nav-left" wx:if="{{showBack}}">
       <view class="nav-back" bindtap="onBack">
-        <text class="icon-back">‹</text>
+        <text class="icon-back">←</text>
       </view>
     </view>
     

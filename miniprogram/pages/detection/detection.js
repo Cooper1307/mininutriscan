@@ -13,7 +13,7 @@ Page({
     historyList: [
       {
         id: 1,
-        image: '/assets/images/food-sample1.jpg',
+        image: '/assets/images/food-sample1.svg',
         foodName: '苹果',
         safetyLevel: 'safe',
         safetyIcon: '✅',
@@ -22,7 +22,7 @@ Page({
       },
       {
         id: 2,
-        image: '/assets/images/food-sample2.jpg',
+        image: '/assets/images/food-sample2.svg',
         foodName: '牛奶',
         safetyLevel: 'warning',
         safetyIcon: '⚠️',
@@ -80,6 +80,11 @@ Page({
         
         // 触发震动反馈
         wx.vibrateShort()
+        
+        // 拍照成功后自动开始检测
+        setTimeout(() => {
+          this.startDetection()
+        }, 500)
       },
       fail: (error) => {
         console.error('拍照失败:', error)
@@ -103,6 +108,11 @@ Page({
         this.setData({
           selectedImage: imagePath
         })
+        
+        // 图片选择成功后自动开始检测
+        setTimeout(() => {
+          this.startDetection()
+        }, 500)
       },
       fail: (error) => {
         console.error('选择图片失败:', error)
@@ -145,10 +155,17 @@ Page({
   // 开始检测
   startDetection() {
     if (!this.data.selectedImage) {
-      app.showError('请先选择图片')
+      wx.showToast({
+        title: '请先选择图片',
+        icon: 'none',
+        duration: 2000
+      })
       return
     }
 
+    // 触发触觉反馈
+    wx.vibrateShort()
+    
     this.setData({
       detecting: true,
       detectionProgress: 0,
@@ -253,28 +270,22 @@ Page({
         throw new Error('图片处理失败')
       }
 
-      // 调用检测API（直接上传图片进行检测）
+      // 调用检测API（使用base64图片数据进行检测，无需认证）
       const detectionResult = await new Promise((resolve, reject) => {
-        console.log('开始API调用 - URL: /detection/analyze-base64');
-        console.log('请求数据大小:', uploadResult.imageData ? uploadResult.imageData.length : 0, '字符');
-        
         app.request({
-          url: '/detection/analyze-base64',
+          url: '/api/v1/detection/analyze-base64',
           method: 'POST',
           data: {
             image_data: uploadResult.imageData,
             detection_type: 'image_ocr',
             user_notes: '小程序图片检测'
           },
+          showLoading: false, // 禁用默认loading，使用自定义进度
+          timeout: 30000, // 增加超时时间到30秒
           success: (res) => {
-            console.log('API调用成功 - 完整响应:', res)
-            console.log('API响应数据:', res.data)
             resolve(res)
           },
           fail: (error) => {
-            console.error('API调用失败 - 完整错误:', error)
-            console.error('错误状态码:', error.statusCode)
-            console.error('错误信息:', error.errMsg)
             reject(error)
           }
         })
@@ -311,12 +322,50 @@ Page({
       }
     } catch (error) {
       console.error('检测失败:', error)
-      app.showError(`检测失败: ${error.message}`)
+      
+      // 显示用户友好的错误信息
+      let userMessage = '检测失败，请重试'
+      let showRetry = true
+      
+      if (error.message.includes('网络') || error.errMsg?.includes('timeout')) {
+        userMessage = '网络连接异常，请检查网络后重试'
+      } else if (error.message.includes('图片')) {
+        userMessage = '图片处理失败，请重新选择图片'
+        showRetry = false
+      } else if (error.message.includes('API') || error.statusCode >= 500) {
+        userMessage = '服务暂时不可用，请稍后重试'
+      } else if (error.statusCode === 400) {
+        userMessage = '图片格式不支持，请选择其他图片'
+        showRetry = false
+      }
+      
+      wx.showModal({
+        title: '检测失败',
+        content: userMessage,
+        showCancel: showRetry,
+        cancelText: '重新选择',
+        confirmText: showRetry ? '重试' : '知道了',
+        success: (res) => {
+          if (res.confirm && showRetry) {
+            // 重试检测
+            setTimeout(() => {
+              this.startDetection()
+            }, 500)
+          } else if (res.cancel) {
+            // 重新选择图片
+            this.setData({
+              selectedImage: null,
+              showCamera: true
+            })
+          }
+        }
+      })
       
       this.setData({
         detecting: false,
         detectionProgress: 0,
-        currentStep: 0
+        currentStep: 0,
+        detectionStatus: '准备检测'
       })
     }
   },
@@ -450,32 +499,8 @@ Page({
   // 加载历史记录
   loadHistory() {
     const history = wx.getStorageSync('detectionHistory') || []
-    console.log('加载历史记录:', history)
     this.setData({
       historyList: history.slice(0, 5) // 只显示最近5条
-    })
-  },
-
-  // 清除历史记录（调试用）
-  clearHistory() {
-    wx.showModal({
-      title: '确认清除',
-      content: '确定要清除所有检测历史记录吗？此操作不可恢复。',
-      confirmText: '清除',
-      confirmColor: '#ff4757',
-      success: (res) => {
-        if (res.confirm) {
-          wx.removeStorageSync('detectionHistory')
-          this.setData({
-            historyList: []
-          })
-          wx.showToast({
-            title: '历史记录已清除',
-            icon: 'success'
-          })
-          console.log('历史记录已清除')
-        }
-      }
     })
   },
 
@@ -501,7 +526,7 @@ Page({
     return {
       title: 'AI智能检测 - 守护食品安全',
       path: '/pages/detection/detection',
-      imageUrl: '/assets/images/share-detection.jpg'
+      imageUrl: '/assets/images/share-detection.svg'
     }
   },
 
@@ -511,12 +536,5 @@ Page({
       title: 'AI智能检测 - 守护食品安全',
       imageUrl: '/assets/images/share-detection.jpg'
     }
-  },
-
-  // 返回首页
-  goBack() {
-    wx.switchTab({
-      url: '/pages/index/index'
-    });
   }
 })

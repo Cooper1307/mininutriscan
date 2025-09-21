@@ -243,16 +243,21 @@ class Detection(Base):
         Args:
             nutrition_data: 营养成分字典
         """
+        def _get_value(data):
+            if isinstance(data, dict):
+                return data.get('value')
+            return data
+
         # 基础营养成分
-        self.energy_kj = nutrition_data.get('energy_kj')
-        self.energy_kcal = nutrition_data.get('energy_kcal')
-        self.protein = nutrition_data.get('protein')
-        self.fat = nutrition_data.get('fat')
-        self.saturated_fat = nutrition_data.get('saturated_fat')
-        self.carbohydrate = nutrition_data.get('carbohydrate')
-        self.sugar = nutrition_data.get('sugar')
-        self.dietary_fiber = nutrition_data.get('dietary_fiber')
-        self.sodium = nutrition_data.get('sodium')
+        self.energy_kj = _get_value(nutrition_data.get('energy_kj'))
+        self.energy_kcal = _get_value(nutrition_data.get('energy_kcal'))
+        self.protein = _get_value(nutrition_data.get('protein'))
+        self.fat = _get_value(nutrition_data.get('fat'))
+        self.saturated_fat = _get_value(nutrition_data.get('saturated_fat'))
+        self.carbohydrate = _get_value(nutrition_data.get('carbohydrate'))
+        self.sugar = _get_value(nutrition_data.get('sugar'))
+        self.dietary_fiber = _get_value(nutrition_data.get('dietary_fiber'))
+        self.sodium = _get_value(nutrition_data.get('sodium'))
         
         # 其他营养成分
         self.vitamins = nutrition_data.get('vitamins')

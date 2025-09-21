@@ -212,30 +212,12 @@ class EndToEndTester:
                 except Exception as e:
                     print_status("OCR识别", False, f"错误: {e}")
             
-            # 如果OCR服务不可用，使用模拟数据
-            print("   🔄 使用模拟OCR数据")
-            mock_ocr_result = {
-                "success": True,
-                "text": "营养成分表 每100g含有: 能量2100kJ 蛋白质25.0g 脂肪30.0g 碳水化合物45.0g 钠800mg",
-                "confidence": 0.95,
-                "provider": "mock"
-            }
+            # OCR服务不可用时，测试失败
+            print("   ❌ OCR服务不可用，无法进行真实数据测试")
+            print("   💡 请配置腾讯云或阿里云OCR服务以进行完整测试")
             
-            mock_nutrition_info = {
-                "energy_kj": 2100,
-                "energy_kcal": 500,
-                "protein": 25.0,
-                "fat": 30.0,
-                "carbohydrates": 45.0,
-                "sodium": 800
-            }
-            
-            print_status("模拟OCR识别", True, "使用模拟营养数据")
-            
-            self.test_data['ocr_result'] = mock_ocr_result
-            self.test_data['nutrition_info'] = mock_nutrition_info
-            self.test_results['ocr'] = True
-            return mock_ocr_result
+            self.test_results['ocr'] = False
+            return None
             
         except Exception as e:
             print_status("OCR服务", False, f"错误: {e}")
@@ -280,31 +262,12 @@ class EndToEndTester:
             else:
                 print_status("AI服务配置", False, "Qwen API未配置")
             
-            # 如果AI服务不可用，使用模拟数据
-            print("   🔄 使用模拟AI分析数据")
-            mock_analysis = {
-                "success": True,
-                "analysis": {
-                    "health_score": 75.5,
-                    "risk_level": "medium",
-                    "summary": "该产品营养成分较为均衡，但钠含量偏高，建议适量食用。",
-                    "recommendations": [
-                        "注意控制钠的摄入量",
-                        "搭配富含维生素的蔬菜食用",
-                        "建议每日摄入量不超过100g"
-                    ],
-                    "nutrition_highlights": {
-                        "protein": "蛋白质含量丰富，有助于肌肉健康",
-                        "sodium": "钠含量较高，需要注意控制"
-                    }
-                }
-            }
+            # AI服务不可用时，测试失败
+            print("   ❌ AI服务不可用，无法进行真实数据测试")
+            print("   💡 请配置Qwen API以进行完整的AI分析测试")
             
-            print_status("模拟AI分析", True, f"健康评分: {mock_analysis['analysis']['health_score']}")
-            
-            self.test_data['ai_analysis'] = mock_analysis
-            self.test_results['ai'] = True
-            return mock_analysis
+            self.test_results['ai'] = False
+            return None
             
         except Exception as e:
             print_status("AI分析服务", False, f"错误: {e}")

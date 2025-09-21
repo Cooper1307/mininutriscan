@@ -39,6 +39,8 @@ app.add_middleware(
         "http://localhost:3000",      # 本地开发前端
         "http://127.0.0.1:3000",      # 本地开发前端
         "http://localhost:8080",      # 可能的前端端口
+        "http://127.0.0.1:8080",      # 本地开发前端
+        "*",                          # 开发环境允许所有来源
     ],
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],

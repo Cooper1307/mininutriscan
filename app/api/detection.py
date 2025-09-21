@@ -19,6 +19,7 @@ from ..models.user import User
 from ..models.detection import Detection, DetectionType, DetectionStatus
 from ..services.ai_service import AIService
 from ..services.ocr_service import OCRService
+from ..core.validators import ComprehensiveValidator
 from ..api.auth import get_current_user, get_current_user_optional
 
 # 创建路由器
@@ -280,15 +281,21 @@ async def _process_image_detection(
     
     try:
         # 处理文件上传或base64数据
+        print(f"📁 开始处理图片数据")
         if file:
+            print(f"📤 处理上传文件: {file.filename}")
             # 验证文件
             validate_file(file)
             # 保存文件
             file_path = save_uploaded_file(file)
+            print(f"✅ 文件保存成功: {file_path}")
         elif base64_request:
+            print(f"📊 处理base64数据，长度: {len(base64_request.image_data)}")
             # 处理base64数据
             file_path = await save_base64_image(base64_request.image_data)
+            print(f"✅ base64图片保存成功: {file_path}")
         else:
+            print(f"❌ 未提供图片数据")
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="必须提供图片文件或base64数据"
@@ -296,6 +303,7 @@ async def _process_image_detection(
         
         # 创建检测记录（支持匿名用户）
         from ..models.detection import DetectionType, DetectionStatus
+        print(f"📝 创建检测记录，用户ID: {current_user.id if current_user else '匿名'}")
         detection = Detection(
             user_id=current_user.id if current_user else None,
             detection_type=DetectionType.OCR_SCAN,
@@ -305,20 +313,42 @@ async def _process_image_detection(
         db.add(detection)
         db.commit()
         db.refresh(detection)
+        print(f"✅ 检测记录创建成功，ID: {detection.id}")
         
         try:
             # 初始化OCR服务
             ocr_service = OCRService()
             
             # 执行OCR识别
-            ocr_result = await ocr_service.recognize_nutrition_label(file_path)
-            
-            if not ocr_result or not ocr_result.get("success"):
-                detection.update_status(DetectionStatus.FAILED, "OCR识别失败")
+            print(f"🔍 开始OCR识别，文件路径: {file_path}")
+            try:
+                ocr_result = await ocr_service.recognize_nutrition_label(file_path)
+                print(f"📝 OCR识别结果: {ocr_result}")
+                
+                if not ocr_result or not ocr_result.get("success"):
+                    error_msg = ocr_result.get("error", "OCR识别失败") if ocr_result else "OCR服务无响应"
+                    print(f"❌ OCR识别失败: {error_msg}")
+                    detection.update_status(DetectionStatus.FAILED, error_msg)
+                    db.commit()
+                    raise HTTPException(
+                        status_code=status.HTTP_400_BAD_REQUEST,
+                        detail="图片识别失败，请确保图片清晰且包含营养标签"
+                    )
+                    
+                print(f"✅ OCR识别成功完成")
+                
+            except HTTPException:
+                raise
+            except Exception as ocr_error:
+                print(f"❌ OCR识别异常: {ocr_error}")
+                print(f"❌ 异常类型: {type(ocr_error).__name__}")
+                import traceback
+                print(f"❌ 异常堆栈: {traceback.format_exc()}")
+                detection.update_status(DetectionStatus.FAILED, f"OCR识别异常: {str(ocr_error)}")
                 db.commit()
                 raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="图片识别失败，请确保图片清晰且包含营养标签"
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    detail=f"OCR识别异常: {str(ocr_error)}"
                 )
             
             # 更新检测记录
@@ -335,44 +365,24 @@ async def _process_image_detection(
             # 解析营养信息
             nutrition_data = {}
             if ocr_result.get("success"):
-                # 从OCR结果中提取营养信息
-                nutrition_extract_result = ocr_service.extract_nutrition_info(ocr_result)
-                if nutrition_extract_result.get("success") and nutrition_extract_result.get("nutrition_info"):
-                    raw_nutrition_data = nutrition_extract_result.get("nutrition_info", {})
+                print(f"🔍 开始提取营养信息")
+                try:
+                    # 从OCR结果中提取营养信息
+                    nutrition_extract_result = ocr_service.extract_nutrition_info(ocr_result)
+                    print(f"📊 营养信息提取结果: {nutrition_extract_result}")
                     
-                    # 转换嵌套的营养数据格式为简单的键值对
-                    nutrition_data = {}
-                    for key, value in raw_nutrition_data.items():
-                        if isinstance(value, dict) and 'value' in value:
-                            # 处理嵌套格式：{'value': 12.5, 'unit': 'g', 'keyword': '蛋白质'}
-                            nutrition_data[key] = value['value']
-                        else:
-                            # 处理简单格式
-                            nutrition_data[key] = value
-                    
-                    # 映射字段名到数据库字段
-                    db_nutrition_data = {}
-                    if 'energy' in nutrition_data:
-                        # 能量默认按kJ存储，如果需要kcal可以转换
-                        db_nutrition_data['energy_kj'] = nutrition_data['energy']
-                        # 1 kcal = 4.184 kJ
-                        db_nutrition_data['energy_kcal'] = nutrition_data['energy'] / 4.184 if nutrition_data['energy'] else None
-                    
-                    # 直接映射的字段
-                    field_mapping = {
-                        'protein': 'protein',
-                        'fat': 'fat', 
-                        'carbohydrate': 'carbohydrate',
-                        'sodium': 'sodium'
-                    }
-                    
-                    for ocr_field, db_field in field_mapping.items():
-                        if ocr_field in nutrition_data:
-                            db_nutrition_data[db_field] = nutrition_data[ocr_field]
-                    
-                    detection.set_nutrition_data(db_nutrition_data)
-                    # 保留原始营养数据用于AI分析
-                    nutrition_data = raw_nutrition_data
+                    if nutrition_extract_result.get("success") and nutrition_extract_result.get("nutrition_info"):
+                        nutrition_data = nutrition_extract_result.get("nutrition_info", {})
+                        detection.set_nutrition_data(nutrition_data)
+                        print(f"✅ 营养信息提取成功: {nutrition_data}")
+                    else:
+                        print(f"⚠️ 营养信息提取失败或无数据")
+                        
+                except Exception as extract_error:
+                    print(f"❌ 营养信息提取异常: {extract_error}")
+                    print(f"❌ 异常类型: {type(extract_error).__name__}")
+                    import traceback
+                    print(f"❌ 异常堆栈: {traceback.format_exc()}")
             
             # 初始化AI服务进行分析
             ai_service = AIService()
@@ -388,29 +398,72 @@ async def _process_image_detection(
                     "allergies": current_user.allergies
                 }
             
-            ai_analysis = await ai_service.analyze_nutrition(
-                nutrition_data=nutrition_data
-            )
-            
-            if ai_analysis and ai_analysis.get("success"):
-                detection.set_ai_analysis(
-                    score=ai_analysis.get("health_score"),
-                    advice=ai_analysis.get("advice"),
-                    risk_level=ai_analysis.get("risk_level"),
-                    analysis_data=ai_analysis.get("analysis")
+            print(f"🤖 开始AI分析，检测ID: {detection.id}")
+            try:
+                print(f"📊 营养数据: {nutrition_data}")
+                print(f"👤 用户档案: {user_profile}")
+                
+                ai_analysis = await ai_service.analyze_nutrition(
+                    nutrition_data=nutrition_data
                 )
+                
+                print(f"🔍 AI分析结果: {ai_analysis}")
+                
+                if ai_analysis and ai_analysis.get("success"):
+                    detection.set_ai_analysis(
+                        score=ai_analysis.get("health_score"),
+                        advice=ai_analysis.get("advice"),
+                        risk_level=ai_analysis.get("risk_level"),
+                        analysis_data=ai_analysis.get("analysis")
+                    )
+                    print(f"✅ AI分析成功完成")
+                else:
+                    error_msg = ai_analysis.get("error", "未知错误") if ai_analysis else "AI服务无响应"
+                    print(f"❌ AI分析失败: {error_msg}")
+                    
+            except Exception as ai_error:
+                print(f"❌ AI分析异常: {ai_error}")
+                print(f"❌ 异常类型: {type(ai_error).__name__}")
+                import traceback
+                print(f"❌ 异常堆栈: {traceback.format_exc()}")
             
             # 更新处理时间和状态
             processing_time = (datetime.now() - start_time).total_seconds()
             detection.processing_time = processing_time
             detection.update_status(DetectionStatus.COMPLETED)
+            print(f"⏱️ 处理完成，耗时: {processing_time:.2f}秒")
             
             # 更新用户统计（仅对已登录用户）
             if current_user:
                 current_user.increment_scan_count()
+                print(f"📈 用户扫描次数已更新")
             
             db.commit()
             db.refresh(detection)
+            print(f"✅ 检测流程全部完成，检测ID: {detection.id}")
+            
+            # 数据验证
+            validator = ComprehensiveValidator()
+            response_data = {
+                "id": detection.id,
+                "detection_type": detection.detection_type,
+                "status": detection.status,
+                "product_name": detection.product_name,
+                "brand": detection.brand,
+                "category": detection.category,
+                "nutrition_data": detection.nutrition_data,
+                "ai_analysis": detection.ai_analysis,
+                "health_score": detection.health_score,
+                "risk_level": detection.risk_level,
+                "created_at": detection.created_at,
+                "processing_time": processing_time
+            }
+            
+            # 验证响应数据
+            validation_result = validator.validate_api_response(response_data)
+            if not validation_result.is_valid:
+                print(f"⚠️ 响应数据验证警告: {validation_result.errors}")
+                # 记录验证问题但不阻止响应
             
             return DetectionResponse(
                 id=detection.id,
@@ -429,6 +482,10 @@ async def _process_image_detection(
             
         except Exception as e:
             # 更新检测状态为失败
+            print(f"❌ 检测过程发生异常: {e}")
+            print(f"❌ 异常类型: {type(e).__name__}")
+            import traceback
+            print(f"❌ 异常堆栈: {traceback.format_exc()}")
             detection.update_status(DetectionStatus.FAILED, str(e))
             db.commit()
             raise
@@ -488,17 +545,33 @@ async def manual_input_detection(
             ai_service = AIService()
             
             # 执行AI分析
-            ai_analysis = await ai_service.analyze_nutrition(
-                nutrition_data=nutrition_dict
-            )
-            
-            if ai_analysis and ai_analysis.get("success"):
-                detection.set_ai_analysis(
-                    score=ai_analysis.get("health_score"),
-                    advice=ai_analysis.get("advice"),
-                    risk_level=ai_analysis.get("risk_level"),
-                    analysis_data=ai_analysis.get("analysis")
+            print(f"🤖 开始手动输入AI分析，检测ID: {detection.id}")
+            try:
+                print(f"📊 营养数据: {nutrition_dict}")
+                
+                ai_analysis = await ai_service.analyze_nutrition(
+                    nutrition_data=nutrition_dict
                 )
+                
+                print(f"🔍 AI分析结果: {ai_analysis}")
+                
+                if ai_analysis and ai_analysis.get("success"):
+                    detection.set_ai_analysis(
+                        score=ai_analysis.get("health_score"),
+                        advice=ai_analysis.get("advice"),
+                        risk_level=ai_analysis.get("risk_level"),
+                        analysis_data=ai_analysis.get("analysis")
+                    )
+                    print(f"✅ 手动输入AI分析成功完成")
+                else:
+                    error_msg = ai_analysis.get("error", "未知错误") if ai_analysis else "AI服务无响应"
+                    print(f"❌ 手动输入AI分析失败: {error_msg}")
+                    
+            except Exception as ai_error:
+                print(f"❌ 手动输入AI分析异常: {ai_error}")
+                print(f"❌ 异常类型: {type(ai_error).__name__}")
+                import traceback
+                print(f"❌ 异常堆栈: {traceback.format_exc()}")
             
             # 更新处理时间和状态
             processing_time = (datetime.now() - start_time).total_seconds()
@@ -511,6 +584,29 @@ async def manual_input_detection(
             
             db.commit()
             db.refresh(detection)
+            
+            # 数据验证
+            validator = ComprehensiveValidator()
+            response_data = {
+                "id": detection.id,
+                "detection_type": detection.detection_type,
+                "status": detection.status,
+                "product_name": detection.product_name,
+                "brand": detection.brand,
+                "category": detection.category,
+                "nutrition_data": detection.nutrition_data,
+                "ai_analysis": detection.ai_analysis,
+                "health_score": detection.health_score,
+                "risk_level": detection.risk_level,
+                "created_at": detection.created_at,
+                "processing_time": processing_time
+            }
+            
+            # 验证响应数据
+            validation_result = validator.validate_api_response(response_data)
+            if not validation_result.is_valid:
+                print(f"⚠️ 手动输入响应数据验证警告: {validation_result.errors}")
+                # 记录验证问题但不阻止响应
             
             return DetectionResponse(
                 id=detection.id,
@@ -599,17 +695,33 @@ async def barcode_detection(
             
             # AI分析
             ai_service = AIService()
-            ai_analysis = await ai_service.analyze_nutrition(
-                nutrition_data=nutrition_data
-            )
-            
-            if ai_analysis and ai_analysis.get("success"):
-                detection.set_ai_analysis(
-                    score=ai_analysis.get("health_score"),
-                    advice=ai_analysis.get("advice"),
-                    risk_level=ai_analysis.get("risk_level"),
-                    analysis_data=ai_analysis.get("analysis")
+            print(f"🤖 开始条形码AI分析，检测ID: {detection.id}")
+            try:
+                print(f"📊 营养数据: {nutrition_data}")
+                
+                ai_analysis = await ai_service.analyze_nutrition(
+                    nutrition_data=nutrition_data
                 )
+                
+                print(f"🔍 AI分析结果: {ai_analysis}")
+                
+                if ai_analysis and ai_analysis.get("success"):
+                    detection.set_ai_analysis(
+                        score=ai_analysis.get("health_score"),
+                        advice=ai_analysis.get("advice"),
+                        risk_level=ai_analysis.get("risk_level"),
+                        analysis_data=ai_analysis.get("analysis")
+                    )
+                    print(f"✅ 条形码AI分析成功完成")
+                else:
+                    error_msg = ai_analysis.get("error", "未知错误") if ai_analysis else "AI服务无响应"
+                    print(f"❌ 条形码AI分析失败: {error_msg}")
+                    
+            except Exception as ai_error:
+                print(f"❌ 条形码AI分析异常: {ai_error}")
+                print(f"❌ 异常类型: {type(ai_error).__name__}")
+                import traceback
+                print(f"❌ 异常堆栈: {traceback.format_exc()}")
             
             # 更新处理时间和状态
             processing_time = (datetime.now() - start_time).total_seconds()
