@@ -27,12 +27,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "答辩方案.md",
+                "file": "指导老师会面材料.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "答辩方案"
+              "title": "指导老师会面材料"
             }
           }
         ],
@@ -175,6 +175,7 @@
   },
   "left-ribbon": {
     "hiddenItems": {
+      "bases:创建新数据库": false,
       "switcher:打开快速切换": false,
       "graph:查看关系图谱": false,
       "canvas:新建白板": false,
@@ -185,11 +186,12 @@
   },
   "active": "a8678abe88f42010",
   "lastOpenFiles": [
+    "指导老师会面材料.pdf",
+    "答辩方案.md",
     "答辩方案/~$答辩方案.docx",
     "答辩方案/答辩方案.docx",
     "答辩方案/答辩方案.pdf",
     "答辩PPT大纲.md",
-    "答辩方案.md",
     "答辩方案/~$辩PPT大纲.docx",
     "答辩方案/答辩PPT大纲.docx",
     "答辩方案/答辩PPT大纲.pdf"
