@@ -126,6 +126,34 @@ powershell -ExecutionPolicy Bypass -File .\setup_complete.ps1
 - 🎓 [答辩方案](./答辩方案/答辩方案.md)
 - 🎤 [答辩PPT大纲](./答辩方案/答辩PPT大纲.md)
 
+## 🔑 主要入口点
+- 后端服务入口 `main.py:25` 创建 `FastAPI` 应用并挂载路由；健康检查在 `main.py:79`。
+- API 路由聚合 `app/api/__init__.py:16`，子模块如检测 `app/api/detection.py:235`、认证 `app/api/auth.py:200`。
+- 数据与缓存连接 `app/core/database.py:22`（PostgreSQL）与 `app/core/database.py:107`（Redis）。
+- 业务模型：用户 `app/models/user.py:30`、检测 `app/models/detection.py:40`、报告 `app/models/report.py:34`。
+- 服务层：AI 服务 `app/services/ai_service.py:10`、OCR 服务 `app/services/ocr_service.py:32`、微信服务 `app/services/wechat_service.py:10`。
+- 微信小程序入口 `miniprogram/app.json` 与页面逻辑示例 `miniprogram/pages/detection/detection.js`。
+- Android 客户端入口 `app/src/main/java/com/mininutriscan/app/MainActivity.kt:14` 与导航 `AppNavigation.kt:20`。
+
+## 🧭 构建与部署概览
+- Python 后端
+  - 安装依赖：在虚拟环境中执行 `pip install -r requirements.txt`
+  - 配置环境：在 `.env` 设置数据库、Redis、JWT、OCR、Qwen 等键值（参考 `app/core/config.py` 字段）
+  - 数据库迁移：设置好 `DATABASE_URL` 后运行 `alembic upgrade head` 应用 `migrations/versions` 里的变更
+  - 启动开发：`uvicorn main:app --reload --host 127.0.0.1 --port 8000`
+- 微信小程序
+  - 在 `miniprogram/config/api.js` 将 `CURRENT_ENV` 设为 `development` 并确保 `BASE_URL` 指向后端
+  - 使用微信开发者工具导入 `miniprogram/` 并运行
+- Android 客户端
+  - 使用 Android Studio 打开根工程，Gradle 版本见 `gradle/libs.versions.toml`
+  - 运行 `:app` 模块（CameraX 扫描与 Compose UI 已接入）
+- 脚本辅助
+  - Windows 一键启动：`启动所有服务.bat`（含 Redis 可选启动与后端启动）
+  - 项目体检：`检查项目状态.py` 会检查依赖、配置、数据库与 FastAPI 文档可用性
+
+## ⚠️ 已知问题与建议
+- 认证模块当前使用 `import jwt` 并引用 `jwt.PyJWTError`（见 `app/api/auth.py`），而 `requirements.txt` 列的是 `python-jose`，可能存在库不一致。建议统一为同一 JWT 实现并在 `requirements.txt` 对齐。
+
 ## 📜 许可证
 
 本项目采用 [MIT License](LICENSE) 许可证。
